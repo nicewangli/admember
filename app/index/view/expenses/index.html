@@ -1,0 +1,133 @@
+{extend name="public/base" /}
+{block name='content'}
+
+<!--数据列表页面-->
+<section class="content">
+
+    <!--顶部搜索筛选-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <!--数据列表顶部-->
+                <div class="card-header ">
+                    <div>
+                        <a title="Add" onclick="doc()" class="btn btn-primary btn-sm " href="#">
+                            <i class="fa fa-plus"></i> 新增
+                        </a>
+
+                        <a class="btn btn-default btn-sm ReloadButton" title="Refresh" href="index.html">
+                            <i class="fa fa-refresh"></i> 刷新
+                        </a>
+
+
+                        <div class=" float-right ">
+                            <form class="form-inline searchForm" id="searchForm" action="{:url('expenses/index')}"
+                                  method="GET">
+                                <input type="hidden" value="0" id="export_data" name="export_data">
+                                <div class="form-group pr-1">
+                                    <input type="text" name="search" id="search" class="form-control"
+                                           placeholder="Search"
+                                           value="{$search|default=''}">
+                                </div>
+
+                                <div class="form-group pr-1">
+                                    <button class="btn btn-sm btn-primary" type="submit"
+                                            onclick="$('#export_data').val(0)"><i class="fa fa-search"></i>
+                                        搜索
+                                    </button>
+                                </div>
+
+                                <div class="form-group">
+                                    <button class="btn btn-sm btn-success exportData"
+                                            type="submit" onclick="$('#export_data').val(1)"><i
+                                            class="fa fa-file-excel-o"></i>&nbsp;導出
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div> <!-- card-header -->
+
+
+                <div class="card-body table-responsive">
+                    <table class="table table-hover table-bordered datatable" data-toggle="table" width="100%">
+                        <thead>
+                        <tr>
+                            <th>類型</th>
+                            <th>名称</th>
+                            <th>備註</th>
+                            <th>數量</th>
+                            <th>金額</th>
+
+
+                            <th>操作</th>
+
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach name="data" id="item"}
+                        <tr>
+
+                            <td><a href="javascript:void(0)" onclick="doc('{$item.id}')">{$item.type}</a></td>
+                            <td>{$item.name}</td>
+                            <td>{$item.comment}</td>
+                            <td>{$item.quantity}</td>
+                            <td>{$item.amount}</td>
+
+
+                            <td class="td-do">
+                                <a href="{:url('to_download',['id'=>$item.id])}"
+                                   class="btn btn-primary btn-xs" title="Download">
+                                    <i class="fa fa-download"></i>
+
+                                </a>
+                                <a class="btn btn-danger btn-xs AjaxButton" href="{:url('del',['id'=>$item.id])}"
+                                   title="Delete"
+                                   data-id="{$item.id}" data-confirm-title="Confirm Delete"
+                                   data-confirm-content='Are you sure to delete?' data-url="{:url('del')}">
+                                    <i class="fa fa-trash"></i>
+
+                                </a>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 数据列表底部 -->
+                <div class="card-footer">
+                    {$page|raw}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{/block}
+
+{block name="js"}
+<script type="text/javascript">
+
+
+    function doc(id) {
+
+        if (id) {
+            var url = '{:url("expenses/edit?id=")}' + id
+        } else {
+            var url = '{:url("expenses/add")}'
+        }
+
+        layer.open({
+            type: 2,
+            title: 'New expenses',
+            area: ['650px', '600px'],
+            content: url
+        });
+    }
+
+
+</script>
+
+
+{/block}

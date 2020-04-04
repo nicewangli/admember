@@ -1,0 +1,113 @@
+{extend name='public/layer_base' /}
+{block name='content'}
+
+<section class="content">
+    <div>
+        <form class="form-horizontal" id="stockout-form" method="post" action="{$act}">
+
+            <input type="hidden" id="id" name="id" value="{$item.id|default=''}">
+            <input type="hidden" id="supplier_id" name="supplier_id" value="{$item.supplier_id|default=''}">
+            <div class="row pt-2">
+                <div class="col-xs-12 col-md-12">
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="salesorder_no">編號</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="salesorder_no" name="salesorder_no"
+                                   value="{$data.salesorder_no|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="store">店鋪</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="store"
+                                   name="store"
+                                   value="{$data.store|default=''}"
+                                   placeholder="銅鑼灣">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="created_at">日期</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="created_at" name="created_at"
+                                   value="{$data.created_at|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="payment_term">貨倉</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="payment_term" name="payment_term"
+                                   value="{$data.payment_term|default=''}"
+                                   placeholder="銅鑼灣貨倉">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="abstract">備註</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="abstract"
+                                   name="abstract"
+                                   value="{$data.abstract|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <hr>
+    <div class="col-md-12" align="center">
+        <button id="stockout-submit" type="button"
+                class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
+            保存
+        </button>
+        &nbsp;
+        <button class="btn btn-sm btn-default layer-close">刪除</button>
+    </div>
+
+</section>
+{/block}
+
+{block name="js"}
+
+<script type="text/javascript">
+
+    $("#stockout-submit").click(function () {    // 提交按钮触发事件
+        var form_action = $("#stockout-form").attr("action");    // 获取 表单的 提交地址
+        $.post(form_action, $("#stockout-form").serialize(), function (data) {
+            layer.msg(data['msg']);
+            if (data['code'] == 200) {
+                parent.layer.closeAll();
+                parent.$('#stockout-grid').bootstrapTable('refresh')
+            }
+        });
+    });
+
+    $('.layer-close').on('click', function () {
+        parent.layer.closeAll();
+    });
+
+    
+
+
+</script>
+{/block}

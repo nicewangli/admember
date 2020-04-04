@@ -1,0 +1,103 @@
+{extend name="public/base" /}
+{block name="style"}
+<style>
+
+
+</style>
+{/block}
+{block name='content'}
+<!--数据列表页面-->
+<section class="content">
+
+    <!--顶部搜索筛选-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <div id="accounts-toolbar">
+                        <a title="Add" class="btn btn-primary btn-sm " href="{:url('add')}">
+                            <i class="fa fa-plus"></i> 新增
+                        </a>
+                    </div>
+                    
+                    <table id="accounts-grid">
+                        <thead>
+                        <tr>
+                            <th data-field="check_status" data-checkbox="true"></th>
+                            <th data-field="name" data-sortable="true" data-filter-control="input" data-formatter="showFm">名字</th>
+                            <th data-field="phone" data-sortable="true" data-filter-control="input">電話</th>
+                            <th data-field="email" data-sortable="true" data-filter-control="input">郵箱</th>
+                            <th data-field="chi_name" data-sortable="true" data-filter-control="input">編號</th>
+                            <th data-field="billing_address_street_cn" data-sortable="true" data-visible="false" data-filter-control="input">狀態</th>
+                        </tr>
+                        </thead>
+                    </table>
+                </div>
+
+                <!-- 数据列表底部 -->
+            </div>
+        </div>
+    </div>
+</section>
+{/block}
+
+{block name='js'}
+<script>
+
+    function showFm(value, row){
+        var show_url = "{:url('detail')}?id="+row.id
+        var html = '<a href='+show_url+'>'+value+'</a>'
+        return html;
+    }
+
+    $(function(){
+        $('#accounts-grid').bootstrapTable({
+            url: 'lists',
+            toolbar: "#accounts-toolbar",
+            pagination: true,
+            sidePagination:'server',
+            buttonsClass:"btn-sm btn btn-sm btn-default",
+            striped: true,
+            cookie: true,
+            cookieIdTable: 'accountGrid',
+            showRefresh: true,
+            showColumns: true,
+            clickToSelect: true,
+            stickyHeader: true,
+            stickyHeaderOffsetLeft: '3em',
+            stickyHeaderOffsetRight: '3em',
+            filterControl: true,
+            pageSize: 10,
+            pageList: [10, 20, 50, 100],
+            onCheck: function(row,ele){
+                $.get('accounts/check_one',{opt:'checked',id: row.id},function(data){
+                    display_selected(data);
+                })
+            },
+            onUncheck: function(row,ele){
+                $.get('accounts/check_one',{opt:'unchecked',id: row.id},function(data){
+                    display_selected(data);
+                })
+            },
+            onCheckAll: function(rows){
+                $.get('accounts/check_all',{opt:'checked'},function(data){
+                    display_selected(data);
+                })
+            },
+            onUncheckAll: function(rows){
+                $.get('accounts/check_all',{opt:'unchecked'},function(){
+                    display_selected(0);
+                })
+            }
+        });
+
+        $('.btn-search').click(function(){
+            $.cookie('accountGrid.bs.table.pageNumber',1);
+            //$.post('leads/clear_session',{component:'lead'})
+        });
+
+
+    })
+
+ </script>
+{/block}

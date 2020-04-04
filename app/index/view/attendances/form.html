@@ -1,0 +1,248 @@
+z{extend name='public/layer_base' /}
+{block name='content'}
+
+<section class="content">
+    <div>
+        <form class="form-horizontal" id="Attendance-form" method="post" action="{$act}">
+
+            <input type="hidden" id="id" name="id" value="{$item.id|default=''}">
+            <input type="hidden" id="user_id" name="user_id" value="{$item.user_id|default=''}">
+            <div class="row pt-2">
+                <div class="col-xs-12 col-md-6">
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label">日期:</label>
+                        <div class="col-md-7">
+                            <input type="text" name="vdate"  value="{$item.vdate}" readonly style="border: none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label">美容師:</label>
+                        <div class="col-md-7">
+                            <input type="hidden" name="user_name"  value="{$item.user_name}">
+                            {$item.user_name}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <h5>休假事項</h5>
+            <div class="margin  ">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('O','12:00AM')">Day
+                        Off
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('AL','12:00AM')">
+                        年假
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm"
+                            onclick="add_option('*','12:00AM')">補假
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('PL','12:00AM')">事假
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('SL','12:00AM')">
+                        病假
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('D','12:00AM')">
+                        工作時間D
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('E','12:00AM')">
+                        工作時間E
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('B','12:00AM')">
+                        工作時間B
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('NP','12:00AM')">
+                        無薪假
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('OT','12:00AM')">
+                        超時工作
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('X','12:00AM')">
+                        未到/已遇辦公時間
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('OF','12:00AM')">
+                        不在公司
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('ER','12:00AM')">
+                        補鐘
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('MT','12:00AM')">
+                        Meeting
+                    </button>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default btn-sm" onclick="add_option('TR','12:00AM')">
+                        Training
+                    </button>
+                </div>
+
+
+            </div>
+
+
+            <div class="table-responsive g-mb-40 ">
+                <table class="table u-table--v3--bordered g-color-black">
+                    <thead>
+                    <tr>
+                        <th class="text-center">從</th>
+                        <th class="text-center">至</th>
+                        <th class="text-center">休假</th>
+                        <th class="text-center">備註</th>
+
+                    </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    {empty name="pur_items"}
+                    <!--                            <tr>
+                                                    <input type="hidden" name="item[0][id]">
+                                                    <td><input class="form-control" type="text" name="item[0][start_time]"></td>
+                                                    <td><input class="form-control" type="text" name="item[0][end_time]"></td>
+                                                    <td><input class="form-control" type="text" name="item[0][item]"></td>
+                                                    <td><input class="form-control amount" type="text" name="item[0][remarks]"></td>
+                                                    <td>
+                                                        <a class="u-link-v5 g-color-gray-light-v6 g-color-secondary--hover g-text-underline--none--hover"
+                                                           href="#">
+                                                            <i class="fa fa-minus"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>-->
+                    {else/}
+                    {foreach name="pur_items" id="items" key="key"}
+                    <tr>
+                        <input type="hidden" name="item[{$key}][id]" value="{$items.id}">
+                        <td><input class="form-control" type="text" name="item[{$key}][start_time]"
+                                   value="{$items.start_time}"></td>
+                        <td><input class="form-control" type="text" name="item[{$key}][end_time]"
+                                   value="{$items.end_time}"></td>
+                        <td><input class="form-control" type="text" name="item[{$key}][item]"
+                                   value="{$items.item}"></td>
+                        <td><input class="form-control " type="text" name="item[{$key}][remarks]"
+                                   value="{$items.remarks}"></td>
+                        <td>
+                            <a class="u-link-v5 g-color-gray-light-v6 g-color-secondary--hover g-text-underline--none--hover"
+                               href="#">
+                                <i class="fa fa-minus"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {/foreach}
+                    {/empty}
+                    </tbody>
+                </table>
+            </div>
+
+        </form>
+    </div>
+
+    <hr>
+    <div class="col-md-12" align="center">
+        <button id="Attendance-submit" type="button"
+                class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
+            更新
+        </button>
+        &nbsp;
+        <button class="btn btn-sm btn-default layer-close">關閉</button>
+    </div>
+
+</section>
+{/block}
+
+{block name="js"}
+
+<script type="text/javascript">
+
+    $("#Attendance-submit").click(function () {    // 提交按钮触发事件
+        var form_action = $("#Attendance-form").attr("action");    // 获取 表单的 提交地址
+        $.post(form_action, $("#Attendance-form").serialize(), function (data) {
+            // layer.msg(data['msg']);
+            if (data['code'] == 200) {
+                parent.location.reload();
+                parent.layer.closeAll();
+                parent.$('#Attendance-grid').bootstrapTable('refresh')
+            }
+        });
+    });
+
+    $('.layer-close').on('click', function () {
+        parent.layer.closeAll();
+    });
+
+    function add_option(name, date) {
+        let node = '';
+        let index = $('.table').children('tbody').children('tr').length;
+        node += '<tr><input type="hidden" name="item[' + index + '][id]"><td>' +
+            '<input class="form-control" type="text" name="item[' + index + '][start_time]" value="' + date + '" ></td><td>' +
+            '<input class="form-control" type="text" name="item[' + index + '][end_time]"  value="' + date + '"></td><td>' +
+            '<input class="form-control" type="text" name="item[' + index + '][item]" value="' + name + '"></td><td>' +
+            '<input class="form-control remarks" type="text" name="item[' + index + '][remarks]"></td><td>' +
+            '<a class="u-link-v5 g-color-gray-light-v6 g-color-secondary--hover g-text-underline--none--hover" href="#"><i class="fa fa-minus"></i></a></td></tr>';
+        $('.table').children('tbody').append(node);
+    }
+
+
+    /*    $('.fa-plus').click(function () {
+            let node = '';
+            let index = $('.table').children('tbody').children('tr').length;
+            node += '<tr><input type="hidden" name="item[' + index + '][id]"><td>' +
+                '<input class="form-control" type="text" name="item[' + index + '][start_time]"></td><td>' +
+                '<input class="form-control" type="text" name="item[' + index + '][end_time]"></td><td>' +
+                '<input class="form-control" type="text" name="item[' + index + '][item]"></td><td>' +
+                '<input class="form-control remarks" type="text" name="item[' + index + '][remarks]"></td><td>' +
+                '<a class="u-link-v5 g-color-gray-light-v6 g-color-secondary--hover g-text-underline--none--hover" href="#"><i class="fa fa-minus"></i></a></td></tr>';
+            $('.table').children('tbody').append(node);
+        })*/
+
+
+    $(document).on("click", '.fa-minus', function () {
+        let len = 0;
+        len = $('.table').children('tbody').children('tr').length;
+        if (len > 1) {
+            $(this).parents('tr').remove();
+        }
+    })
+
+</script>
+{/block}

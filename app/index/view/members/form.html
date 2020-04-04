@@ -1,0 +1,358 @@
+<script src="../../../../../adsuite/static/js/application.js"></script>
+<form id="itemForm" class="form-horizontal itemForm" action="" method="post"
+      enctype="multipart/form-item">
+
+
+    <div class="form-group row">
+            <div class="col-11">
+                <a class="btn flat btn-sm btn-default BackButton" href="{:url('index')}">
+                    <i class="fa fa-arrow-left"></i>
+                    返回
+                </a>
+            </div>
+
+         <div class="col-auto">
+                <button type="submit"class=" far fa-file-alt  btn flat btn-info itemFormSubmit  btn-sm  ">
+                    保存
+                </button>
+          </div>
+    </div>
+
+    <div class="form-group row pt-2">
+        <div class="col-xs-12 col-md-4">
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="member_no">狀態</label>
+                <div class="col-md-7">
+                    <select class="form-control select2" type="text" id="member_no" name="member_no">
+                        <option value="">&nbsp;</option>
+                        {foreach name=":getOptions('member_no')" id='opt'}
+                        <option value="{$opt.val}" {if isset($item) &&
+                                $item.member_no==$opt.val}selected{/if}>
+                            {$opt.name}
+                        </option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="account_id">編號</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="account_id" name="account_id"
+                           value="{$item.account_id|default=''}"
+                           placeholder="A0029">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label"
+                       for="barcodes">條碼</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="barcodes" name="barcodes"
+                           value="{$item.barcodes|default=''}"
+                           placeholder="">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="opt">分類</label>
+                <div class="col-md-7">
+                    <select class="form-control select2" type="text" id="opt" name="opt">
+                        <option value="">&nbsp;</option>
+                        {foreach name=":getOptions('opt')" id='opt'}
+                        <option value="{$opt.val}" {if isset($item) &&
+                                $item.opt==$opt.val}selected{/if}>
+                            {$opt.name}
+                        </option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="categors">類別</label>
+                <div class="col-md-7">
+                    <select class="form-control select2" type="text" id="categors" name="categors">
+                        <option value="">&nbsp;</option>
+                        {foreach name=":getOptions('categors')" id='opt'}
+                        <option value="{$opt.val}" {if isset($item) &&
+                                $item.categors==$opt.val}selected{/if}>
+                            {$opt.name}
+                        </option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="last_name">名稱(中文)</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="last_name" name="last_name"
+                           value="{$item.last_name|default=''}"
+                           placeholder="">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="first_name">名稱(英文)</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="first_name" name="first_name"
+                           value="{$item.first_name|default=''}"
+                           placeholder="Leo Wong">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="salutation">性別</label>
+                <div class="col-md-7">
+                    <select class="form-control" id="salutation" name="salutation" size="1"
+                            value="{$item.salutation|default=''}">
+                        <option value="0">Mr.</option>
+                        <option value="1">Ms.</option>
+                        <option value="2">Mrs.</option>
+                        <option value="3">Miss</option>
+                        <option value="4">Dr.</option>
+                        <option value="5">Prof.</option>
+                        <option value="6">Capt.</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="date_of_birth">出生日期</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="date_of_birth" name="date_of_birth"
+                           value="{$item.date_of_birth|default=''}"
+                           placeholder="年/月/日">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="identity_card">身份證號碼</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="identity_card" name="identity_card"
+                           value="{$item.identity_card|default=''}"
+                           placeholder="Y4287">
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-xs-12 col-md-4">
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="phone_mobile">手提電話</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="phone_mobile"
+                           name="phone_mobile"
+                           value="{$item.phone_mobile|default=''}"
+                           placeholder="60803311">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="phone_work">住宅電話</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="phone_work" name="phone_work"
+                           value="{$item.phone_work|default=''}"
+                           placeholder="">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="email1">電郵地址</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="email" id="email1" name="email1"
+                           value="{$item.email1|default=''}"
+                           placeholder="">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="expiry_date">地址</label>
+                <div class="col-md-7">
+                            <textarea class="form-control" id="expiry_date" name="expiry_date"
+                                      size="1"
+                                      value=""
+                                      placeholder="{$item.expiry_date|default=''}"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="region">地區</label>
+                <div class="col-md-7">
+                    <select class="form-control select2" type="text" id="region" name="region">
+                        <option value="">&nbsp;</option>
+                        {foreach name=":getOptions('region')" id='opt'}
+                        <option value="{$opt.val}" {if isset($item) &&
+                                $item.region==$opt.val}selected{/if}>
+                            {$opt.name}
+                        </option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="remark">備註</label>
+                <div class="col-md-7">
+                            <textarea class="form-control" id="remark" name="remark"
+                                      size="1"
+                                      value=""
+                                      placeholder="{$item.remark|default=''}"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="reservation_remarks">預約備註</label>
+                <div class="col-md-7">
+                            <textarea class="form-control" id="reservation_remarks" name="reservation_remarks"
+                                      size="1"
+                                      value=""
+                                      placeholder="{$item.reservation_remarks|default=''}"></textarea>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="col-xs-12 col-md-4">
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="date_of_accession">加入日期</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="date_of_accession"
+                           name="date_of_accession"
+                           value="{$item.date_of_accession|default=''}"
+                           placeholder="2020-02-11">
+                </div>
+            </div>
+
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="category">接收推廣訊息</label>
+                <div class="col-md-7">
+
+                    <select class="form-control" id="category" name="category" size="1"
+                            value="{$item.category|default=''}">
+                        <option value="0">同意</option>
+                        <option value="1">不同意</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="shop">店鋪</label>
+                <div class="col-md-7">
+                    <select class="form-control select2" type="text" id="shop" name="shop">
+                        <option></option>
+                        {foreach name=":getOptions('shop')" id='opt'}
+                        <option value="{$opt.val}" {if isset($item) &&
+                                $item.shop==$opt.val}selected{/if}>
+                            {$opt.name}
+                        </option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+
+
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="register_date">到店時間</label>
+                <div class="col-md-7">
+                    <select class="form-control select2" type="text" id="register_date" name="register_date">
+                        <option value="">&nbsp;</option>
+                        {foreach name=":getOptions('register_date')" id='opt'}
+                        <option value="{$opt.val}" {if isset($item) &&
+                                $item.register_date==$opt.val}selected{/if}>
+                            {$opt.name}
+                        </option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="source">來源</label>
+                <div class="col-md-7">
+                    <select class="form-control select2" type="text" id="source" name="source">
+                        <option value="">&nbsp;</option>
+                        {foreach name=":getOptions('source')" id='opt'}
+                        <option value="{$opt.val}" {if isset($item) &&
+                                $item.source==$opt.val}selected{/if}>
+                            {$opt.name}
+                        </option>
+                        {/foreach}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="source_notes">來源備註</label>
+                <div class="col-md-7">
+                            <textarea class="form-control" id="source_notes" name="source_notes"
+                                      size="1"
+                                      value=""
+                                      placeholder="{$item.source_notes|default=''}"></textarea>
+                </div>
+            </div>
+
+
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="education_level">教育程度</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="education_level" name="education_level"
+                           value="{$item.education_level|default=''}"
+                           placeholder="">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="occupation">職業</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="occupation" name="occupation"
+                           value="{$item.occupation|default=''}"
+                           placeholder="">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="income">收入</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" id="income" name="income"
+                           value="{$item.income|default=''}"
+                           placeholder="">
+                </div>
+            </div>
+
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="signature">簽名</label>
+                <div class="col-md-7">
+                            <textarea class="form-control" id="signature" name="signature"
+                                      size="1"
+                                      value=""
+                                      placeholder="{$item.signature|default=''}"></textarea>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>
+

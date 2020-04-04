@@ -1,0 +1,257 @@
+
+        <div class="form-group row">
+            <div class="col-11">
+                <a class="btn flat btn-sm btn-default BackButton" href="{:url('index')}">
+                    <i class="fa fa-arrow-left"></i>
+                    Back
+                </a>
+            </div>
+
+            <div class="col-auto">
+                <button type="submit"class=" far fa-file-alt  btn flat btn-info itemFormSubmit  btn-sm  ">
+                    Save
+                </button>
+            </div>
+        </div>
+
+            <div class="form-group row">
+                <label class="col-md-1 control-label"  for="name">Company</label>
+                <div class="col-md-10 float-right">
+                    <input class="form-control" type="text" id="name" name="name"
+                           value="{$item.name|default=''}">
+                </div>
+            </div>
+
+
+            <div class="row p-t-15">
+
+
+                <div class="col-xs-12 col-md-6">
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label"
+                               for="chi_name">Name(Chi)</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="chi_name"
+                                   name="chi_name"
+                                   value="{$item.chi_name|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label"
+                               for="division">Division</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="division"
+                                   name="division"
+                                   value="{$item.division|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="billing_address_street">Address</label>
+                        <div class="col-md-8">
+                            <textarea class="form-control" id="billing_address_street" name="billing_address_street"
+                                      size="1"
+                                      placeholder="{$item.billing_address_street|default=''}"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label"
+                               for="billing_address_street_cn">Address(Chi)</label>
+                        <div class="col-md-8">
+                            <textarea class="form-control" id="billing_address_street_cn"
+                                      placeholder="{$item.billing_address_street_cn|default=''}"></textarea>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="billing_address_country">Country</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text"
+                                   id="billing_address_country"
+                                   name="billing_address_country"
+                                   value="{$item.billing_address_country|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="billing_address_city">City</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text"
+                                   id="billing_address_city"
+                                   name="billing_address_city"
+                                   value="{$item.billing_address_city|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="billing_address_state">City/State</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text"
+                                   id="billing_address_state"
+                                   name="billing_address_state"
+                                   value="{$item.billing_address_state|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="nature_of_business">Nature</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text"
+                                   id="nature_of_business"
+                                   name="nature_of_business"
+                                   value="{$item.nature_of_business|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="co_size">Co.Size</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text"
+                                   id="co_size"
+                                   name="co_size"
+                                   value="{$item.co_size|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div class="col-xs-12 col-md-6">
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="website">Website</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="website"
+                                   name="website"
+                                   value="{$item.website|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label"
+                               for="industry">Industry</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="industry"
+                                   name="industry"
+                                   value="{$item.industry|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="phone_fax">Fax</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="phone_fax"
+                                   name="phone_fax"
+                                   value="{$item.phone_fax|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label"
+                               for="phone_office">Phone</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="phone_office"
+                                   name="phone_office"
+                                   value="{$item.phone_office|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="email1">E-mail</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="email1" id="email1"
+                                   name="email1"
+                                   value="{$item.email1|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label" for="opt">Newsletter</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="opt"
+                                   name="opt"
+                                   value="{$item.opt|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label"
+                               for="billing_address_postalcode">Postal Code</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text"
+                                   id="billing_address_postalcode"
+                                   name="billing_address_postalcode"
+                                   value="{$item.billing_address_postalcode|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label"
+                               for="category">category</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="category"
+                                   name="category"
+                                   value="{$item.category|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label"
+                               for="rating">Rating</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="rating"
+                                   name="rating"
+                                   value="{$item.rating|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-2 control-label"
+                               for="source">Source</label>
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" id="source"
+                                   name="source"
+                                   value="{$item.source|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+        <div class="form-group row">
+            <label class="col-md-1 control-label" for="notes">Notes</label>
+            <div class="col-md-10 float-right">
+                          <textarea class="form-control" id="notes"   name="notes" size="1"
+                                    placeholder="">{$item.notes|default=''}</textarea>
+            </div>
+        </div>

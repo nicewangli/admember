@@ -1,0 +1,7 @@
+.idea
+.env
+runtime
+backup
+vendor
+static/upload
+*.DS_Store

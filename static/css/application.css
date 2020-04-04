@@ -1,0 +1,152 @@
+/** override **/
+[class*=sidebar-dark-] {
+    background-color: #3f4d67;
+}
+
+[class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active, [class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active:focus, [class*=sidebar-dark-] .nav-treeview>.nav-item>.nav-link.active:hover{
+    color:#fff;
+    background-color:#007bff;
+}
+
+
+.essentials-toggle {
+    background-color: white;
+    font-weight: bold;
+    padding: 5px 2px !important;
+    position: absolute;
+    top: 89px;
+    left: -3px;
+    cursor: pointer;
+    width: 14px;
+    border: 1px solid #DDDDDD;
+    border-right: 0;
+    display: inline-block;
+}
+
+.tools-card {
+    /* for the animation */
+    transition: margin 0.3s ease;
+}
+
+.collapsed {
+    /* hide it for small displays*/
+    display: none;
+}
+.content-header .breadcrumb{
+    padding-left: 10px;
+}
+
+
+.fa-ul {
+    margin-left: 1.5em;
+}
+
+.fa-ul>li{
+    padding-bottom: 2px;
+}
+
+
+.select2-container .select2-selection--single{
+    height: calc(2.25rem + 2px);
+}
+
+/*.select2-container--default .select2-selection--single .select2-selection__rendered {
+  line-height: normal;
+  padding: .5rem .75rem;
+}
+*/
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: 50%;
+  line-height: 26px;
+  text-align: center;
+  -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+          transform: translateY(-50%);
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+  position: static;
+  top: auto;
+  left: auto;
+  width: auto;
+  height: auto;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  vertical-align: middle;
+  border: none;
+  margin-top: 0;
+  margin-left: 0;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b::before {
+  content: "\f0dc";
+}
+
+#v-pills-tab{
+  padding: 10px;
+  border: 1px solid red;
+  border-radius: .25rem;
+}
+
+#v-pills-tab .nav-link{
+  border: 1px solid red;
+  border-radius: .25rem;
+  color: red;
+  margin-bottom: 10px;
+}
+
+#v-pills-tab .nav-link.active, #v-pills-tab .show>.nav-link{
+  color: #fff;
+  background-color: red;
+}
+
+.form-group{
+  align-items: center;
+}
+
+label:not(.form-check-label):not(.custom-file-label) {
+  font-weight: normal;
+  margin-bottom: 0;
+}
+
+
+.border{
+  border-color: #ced4da;
+}
+
+.border-b{
+  border-bottom: 1px solid #e9ecef;
+}
+
+.border-b-double{
+  border-bottom: 3px double #6c757d;
+}
+
+.g-pa-5{
+  padding: 5px; 
+}
+
+.g-mb-20{
+  margin-bottom: 20px;
+}
+
+.g-mr-5{
+  margin-right: 5px;
+}
+
+.hidden{
+  display: none;
+}
+
+/*full calendar*/
+.fc-content .fc-time{
+    color: white;
+}
+
+.fc-content .fc-title{
+    color: white;
+}
+
+.fc-resource-cell{
+    font-size: 0.85em;
+}

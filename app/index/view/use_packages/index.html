@@ -1,0 +1,186 @@
+{extend name="public/base" /}
+{block name='content'}
+
+<!--数据列表页面-->
+<section class="content">
+
+    <!--顶部搜索筛选-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <!--数据列表顶部-->
+                <div class="card-header ">
+                    <div>
+                        <a title="Add" class="btn btn-primary btn-sm " href="#" onclick="add()">
+                            <i class="fa fa-plus"></i> Add
+                        </a>
+                        <a class="btn btn-danger btn-sm  AjaxButton" href="#" onclick="delList()" title="Delete selected"
+                           data-confirm-title="Confirm delete" data-confirm-content="Are you sure to delete?"
+                           data-id="checked" data-url="{:url('del')}">
+                            <i class="fa fa-trash"></i> Delete
+                        </a>
+
+                        <a class="btn btn-default btn-sm ReloadButton" title="Refresh" href="index.html">
+                            <i class="fa fa-refresh"></i> Refresh
+                        </a>
+
+
+                        <div class=" float-right ">
+
+                            <button class="btn btn-sm btn-success exportData"
+                                    type="submit" onclick="$('#export_data').val(1)"><i
+                                    class="fa fa-file-excel-o"></i>&nbsp;Export
+                            </button>
+                            
+                        </div>
+
+                    </div>
+
+                </div> <!-- card-header -->
+
+
+                <div class="card-body table-responsive">
+                    <table id="use_packages-grid" class="table table-hover table-bordered datatable"  width="100%">
+                        
+                    </table>
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+</section>
+<!-- {include file='public/content_common' /} -->
+
+{/block}
+
+{block name="js"}
+    <script type="text/javascript">
+        
+        window.operateEvents={
+            "click .edit" : function(e,value,row,index){add(row.id)},
+            "click .del" : function(e,value,row,index){del(row.id)}
+        }
+
+        function operateFormatter(value,row,index){
+            return [
+                '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+                '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+            ].join('');
+        }
+     
+
+        function add(id){
+            let height = document.documentElement.clientHeight;
+            let width = document.documentElement.clientWidth;
+
+            let url = '';
+            if (id) {
+                url = '{:url("use_packages/edit?id=")}' + id
+            } else {
+                url = '{:url("use_packages/add")}'
+            }
+
+            layer.open({
+                type: 2,
+                maxmin: true,
+                // resize: true,
+                title: '使用套票',
+                area: [width + 'px', height + 'px'],
+                content: url
+            })
+        }
+
+        function del(id){
+            // const that = $(this)
+            if(confirm('Are you sure to delete?')==false){
+                return false;
+            }else{
+                $.ajax({
+                    url: "{:url('use_packages/del')}",
+                    data: {
+                        id: id,
+                        from_panel: 1
+                    },
+                    type: "POST",
+                    success(res){
+                        if(res.code == 200){
+                            $('#use_packages-grid').bootstrapTable('refresh');
+                        }
+                    }
+                })
+            }
+        }
+
+        function delList(){
+            let list = [];
+            let rows= $("#use_packages-grid").bootstrapTable('getAllSelections');
+            if(rows.length<=0){
+                alert("请选择一行");
+                return;
+            }else {
+                $.each(rows, function(index, element){
+                    list.push(element.id)
+                }) 
+                del(list.join(','));
+            }
+        }
+
+        $(function(){
+
+            $('#use_packages-grid').bootstrapTable({
+                url: '/index/use_packages/lists',            //请求后台的URL（*）
+                method: 'get',                                   //请求方式（*）
+                toolbar: "#use_packages-toolbar",                    //工具按钮用哪个容器
+                pagination: true,                                //是否显示分页（*）
+                sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+                buttonsClass:"btn-sm btn btn-sm btn-default",
+                striped: true,                                   //是否显示行间隔色
+                cookie: true,
+                cookieIdTable: 'use_packages-Grid',
+                showRefresh: true,                               //是否显示刷新按钮
+                showColumns: true,                               //是否显示所有的列
+                clickToSelect: false,                            //是否在单击行时选择复选框或radiobox
+                stickyHeader: true,
+                stickyHeaderOffsetLeft: '3em',
+                stickyHeaderOffsetRight: '3em',
+                filterControl: true,
+                search: false,                                   //显示搜索框
+                pageSize: 10,                                    //每页的记录行数（*）
+                pageList: [10, 20, 50, 100],
+                columns: [{
+                    checkbox: true,
+                    clickToSelect: true
+                }, {
+                    field: 'invoice',
+                    title: '發票編號',
+                    width: "120px",
+                    clickToSelect: true,                        //是否在单击行时选择复选框或radiobox
+                    sortable: true,                              //是否允许列可以排序
+                    filterControl: 'input'
+                }, {
+                    field: 'use_time',
+                    title: '使用時間',
+                    sortable: true,                              //是否允许列可以排序
+                    searchable: true,
+                    filterControl: 'select'
+                }, {
+                    field: 'store',
+                    title: '店鋪',
+                    filterControl: 'input'
+                }, {
+                    field: 'member',
+                    title: '會員',
+                    filterControl: 'select'
+                }, {
+                    field: 'operate',
+                    title: '操作',
+                    width: '80px',
+                    clickToSelect: false,
+                    events: operateEvents,
+                    formatter: operateFormatter
+                }, ],
+            });
+        })
+    </script>
+{/block}

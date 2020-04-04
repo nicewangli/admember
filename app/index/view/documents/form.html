@@ -1,0 +1,143 @@
+{extend name='public/layer_base' /}
+{block name='content'}
+
+<!-- form content -->
+<section class="content">
+    <form class="form-horizontal" id="document-form" method="post" action="{$act}" enctype="multipart/form-data">
+
+        <input type="hidden" id="id" name="id" value="{$item.id|default=''}">
+        <input type="hidden" id="lead_id" name="lead_id" value="{$item.lead_id|default=''}">
+        <div class="row pt-2">
+            <div class="col-xs-12 col-md-12">
+
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="regarding">關於</label>
+                    <div class="col-md-9">
+                        <input class="form-control form-control-sm" type="text" id="regarding" name="regarding"
+                               value="{$item.regarding|default=''}"
+                               placeholder="">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="detail">細節</label>
+                    <div class="col-md-9">
+                                  <textarea class="form-control form-control-sm" id="detail" name="detail"
+                                            size="1"
+                                            value=""
+                                            placeholder="">{$item.detail|default=''}</textarea>
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-md-3 control-label" for="contact_id">聯繫人</label>
+                    <div class="col-md-9 input-group input-group-sm">
+                        <input class="form-control form-control-sm" type="text" id="contact_name"
+                               value="{$item.contact_name|default=''}"
+                               placeholder="">
+                        <input class="form-control form-control-sm" type="hidden" id="contact_id" name="contact_id"
+                               value="{$item.contact_id|default=''}"
+                               placeholder="">
+                        <div class="input-group-append">
+                            <a class="input-group-text qs-contact"  href="javascript:void(0)" ><i class="fas fa-search"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group row">
+                    <label class="col-md-3" for="file">文件</label>
+                    <div class="col-md-9">
+                        <input type="file" id="file" name="file" value="{$item.file|default=''}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="form-group row">
+            <label class="col-md-1 control-label" for="assigned_user_id">分配給用戶</label>
+            <div class="col-md-5">
+                <select class="form-control" id="assigned_user_id" name="assigned_user_id" size="1" value="{$data.assigned_user_id|default=''}">
+                    <option value="0">Leo Wong</option>
+                    <option value="1">Ken Kuo</option>
+                    <option value="2">Leo Wong</option>
+                    <option value="3">Luke Tam</option>
+                    <option value="4">Ron</option>
+                    <option value="5">Rooky Lo</option>
+                    <option value="6">Stephanie Lam</option>
+                    <option value="7">System User</option>
+                    <option value="8">User1</option>
+                    <option value="9">User2</option>
+                    <option value="10">User3</option>
+                    <option value="11">User4</option>
+                    <option value="12">Vincent</option>
+                </select>
+            </div>
+
+            <label class="col-md-1 control-label" for="visible_for">可見性</label>
+            <div class="col-md-5">
+                <select class="form-control" id="visible_for" name="visible_for" size="1" value="{$data.visible_for|default=''}">
+                    <option value="0">全部</option>
+                    <option value="1">授權團隊</option>
+                    <option value="2">我的團隊</option>
+                    <option value="3">自己</option>
+                </select>
+            </div>
+
+        </div>
+
+        <hr>
+        <div class="col-md-12" align="center">
+            <button id="document-submit" type="button" class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
+                Save
+            </button>
+            &nbsp;
+            <button class="btn btn-sm btn-default layer-close">Close</button>
+        </div>
+    </form>
+
+</section>
+
+
+{/block}
+
+{block name="js"}
+
+<script type="text/javascript">
+    $(function () {
+        $("#document").change(function () {
+            let file = this.fields[0];
+            $("#url").text(file.name)
+        })
+    })
+
+
+    $("#document-submit").click(function () {    // 提交按钮触发事件
+        var formAction = $("#document-form").attr("action");
+        var formData= $("#document-form").serializeFiles();
+        $.ajax({
+            url         : formAction,
+            data        : formData,
+            cache       : false,
+            contentType : false,
+            processData : false,
+            type        : 'POST',
+            success     : function(data, textStatus, jqXHR){
+                layer.msg(data['msg']);
+                if (data['code'] == 200) {
+                    layer_close()
+                    parent.$('#document-grid').bootstrapTable('refresh')
+                }
+            }
+        });
+
+    });
+
+
+
+</script>
+{/block}

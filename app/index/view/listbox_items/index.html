@@ -1,0 +1,121 @@
+{extend name="public/base" /}
+{block name='content'}
+
+<!--数据列表页面-->
+<section class="content">
+
+    <!--顶部搜索筛选-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <!--数据列表顶部-->
+                <div class="card-header ">
+                    <div>
+                        <a title="Add" class="btn btn-primary btn-sm " href="{:url('add')}">
+                            <i class="fa fa-plus"></i> Add
+                        </a>
+                        <a class="btn btn-danger btn-sm  AjaxButton" href="#" title="Delete selected"
+                           data-confirm-title="Confirm delete" data-confirm-content="Are you sure to delete?"
+                           data-id="checked" data-url="{:url('del')}">
+                            <i class="fa fa-trash"></i> Delete
+                        </a>
+
+                        <a class="btn btn-default btn-sm ReloadButton" title="Refresh" href="index.html">
+                            <i class="fa fa-refresh"></i> Refresh
+                        </a>
+
+
+                        <div class=" float-right ">
+                            <form class="form-inline searchForm" id="searchForm" action="{:url('listbox_items/index')}"
+                                  method="get">
+                                <input type="hidden" value="0" id="export_data" name="export_data">
+                                <div class="input-group pr-1">
+                                    <input type="text" name="search" id="search" class="form-control"
+                                           placeholder="Search"
+                                           value="{$search|default=''}">
+                                </div>
+
+                                <div class="input-group pr-1">
+                                    <button class="btn  btn-primary btn-sm" type="submit" onclick="$('#export_data').val(0)">
+                                        Search
+                                    </button>
+                                </div>
+
+
+<!--                                <div class="form-group">-->
+<!--                                    <button class="btn btn-sm btn-success exportData"-->
+<!--                                            type="submit" onclick="$('#export_data').val(1)"><i-->
+<!--                                            class="fa fa-file-excel-o"></i>&nbsp;Export-->
+<!--                                    </button>-->
+<!--                                </div>-->
+                            </form>
+                        </div>
+                    </div>
+
+                </div> <!-- card-header -->
+
+
+                <div class="card-body table-responsive">
+                    <table class="table table-hover table-bordered datatable"  width="100%">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input id="dataCheckAll" type="checkbox" onclick="checkAll(this)" class="checkbox"
+                                       placeholder="All/Cancel">
+                            </th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Value</th>
+                            <th>Parent item</th>
+                            <th>Order</th>
+
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach name="data" id="item"}
+                        <tr>
+                            <td>
+                                <input type="checkbox" onclick="checkThis(this)" name="data-checkbox"
+                                       data-id="{$item.id}" class="checkbox data-list-check" value="{$item.id}"
+                                       placeholder="Select/Cancel">
+                            </td>
+                            <td>{$item.id}</td>
+                            <td>{$item.name}</td>
+                            <td>{$item.item_value}</td>
+                            <td>{$item.parent}</td>
+                            <td>{$item.ordering}</td>
+
+                            <td class="td-do">
+                                <a href="{:url('edit',['id'=>$item.id])}"
+                                   class="btn btn-primary btn-xs" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+
+                                </a>
+                                <a class="btn btn-danger btn-xs AjaxButton" href="{:url('del',['id'=>$item.id])}" title="Delete"
+                                   data-id="{$item.id}" data-confirm-title="Confirm Delete"
+                                   data-confirm-content='Are you sure to delete?' data-url="{:url('del')}">
+                                    <i class="fa fa-trash"></i>
+
+                                </a>
+
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 数据列表底部 -->
+                <div class="card-footer">
+                    {$page|raw}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{include file='public/content_common' /}
+
+{/block}
+

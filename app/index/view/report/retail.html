@@ -1,0 +1,323 @@
+{extend name="public:base" /}
+{block name="content"}
+<section class="content">
+    <div class="card">
+
+        <form class="form-horizontal" action="{:url('index',['act'=>'update'])}" method="post">
+
+            <div class="card card-primary card-outline card-outline-tabs" style="border-top:2px">
+                <div class="card-header p-3 border-bottom-0">
+                    <ul class="nav nav-tabs" role="tablist" id="myTab">
+                        <li class="nav-item ">
+                            <a class="nav-link active" data-toggle="tab" href="#report" role="tab" >
+                                會員資料報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#sell" >
+                                <i class="green ace-icon fa fa-floppy-o bigger-120"></i>
+                                套票/產品資料報表
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div id="report" class="tab-pane fade show active">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="shop"> 店鋪 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="shop" name="shop" size="1"
+                                            value="{$sysConfig.shop}">
+                                        <option value="0">(以下所有)</option>
+                                        <option value="1">簡體中文</option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="status"> 狀態 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="status" name="status" size="1"
+                                            value="{$sysConfig.status}">
+                                        <option value="0">有效</option>
+                                        <option value="1">簡體中文</option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="classify"> 分類 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="classify" name="classify" size="1"
+                                            value="{$sysConfig.classify}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1">簡體中文</option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="category"> 類別 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="category" name="category" size="1"
+                                            value="{$sysConfig.category}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1">簡體中文</option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="sex"> 性別 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="sex" name="sex" size="1"
+                                            value="{$sysConfig.sex}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1">男</option>
+                                        <option value="1">女</option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="date_of_birth"> 出生日期 </label>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="date_of_birth" name="date_of_birth" size="1"
+                                            value="{$sysConfig.date_of_birth}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h4>/</h4>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h4>/</h4>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>(月/日)</h5>
+
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="area"> 地區 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="area" name="area" size="1"
+                                            value="{$sysConfig.area}">
+                                        <option value="0">(所有)</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="join_date"> 加入日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="join_date" name="join_date" size="1"
+                                            value="{$sysConfig.join_date}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="promote"> 接收推廣訊息 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="promote" name="promote" size="1"
+                                            value="{$sysConfig.promote}">
+                                        <option value="0">(不限)</option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="source"> 來源 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="source" name="source" size="1"
+                                            value="{$sysConfig.source}">
+                                        <option value="0">(所有)</option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="arrival_time"> 到店時間 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="arrival_time" name="arrival_time" size="1"
+                                            value="{$sysConfig.arrival_time}">
+                                        <option value="0">(所有)</option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="sell" class="tab-pane fade  in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="shops"> 分類 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="shops" name="shops" size="1"
+                                            value="{$sysConfig.shops}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1"></option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="shops"> 狀態 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="shops" name="shops" size="1"
+                                            value="{$sysConfig.shops}">
+                                        <option value="0">發售中</option>
+                                        <option value="1"></option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="shops"> 類別 </label>
+                                <div class="col-sm-3">
+                                    <select class="form-control" id="shops" name="shops" size="1"
+                                            value="{$sysConfig.shops}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1"></option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <select class="form-control" id="shops" name="shops" size="1"
+                                            value="{$sysConfig.shops}">
+                                        <option value="0"></option>
+                                        <option value="1"></option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- <div class="col-md-offset-2 col-md-9">
+            <button id="submit" class="btn btn-info" type="submit">
+                <i class="icon-ok bigger-110"></i>
+                提交
+            </button>
+
+            &nbsp; &nbsp; &nbsp;
+            <button class="btn btn-danger" type="reset">
+                <i class="icon-undo bigger-110"></i>
+                重置
+            </button>
+        </div>-->
+            </div>
+        </form>
+    </div>
+</section>
+{/block}

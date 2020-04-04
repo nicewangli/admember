@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+	<title>Mappings</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    {include file="public:head" /}
+
+    <!-- jQuery -->
+    {js href="__PLUGIN__/jquery/jquery.min.js" /}
+    <!-- {js href="__PLUGIN__/layer/layer.js" /} -->
+
+    <!-- Bootstrap 4 -->
+    {js href="__PLUGIN__/bootstrap/js/bootstrap.bundle.min.js" /}
+    {js href="__JS__/adminlte.min.js" /}
+    {js href="__JS__/init.js" /}
+    {js href="__JS__/application.js" /}
+    <!-- 加载 Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.full.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- Theme style -->
+    {css href="__CSS__/adminlte.min.css" /}
+    <!-- Custom style -->
+    {css href="__CSS__/application.css" /}
+	<!-- Ionicons -->
+	{css href="__CSS__/ionicons.min.css" /}
+    {css href="__PLUGIN__/icon-awesome/css/font-awesome.min.css" / }
+
+</head>
+<body>
+    <div class="card-body">
+        <form id="mappingForm">
+
+            <div class="row pt-2">
+                <div class="col-xs-12 col-md-12">
+                	<input class="form-control" type="hidden" id="id" name="id"
+                                   value="{$data.id|default=''}"
+                                   placeholder="">
+
+                    <div class="form-group row ">
+                        <label class="col-xs-3 col-md-3 control-label" for="type_id">Type ID</label>
+                        <div class="col-xs-9 col-md-9">
+                            <input class="form-control" type="text" id="type_id" name="type_id"
+                                   value="{$data.type_id|default=''}"
+                                   readonly="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-xs-3 col-md-3 control-label" for="name">Name</label>
+                        <div class="col-xs-9 col-md-9">
+                            <input class="form-control" type="text" id="name" name="name"
+                                   value="{$data.name|default=''}"
+                                   placeholder="" required="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-xs-3 col-md-3 control-label" for="val">Value</label>
+                        <div class="col-xs-9 col-md-9">
+                            <input class="form-control" type="text" id="val" name="val"
+                                   value="{$data.val|default=''}"
+                                   placeholder="" required="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row ">
+                        <label class="col-xs-3 col-md-3 control-label" for="module_id">Module</label>
+                        <div class="col-xs-9 col-md-9">
+                             <input class="form-control" type="text" id="module_id" name="module_id"
+                                   value="{$data.module_id|default=''}"
+                                   placeholder="" required="">
+<!--                            <select class="form-control" name="module_id" id="module" style="display: none; width: 100%;">-->
+<!--                                <option value="{$data.module_id|default=''}" selected> {$data.module_name|default='Please select Module'}</option>-->
+<!--                            </select>-->
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row ">
+                        <label class="col-xs-3 col-md-3 control-label" for="parent">Parent item</label>
+                        <div class="col-xs-9 col-md-9">
+                            <input class="form-control" type="text" id="parent" name="parent"
+                                   value="{$data.parent|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group row ">
+                        <label class="col-xs-3 col-md-3 control-label" for="ordering">Order</label>
+                        <div class="col-xs-9 col-md-9">
+                            <input class="form-control" type="text" id="ordering" name="ordering"
+                                   value="{$data.ordering|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-lg-2" align="center">
+                    <button class="btn flat btn-info btn-sm submit">
+                        <i class=" fa fa-file-alt"></i>
+                        Save
+                    </button>
+
+                    <button class="btn btn-default btn-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</body>
+<script type="text/javascript">
+$(document).ready( function (){
+    initModule();
+
+    function initModule(){
+        $.ajax({
+            url: "{:url('modules')}",
+            success(res){
+                $("#module").select2({
+                    placeholder: "请选择", //默认input 文字
+                    data: res.results,
+                });
+            }
+        })
+    }
+
+    $(".submit").click(function(){
+        let params = $("#mappingForm").serialize();  
+        $.ajax({
+            url: "{:url('Mappings/modify')}",
+            data: params,
+            type: "POST",
+            success(res){
+                if(res.code == 200){
+                    parent.$('#'+type_id+'-grid').bootstrapTable('refresh');
+                    //注意：parent 是 JS 自带的全局对象，可用于操作父页面
+                    let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                    parent.layer.close(index);
+                }
+            }
+        })
+    });
+
+    $(".btn-default").click(function(){
+        let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+        parent.layer.close(index);
+    });
+    
+})
+</script>
+</html>

@@ -1,0 +1,133 @@
+<div id="categors-toolbar">
+    <a title="Add" class="btn btn-primary btn-sm" onclick="categors(0)" href="#">
+        <i class="fa fa-plus"></i> Add
+    </a>
+</div>
+
+<table id="categors-grid" class="table-striped">
+    
+</table>
+
+{block name='js'}
+    <script type="text/javascript">
+        window.operateEvents={
+            "click .add" : function(e,value,row,index){categors(row.id)},
+            "click .del" : function(e,value,row,index){del(row.id)}
+        }
+
+        function operateFormatter(value,row,index){
+            return [
+                '<a id="edit" class="btn btn-primary btn-xs add" href="#"><i class="fa fa-pencil"></i></a>',
+                '<a id="delete"class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+            ].join('');
+        }
+     
+        function categors(id){
+            if (id) {
+                var url = '{:url("mappings/modify?type_id=categors&id=")}' + id
+            } else {
+                var url = '{:url("mappings/modify?type_id=categors")}'
+            }
+            layer.open({
+                type: 2,
+                title: 'Service Mappings',
+                area: ['800px', '470px'],
+                content: url
+            })
+        }
+
+        function del(id){
+            // const that = $(this)
+            if(confirm('Are you sure to delete?')==false){
+                return false;
+            }else{
+                $.ajax({
+                    url: "{:url('Mappings/del')}",
+                    data: {
+                        id: id,
+                        from_panel: 1
+                    },
+                    type: "POST",
+                    success(res){
+                        if(res.code == 200){
+                            $('#categors-grid').bootstrapTable('refresh');
+                        }
+                    }
+                })
+            }
+        }
+
+        $(function(){
+
+            $('#categors-grid').bootstrapTable({
+                url: '/index/mappings/lists',            //请求后台的URL（*）
+                method: 'get',                                   //请求方式（*）
+                queryParams: function (params) {
+                    return {
+                        offset: params.offset,  //页码
+                        limit: params.limit,   //页面大小
+                        search : params.search, //搜索
+                        order : params.order, //排序
+                        ordername : params.sort, //排序
+                        filter: params.filter,
+                        type_id: 'categors'
+                    };
+                },
+                toolbar: "#categors-toolbar",                    //工具按钮用哪个容器
+                pagination: true,                                //是否显示分页（*）
+                sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+                buttonsClass:"btn-sm btn btn-sm btn-default",
+                striped: true,                                   //是否显示行间隔色
+                cookie: true,
+                cookieIdTable: 'categors-Grid',
+                showRefresh: true,                               //是否显示刷新按钮
+                showColumns: true,                               //是否显示所有的列
+                clickToSelect: false,                            //是否在单击行时选择复选框或radiobox
+                stickyHeader: true,
+                stickyHeaderOffsetLeft: '3em',
+                stickyHeaderOffsetRight: '3em',
+                filterControl: true,
+                search: false,                                   //显示搜索框
+                pageSize: 10,                                    //每页的记录行数（*）
+                pageList: [10, 20, 50, 100],
+                columns: [{
+                    checkbox: true,
+                    clickToSelect: true
+                }, {
+                    field: 'id',
+                    title: 'ID',
+                    width: "120px",
+                    clickToSelect: true,                        //是否在单击行时选择复选框或radiobox
+                    sortable: true,                              //是否允许列可以排序
+                    filterControl: 'input'
+                }, {
+                    field: 'name',
+                    title: 'Name',
+                    searchable: true,
+                    filterControl: 'input'
+                }, {
+                    field: 'val',
+                    title: 'Value',
+                    filterControl: 'input'
+                }, {
+                    field: 'parent',
+                    title: 'Parent Item',
+                    visible: false,                              //是否为隐藏列项
+                    filterControl: 'input'
+                }, {
+                    field: 'ordering',
+                    title: 'Order',
+                    sortable: true
+                }, {
+                    field: 'operate',
+                    title: 'Action',
+                    width: '80px',
+                    clickToSelect: false,
+                    events: operateEvents,
+                    formatter: operateFormatter
+                }, ],
+            });
+        })
+        
+    </script>
+{/block}

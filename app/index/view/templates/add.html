@@ -1,0 +1,93 @@
+{extend name='public/base' /}
+{block name='content'}
+
+<section class="content" xmlns="http://www.w3.org/1999/html">
+    <div class="container-fluid">
+
+        <!-- form content -->
+        <div class="card">
+            <div class="card-body">
+                <form id="dataForm" class="form-horizontal dataForm" action="" method="post"
+                      enctype="multipart/form-data">
+                    <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+
+                    <div class="form-group row">
+                        <div class="col-lg-10">
+                            <a class="btn flat btn-sm btn-default BackButton" href="index.html">
+                                <i class="fa fa-arrow-left"></i>
+                                Back
+                            </a>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <button type="submit"class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
+                                Save
+                            </button>
+
+                            <button type="submit" class="fa fa-trash  btn flat btn-danger  dataFormSubmit btn-sm">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <div class="row pt-2">
+                        <div class="col-xs-12 col-md-12">
+
+                            <div class="form-group row">
+                                <label class="col-md-2 control-label" for="category">Category</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" id="category" name="category"
+                                           value="{$data.category|default=''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-2 control-label" for="name">Name</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" id="name" name="name"
+                                           value="{$data.name|default=''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-md-2 control-label" for="ordering">Ordering</label>
+                                <div class="col-md-8">
+                                    <input class="form-control" type="text" id="ordering" name="ordering"
+                                           value="{$data.ordering|default=''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group row">
+                                <label class="col-md-2 control-label"for="content">Content</label>
+                                <div class="col-md-8 ">
+                                  <textarea class="form-control" id="content" name="content"
+                                            rows="10"
+                                            value="{$data.content|default=''}">{$data.content|default=''}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    /** 表单验证 **/
+    $('#dataForm').validate({
+        rules: {
+            'name': {
+                required: true,
+            },
+
+        }
+    });
+</script>
+{/block}

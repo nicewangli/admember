@@ -1,0 +1,166 @@
+{extend name="public:base" /}
+{block name="content"}
+
+<section class="content" xmlns="http://www.w3.org/1999/html">
+    <div class="container-fluid">
+
+        <!-- form content -->
+        <div class="card">
+            <div class="card-body">
+                <div class="row pt-2">
+<form class="form-horizontal" action="{:url('index',['act'=>'update'])}" method="post">
+<input name="id" type="hidden" value="{$current.id ?? 0}">
+
+<div class="form-group row">
+    <label class="col-sm-3 control-label" for="pid"> Top Menu </label>
+    <div class="col-sm-9">
+    <select id="pid" name="pid" class="col-xs-10 col-sm-7">
+        <option value="0">Top Menu</option>
+        {volist name="list" id="v"}
+        <option {notempty name="current"}{$current.pid == $v.id ? 'selected="selected"' : ''}{/notempty} value="{$v.id}">{$v.title}</option>
+        {notempty name="v.children"}
+        {volist name="v.children" id="vv"}
+        <option {notempty name="current"}{$current.pid == $vv.id ? 'selected="selected"' : ''}{/notempty} value="{$vv.id}">&nbsp;&nbsp;┗━{$vv.title}</option>
+        {notempty name="vv.children"}
+        {volist name="vv.children" id="vvv"}
+        <option {notempty name="current"}{$current.pid == $vvv.id ? 'selected="selected"' : ''}{/notempty} value="{$vvv.id}">&nbsp;&nbsp;&nbsp;&nbsp;┗━{$vvv.title}</option>
+        {/volist}
+        {/notempty}
+        {/volist}
+        {/notempty}
+        {/volist}
+    </select>
+    <span class="help-inline col-xs-12 col-sm-7">
+            <span class="middle"></span>
+        </span>
+    </div>
+</div>
+
+
+<div class="form-group row">
+    <label class="col-sm-3 control-label" for="title"> Name </label>
+    <div class="col-sm-9">
+        <input type="text" name="title" id="title" class="col-xs-10 col-sm-7" value="{$current.title ?? ''}" required="required">
+        <span class="help-inline col-xs-12 col-sm-7">
+            <span class="middle"></span>
+        </span>
+    </div>
+</div>
+
+
+<div class="form-group row">
+    <label class="col-sm-3 control-label " for="url"> Url </label>
+    <div class="col-sm-9">
+        <input type="text" name="url" id="url" placeholder="链接，如：Index/index" class="col-xs-10 col-sm-7" value="{$current.url ?? ''}" required="required">
+        <span class="help-inline col-xs-12 col-sm-7">
+            <span class="middle"></span>
+        </span>
+    </div>
+</div>
+
+
+<div class="form-group row">
+    <label class="col-sm-3 control-label " for="icon"> ICON </label>
+    <div class="col-sm-9">
+        <input type="text" name="icon" id="icon" placeholder="menu-icon fa fa-xxx" class="col-xs-10 col-sm-7" value="{$current.icon ?? ''}">
+        <span class="help-inline col-xs-12 col-sm-7">
+            <span class="middle"></span>
+        </span>
+    </div>
+</div>
+
+
+
+<div class="form-group row">
+    <label class="col-sm-3 control-label " for="status"> Status </label>
+    <div class="control-label no-padding-left col-sm-3">
+        <label>
+            <input name="status" id="status" {notempty name="current"}{if condition="$current.status eq 1"}checked="checked"{/if}{else /}checked="checked"{/notempty} value="1" class="ace ace-switch ace-switch-2" type="checkbox" />
+            <span class="lbl"></span>
+        </label>
+    </div>
+    <span class="help-inline col-xs-12 col-sm-7">
+            <span class="middle"></span>
+    </span>
+</div>
+
+
+<div class="form-group row">
+    <label class="col-sm-3 control-label " for="o"> Sort </label>
+    <div class="col-sm-9">
+        <input type="number" name="o" id="o" placeholder="" class="col-xs-10 col-sm-7" value="{$current.o ?? '0'}">
+        <span class="help-inline col-xs-12 col-sm-7">
+            <span class="middle">The smaller, the more forward</span>
+        </span>
+    </div>
+</div>
+
+
+<div class="form-group row">
+    <label class="col-sm-3 control-label" for="tips"> Page prompt</label>
+    <div class="col-sm-9">
+        <textarea name="tips" id="tips" placeholder="页面提示" class="col-xs-10 col-sm-7" rows="5">{$current.tips ?? ''}</textarea>
+        <span class="help-inline col-xs-12 col-sm-7">
+            <span class="middle">Background page prompt</span>
+        </span>
+    </div>
+</div>
+
+
+<div class="col-md-offset-2 col-md-9">
+    <button id="submit" class="btn btn-info" type="submit">
+        <i class="icon-ok bigger-110"></i>
+        Save
+    </button>
+
+    &nbsp; &nbsp; &nbsp;
+    <button class="btn btn-danger" type="reset">
+        <i class="icon-undo bigger-110"></i>
+        Reset
+    </button>
+</div>
+</form>
+</div>
+            </div>
+        </div>
+    </div>
+</section>
+{/block}
+{block name="javascript"}
+<script type="text/javascript">
+$(function(){
+    $(".check-all").click(function(){
+        $(".ids").prop("checked", this.checked);
+    });
+    $(".ids").click(function(){
+        var option = $(".ids");
+        option.each(function(i){
+            if(!this.checked){
+                $(".check-all").prop("checked", false);
+                return false;
+            }else{
+                $(".check-all").prop("checked", true);
+            }
+        });
+    });
+    $("#submit").click(function(){
+        bootbox.confirm({
+            title: "系统提示",
+            message: "确定要删除所选记录？", 
+            callback:function(result){
+                if(result){
+                    $("#form").submit();
+                }
+            },
+            buttons: {
+                "cancel" : {"label" : "取消"},
+                "confirm" : {
+                        "label" : "确定",
+                        "className" : "btn-danger"
+                    }
+            }
+        });
+    });
+})
+</script>
+{/block}

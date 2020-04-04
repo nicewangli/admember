@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>{$current_permission.title}-{$sysConfig.sitename}</title>
+
+    <meta name="keywords" content="{$sysConfig.keywords}" />
+    <meta name="description" content="{$sysConfig.description}" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+    {include file="public:head" /}
+    <!-- Custom style -->
+    {block name="style"}{/block}
+    <!-- Theme style -->
+    {css href="__CSS__/adminlte.min.css" /}
+    <!-- Custom style -->
+    {css href="__CSS__/application.css" /}
+
+    {block name="head_js"}{/block}
+</head>
+<body class="hold-transition sidebar-mini {$user.skin}">
+<div class="wrapper">
+
+
+        <!-- Main content -->
+        <section class="content pl-2 pt-2">
+            <div class="container-fluid container-layer">
+                {block name="content"}{/block}
+            </div>
+        </section>
+
+
+</div>
+{include file="public:foot" /}
+
+<!-- inline scripts related to this page -->
+{block name="js"}
+{/block}
+</body>
+</html>

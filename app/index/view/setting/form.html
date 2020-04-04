@@ -1,0 +1,814 @@
+{extend name="public:base" /}
+{block name="content"}
+<section class="content">
+<div class="card">
+
+    <form class="form-horizontal" action="{:url('index',['act'=>'update'])}" method="post">
+
+        <div class="card card-primary card-outline card-outline-tabs" style="border-top:2px">
+            <div class="card-header p-3 border-bottom-0">
+            <ul class="nav nav-tabs" role="tablist" id="myTab">
+                <li class="nav-item ">
+                    <a class="nav-link active" data-toggle="tab" href="#base" role="tab" >
+                        <i class="green ace-icon fa fa-cog bigger-120"></i>
+                        基本设置
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" data-toggle="tab" href="#coded" >
+                        <i class="green ace-icon fa fa-floppy-o bigger-120"></i>
+                        編碼格式
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" data-toggle="tab" href="#retail">
+                        <i class="green ace-icon fa fa-floppy-o bigger-120"></i>
+                        零售
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" data-toggle="tab" href="#system">
+                        <i class="green ace-icon fa fa-floppy-o bigger-120"></i>
+                        系統
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" data-toggle="tab" href="#database">
+                        <i class="green ace-icon fa fa-floppy-o bigger-120"></i>
+                        数据备份
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#custom">
+<!--                        <i class="green ace-icon fa fa-info-circle bigger-120"></i>-->
+                        自定义设置
+                    </a>
+                </li>
+            </ul>
+            </div>
+
+
+            <div class="card-body">
+            <div class="tab-content">
+                <div id="base" class="tab-pane fade show active">
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="title"> 标题 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="title" id="title" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.title}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="sitename"> 简称 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="sitename" id="sitename" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.sitename}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="keywords"> 关键词 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="keywords" id="keywords" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.keywords}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="description"> 描述 </label>
+                        <div class="col-sm-9">
+                                    <textarea name="description" id="description" placeholder="描述"
+                                              class="col-xs-10 col-sm-5" rows="5">{$sysConfig.description}</textarea>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="footer"> 底部 </label>
+                        <div class="col-sm-9">
+                                    <textarea name="footer" id="footer" placeholder="描述" class="col-xs-10 col-sm-5"
+                                              rows="5">{$sysConfig.footer}</textarea>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="from_name"> 名稱 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="from_name" id="from_name" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.from_name}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="site"> 地址 </label>
+                        <div class="col-sm-9">
+                                    <textarea name="site" id="site" placeholder="描述" class="col-xs-10 col-sm-5"
+                                              rows="5">{$sysConfig.site}</textarea>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="phone"> 電話 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="phone" id="phone" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.phone}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="fax"> 傳真 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="fax" id="fax" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.fax}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="e_mail"> 電郵 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="e_mail" id="e_mail" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.e_mail}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-1 control-label " for="url"> 網址 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="url" id="url" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.url}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div id="coded" class="tab-pane fade in">
+                    <h5>基本資料...</h5>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="employee_data">員工資料</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.employee_data}">
+                            <input type="text" name="value5" id="value5" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value5}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="level_and_authority"> 員工級別及權限 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="level_and_authority" id="level_and_authority"
+                                   class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.level_and_authority}">
+                            <input type="text" name="value4" id="value4" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value4}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="membership"> 會員資料 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="membership" id="membership" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.membership}">
+                            <input type="text" name="value6" id="value6" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value6}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="supplier_information"> 供應商資料 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="supplier_information" id="supplier_information"
+                                   class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.supplier_information}">
+                            <input type="text" name="value5" id="value5" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value5}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="service_packages"> 套票/產品資料 </label>
+
+                        <div class="col-sm-9">
+                            <input type="text" name="service_packages" id="service_packages" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.service_packages}">
+                            <input type="text" name="value6" id="value6" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value6}"> (服務套票)
+
+                            <input type="text" name="product" id="product" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.product}">
+                            <input type="text" name="value6" id="value6" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value6}"> (產品)
+
+                            <input type="text" name="product_mix" id="product_mix" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.product_mix}">
+                            <input type="text" name="value6" id="value6" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value6}"> (產品組合)
+
+                            <input type="text" name="serve" id="serve" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.serve}">
+                            <input type="text" name="title" id="title" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.title}"> (服務)
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <h5>店鋪單號字頭...</h5>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="store">銅鑼灣</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="store" id="store" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.store}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <h5>零售...</h5>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="reservation">預約</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="reservation" id="reservation" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.reservation}">
+                            <input type="text" name="value7" id="value7" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value7}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="invoice">發票</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="invoice" id="invoice" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.invoice}">
+                            <input type="text" name="value7" id="value7" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value7}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="package_staging">套票分期</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="package_staging" id="package_staging" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.package_staging}">
+                            <input type="text" name="value7" id="value7" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value7}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="use_package">使用套票</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="use_package" id="use_package" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.use_package}">
+                            <input type="text" name="value7" id="value7" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value7}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="package_refund">套票退款</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="package_refund" id="package_refund" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.package_refund}">
+                            <input type="text" name="value7" id="value7" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value7}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+
+                    <h5>庫存...</h5>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="ikura">入倉</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="ikura" id="ikura" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.ikura}">
+                            <input type="text" name="value7" id="value7" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value7}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="dekura">出倉</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="dekura" id="dekura" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.dekura}">
+                            <input type="text" name="value7" id="value7" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value7}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="turnover">轉倉</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="turnover" id="turnover" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.turnover}">
+                            <input type="text" name="value7" id="value7" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value7}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+
+                    <h5>其他...</h5>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="expenditure">支出</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="expenditure" id="expenditure" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.expenditure}">
+                            <input type="text" name="value7" id="value7" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.value7}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="retail" class="tab-pane fade in">
+                    <h5>預約...</h5>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="limit_days">限制日數</label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <div class="col-sm-6">
+                            <input type="text" name="limit_days" id="limit_days" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.limit_days}">(0為無限制)
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="employee_data">狀態</label>(新預約)&nbsp&nbsp&nbsp
+                        <div class="col-sm-2">
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-2"
+                                   value="{$sysConfig.employee_data}">
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(背景)
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(文字)
+
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-2"
+                                   value="{$sysConfig.employee_data}">
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(背景)
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(文字)
+
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-2"
+                                   value="{$sysConfig.employee_data}">
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(背景)
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(文字)
+
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-2"
+                                   value="{$sysConfig.employee_data}">
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(背景)
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(文字)
+
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-2"
+                                   value="{$sysConfig.employee_data}">
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(背景)
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(文字)
+
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-2"
+                                   value="{$sysConfig.employee_data}">
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(背景)
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(文字)
+
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-2"
+                                   value="{$sysConfig.employee_data}">
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(背景)
+                            <input type="text" name="employee_data" id="employee_data" class="col-xs-12 col-sm-1"
+                                   value="{$sysConfig.employee_data}">(文字)
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="employee_data">顯示</label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <div class="col-sm-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked="">
+                                <label class="form-check-label">
+                                    <trans oldtip="Checkbox checked" newtip="选中复选框" style="">會員編號</trans>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked="">
+                                <label class="form-check-label">
+                                    <trans oldtip="Checkbox checked" newtip="选中复选框" style="">會員/非會員名稱</trans>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked="">
+                                <label class="form-check-label">
+                                    <trans oldtip="Checkbox checked" newtip="选中复选框" style="">電話</trans>
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked="">
+                                <label class="form-check-label">
+                                    <trans oldtip="Checkbox checked" newtip="选中复选框" style="">服務</trans>
+                                </label>
+                            </div>
+                            <span class="middle"></span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <h5>發票...</h5>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="employee_data">列印格式</label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <div class="col-sm-6">
+                            <select class="form-control" id="member_no" name="member_no" size="1"
+                                    value="{$item.member_no|default=''}">
+                                <option value="0">過底紙</option>
+                            </select>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="employee_data">收據註腳</label>(文字對齊)
+                        <div class="col-sm-6">
+                            <select class="form-control" id="member_no" name="member_no" size="1"
+                                    value="{$item.member_no|default=''}">
+                                <option value="0">靠左</option>
+                            </select>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="content1"></label>(內容)&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <div class="col-sm-6">
+                         <textarea name="content1" id="content1" placeholder="描述"
+                                   class="col-xs-12 col-sm-6" rows="5">{$sysConfig.content1}
+                            </textarea>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <h5>套票分期...</h5>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="employee_data">列印格式</label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <div class="col-sm-6">
+                            <select class="form-control" id="member_no" name="member_no" size="1"
+                                    value="{$item.member_no|default=''}">
+                                <option value="0">預設</option>
+                            </select>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox">
+                                <label class="form-check-label"><trans oldtip="Checkbox" newtip="复选框" style="">公司存根</trans></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked="">
+                                <label class="form-check-label">
+                                    <trans oldtip="Checkbox checked" newtip="选中复选框" style="">會員存根</trans>
+                                </label>
+                            </div>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="employee_data">收據註腳</label>(文字對齊)
+                        <div class="col-sm-6">
+                            <select class="form-control" id="member_no" name="member_no" size="1"
+                                    value="{$item.member_no|default=''}">
+                                <option value="0">靠左</option>
+                            </select>
+
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="content2"></label>(內容)&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <div class="col-sm-6">
+                         <textarea name="content2" id="content2" placeholder="描述"
+                                   class="col-xs-12 col-sm-6" rows="5">{$sysConfig.content2}
+                            </textarea>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <h5>使用套票...</h5>
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="employee_data">列印格式</label>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <div class="col-sm-6">
+                            <select class="form-control" id="member_no" name="member_no" size="1"
+                                    value="{$item.member_no|default=''}">
+                                <option value="0">預設</option>
+                            </select>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox">
+                                <label class="form-check-label"><trans oldtip="Checkbox" newtip="复选框" style="">公司存根</trans></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked="">
+                                <label class="form-check-label">
+                                    <trans oldtip="Checkbox checked" newtip="选中复选框" style="">會員存根</trans>
+                                </label>
+                            </div>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="employee_data">收據註腳</label>(文字對齊)
+                        <div class="col-sm-6">
+                            <select class="form-control" id="member_no" name="member_no" size="1"
+                                    value="{$item.member_no|default=''}">
+                                <option value="0">靠左</option>
+                            </select>
+
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="content3"></label>(內容)&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                        <div class="col-sm-6">
+                         <textarea name="content3" id="content3" placeholder="描述"
+                                   class="col-xs-12 col-sm-6" rows="5">{$sysConfig.content3}
+                            </textarea>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div id="system" class="tab-pane fade in">
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="system_idle_time">系統閒置時間</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="system_idle_time" id="system_idle_time" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.system_idle_time}">(分鐘)
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="print_language">列印語言</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="print_language" name="print_language" size="1"
+                                    value="{$sysConfig.print_language}">
+                                <option value="0">繁體中文</option>
+                                <option value="1">簡體中文</option>
+                            </select>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="report_language">報表語言</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="report_language" name="report_language" size="1"
+                                    value="{$sysConfig.report_language}">
+                                <option value="0">繁體中文</option>
+                                <option value="1">簡體中文</option>
+                            </select>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="cost_calculation">成本計算</label> 計算最近期
+                        <div class="col-sm-3">
+                            <select class="form-control" id="cost_calculation" name="cost_calculation" size="1"
+                                    value="{$sysConfig.cost_calculation}">
+                                <option value="0">1張</option>
+                                <option value="1">2張</option>
+                            </select>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                       入倉單
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-sm-2 control-label " for="insufficient_stock">如產品倉存不足</label>
+                        <div class="col-sm-8">
+                            <select class="form-control" id="insufficient_stock" name="insufficient_stock" size="1"
+                                    value="{$sysConfig.insufficient_stock}">
+                                <option value="0">不可儲存或更新</option>
+                                <option value="1">可儲存或更新</option>
+                            </select>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div id="database" class="tab-pane fade in">
+                    <div class="space-4"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label no-padding-right" for="db_path"> 备份目录 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="db_path" id="db_path" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.db_path}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle">数据库备份目录，相对于系统根目录开始</span>
+                    </span>
+                        </div>
+                    </div>
+                    <div class="space-4"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label no-padding-right" for="db_part"> 分卷长度 </label>
+                        <div class="col-sm-9">
+                            <input type="text" name="db_part" id="db_part" class="col-xs-10 col-sm-5"
+                                   value="{$sysConfig.db_part}">
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle">该值用于限制压缩后的分卷最大长度。单位：B；建议设置20M</span>
+                    </span>
+                        </div>
+                    </div>
+                    <div class="space-4"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label no-padding-right" for="db_compress"> 压缩备份 </label>
+                        <div class="col-sm-9">
+                            <select id="db_compress" name="db_compress" class="col-xs-10 col-sm-5">
+                                <option {if $sysConfig.db_compress==0}selected="selected"{/if} value="0">禁用</option>
+                                <option {if $sysConfig.db_compress==1}selected="selected"{/if} value="1">启用</option>
+                            </select>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle">压缩备份文件需要PHP环境支持gzopen，gzwrite函数。</span>
+                    </span>
+                        </div>
+                    </div>
+                    <div class="space-4"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label no-padding-right" for="db_level"> 压缩级别 </label>
+                        <div class="col-sm-9">
+                            <select id="db_level" name="db_level" class="col-xs-10 col-sm-5">
+                                <option {if $sysConfig.db_level==1}selected="selected"{/if} value="1">普通</option>
+                                <option {if $sysConfig.db_level==4}selected="selected"{/if} value="4">一般</option>
+                                <option {if $sysConfig.db_level==9}selected="selected"{/if} value="9">最高</option>
+                            </select>
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="custom" class="tab-pane fade in">
+                    {volist name="sysConfig.custom" id="val" empty="无自定义设置"}
+                    <div class="space-4"></div>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label no-padding-right" for="{$val.var}"> {$val.name} </label>
+                        <div class="col-sm-9">
+                            {egt name="val.value|strlen" value="100"}
+                            <textarea name="custom[{$key}]{$val.var}" id="{$val.var}" placeholder="{$val.name}"
+                                      class="col-xs-10 col-sm-5" rows="5">{$val.value|htmlspecialchars|raw}
+                    </textarea>
+                            {/egt}
+                            {lt name="val.value|strlen" value="100"}
+                            <input name="custom[{$key}][name]" value="{$val.name}" type="hidden"/>
+                            <input name="custom[{$key}][var]" value="{$val.var}" type="hidden"/>
+                            <input type="text" name="custom[{$key}][value]" id="{$val.value}" class="col-xs-10 col-sm-5"
+                                   value="{$val.value|htmlspecialchars|raw}">
+                            <input name="custom[{$key}][tips]" value="{$val.tips}" type="hidden"/>
+                            {/lt}
+                            <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle">{$val.tips}</span>
+                    </span>
+                        </div>
+                    </div>
+                    {/volist}
+                </div>
+            </div>
+            </div>
+
+        <div class="col-md-offset-2 col-md-9">
+            <button id="submit" class="btn btn-info" type="submit">
+                <i class="icon-ok bigger-110"></i>
+                提交
+            </button>
+
+            &nbsp; &nbsp; &nbsp;
+            <button class="btn btn-danger" type="reset">
+                <i class="icon-undo bigger-110"></i>
+                重置
+            </button>
+        </div>
+        </div>
+    </form>
+</div>
+</section>
+{/block}

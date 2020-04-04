@@ -1,0 +1,194 @@
+{extend name="public/base" /}
+{block name='style'}
+{css href="__PLUGIN__/fullcalendar/core/main.min.css"}
+{css href="__PLUGIN__/fullcalendar/daygrid/main.min.css"}
+{css href="__PLUGIN__/fullcalendar/bootstrap/main.min.css"}
+{/block}
+{block name='content'}
+
+<!--数据列表页面-->
+<section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <!-- /.col -->
+          <div class="col-md-10">
+            <div class="card card-primary">
+              <div class="card-body p-0">
+                <!-- THE CALENDAR -->
+                <div id="calendar"></div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+            <div class="col-md-2">
+                    <a href="{:url('activities/index')}?share=false"
+                       class="btn btn-block btn-{$calendar_share ? 'default' : 'primary'}">My</a>
+
+                    <a href="{:url('activities/index')}?share=true"
+                       class="btn btn-block btn-{$calendar_share  ? 'primary' : 'default'}">Share</a>
+
+
+                <div style="padding-top:20px ">
+                    <!-- #section:custom/widget-box -->
+                    <div class="card card-outline card-primary" id="widget-box-type">
+                        <div class="card-header">
+                            <h3 class="card-title">Filter</h3>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+
+                        <div class="card-body" style="display: block;">
+                            <div class="widget-main">
+                                <div class="cl-list">
+                                    <input type="checkbox" class="activity-type" name="activity_type" value="0"  />
+                                    <span class="label label-lg label-yellow">Call</span>
+                                </div>
+                                <div class="cl-list">
+                                    <input type="checkbox" class="activity-type" name="activity_type" value="1"  />
+                                    <span class="label label-lg label-info">Meeting</span>
+                                </div>
+                                <div class="cl-list">
+                                    <input type="checkbox" class="activity-type" name="activity_type" value="2"  />
+                                    <span class="label label-lg label-success">Tasks</span>
+                                </div>
+                                <div class="cl-list">
+                                    <input type="checkbox" id="time_less" name="time_less" value="1"  />
+                                    <span class="label label-lg label-danger">Timeless</span>
+                                </div>
+
+                                <div class="cl-list">
+                                    <input type="checkbox" id="internal" name="internal" value="1"  />
+                                    <span class="label label-lg label-danger">Internal</span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                     {if condition="$calendar_share"}
+                            <div class="widget-container-col ui-sortable">
+                        <!-- #section:custom/widget-box -->
+                        <div class="card card-outline card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">User</h3 >
+                                <div class="card-tools">
+                                    <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card-body" style="display: block;">
+                                {foreach name="calendar_users" id="val"}
+
+                                <div class="cl-list">
+                                            <input type="checkbox" class="activity-assigned" name="assigned_user_id" value="{$val.uid}"
+                                            {if condition="in_array($val['uid'],session('activity_user')) eq 1"}checked="checked"{/if}
+                                            >
+                                            <span class="label label-lg label-default">{$val.username}</span>
+                                        </div>
+                                {/foreach}
+                            </div>
+                        </div>
+
+                    </div>
+                     {/if}
+            </div>
+
+        </div>
+        <!-- /.row -->
+      </div><!-- /.container-fluid -->
+
+</section>
+
+
+{/block}
+
+
+{block name='js'}
+{js href="__PLUGIN__/fullcalendar/core/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/daygrid/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/timegrid/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/interaction/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/bootstrap/main.min.js"}
+
+<script>
+    var calendar;
+    $(function () {
+        var calendarEl = document.getElementById('calendar');
+
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: [ 'bootstrap', 'interaction', 'dayGrid', 'timeGrid' ],
+            header    : {
+                left  : 'prev,next today',
+                center: 'title',
+                right : 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            eventTextColor: '#fff',
+            selectable: true,
+            events: "{:url('activities/calendar')}",
+            dateClick: function(info) {
+                console.log('clicked ' + info.dateStr);
+            },
+            select: function(info) {
+                var start = moment(info.start);
+                var end = moment(info.end);
+                var month_day = start.format("HH")
+                if(month_day == "00"){
+                    var date_start = start.format("YYYY-MM-DD")+" "+moment().format('HH:mm:ss');
+                    var date_end = start.format("YYYY-MM-DD")+" "+moment().add(1, 'hours').format("HH:mm:ss");
+                }else{
+                    var date_start = start.format("YYYY-MM-DD HH:mm:ss");
+                    if(start.format("YYYY-MM-DD") == end.format("YYYY-MM-DD")) {
+                        var date_end = end.format("YYYY-MM-DD HH:mm:ss");
+                    } else {
+                        var date_end = date_start;
+                    }
+                }
+
+                var url = "{:url('activities/add')}?date_start=" + date_start + "&date_end=" + date_end;
+                activityWin(url);
+            },
+            eventClick: function(info) {
+                var url = "{:url('activities/edit')}?id=" + info.event.id;
+                activityWin(url);
+            }
+        });
+
+        calendar.render();
+
+        $('.activity-type').click(function () {
+            var activity_type = parseInt(this.value);
+            var checked = $(this).prop('checked');
+            console.log(checked);
+            $.post("{:url('Activities/typeFilter')}", {activity_type: activity_type, checked: checked}, function (result) {
+                    calendar.refetchEvents()
+             });
+        })
+
+        $('.activity-assigned').click(function () {
+            var uid = parseInt(this.value);
+            console.log(this.value)
+            var checked = $(this).prop('checked');
+            if(!isNaN(uid)){
+                $.post("{:url('Activities/userFilter')}", {uid: uid, checked: checked}, function (result) {
+                    calendar.refetchEvents()
+                });
+            }
+
+        })
+
+    });
+
+
+
+
+
+</script>
+{/block}
+

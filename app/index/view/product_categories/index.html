@@ -1,0 +1,120 @@
+<div id="category-toolbar">
+    <a title="Add" onclick="category(0)" class="btn btn-primary btn-sm " href="#">
+        <i class="fa fa-plus"></i> Add
+    </a>
+</div>
+
+<table id="category-grid" class="table-striped datatable" width="100%">
+    
+</table>
+
+{block name='js'}
+    <script type="text/javascript">
+        window.operateEvents={
+            "click .edit" : function(e,value,row,index){console.log(row);category(row.id)},
+            "click .del" : function(e,value,row,index){del(row.id)}
+        }
+
+        function operateFormatter(value,row,index){
+            return [
+                '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+                '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+            ].join('');
+        }
+     
+        function category(id){
+            if (id) {
+                var url = '{:url("product_categories/edit?id=")}' + id
+            } else {
+                var url = '{:url("product_categories/add")}'
+            }
+            layer.open({
+                type: 2,
+                title: 'Product Category Information',
+                area: ['600px', '400px'],
+                content: url
+            })
+        }
+
+        function del(id){
+            // const that = $(this)
+            if(confirm('Are you sure to delete?')==false){
+                return false;
+            }else{
+                $.ajax({
+                    url: "{:url('product_categories/del')}",
+                    data: {
+                        id: id,
+                        from_panel: 1
+                    },
+                    type: "POST",
+                    success(res){
+                        if(res.code == 200){
+                            $('#category-grid').bootstrapTable('refresh');
+                        }
+                    }
+                })
+            }
+        }
+
+        $(function(){
+
+            $('#category-grid').bootstrapTable({
+                url: '/index/product_categories/lists',            //请求后台的URL（*）
+                method: 'get',                                   //请求方式（*）
+                toolbar: "#category-toolbar",                    //工具按钮用哪个容器
+                pagination: true,                                //是否显示分页（*）
+                sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+                buttonsClass:"btn-sm btn btn-sm btn-default",
+                striped: true,                                   //是否显示行间隔色
+                cookie: true,
+                cookieIdTable: 'category-Grid',
+                showRefresh: true,                               //是否显示刷新按钮
+                showColumns: true,                               //是否显示所有的列
+                clickToSelect: true,                             //是否在单击行时选择复选框或radiobox
+                stickyHeader: true,
+                stickyHeaderOffsetLeft: '3em',
+                stickyHeaderOffsetRight: '3em',
+                filterControl: true,
+                search: false,                                   //显示搜索框
+                pageSize: 10,                                    //每页的记录行数（*）
+                pageList: [10, 20, 50, 100],
+                columns: [{
+                    checkbox: true,
+                    clickToSelect: true
+                }, {
+                    field: 'id',
+                    title: 'ID',
+                    width: "120px",
+                    sortable: true,                              //是否允许列可以排序
+                    filterControl: 'input'
+                }, {
+                    field: 'parent',
+                    title: 'Parent',
+                    searchable: true,
+                    filterControl: 'select'
+                }, {
+                    field: 'name',
+                    title: 'Name',
+                    searchable: true,
+                    filterControl: 'input'
+                }, {
+                    field: 'status',
+                    title: 'Status',
+                    filterControl: 'select',
+                    visible: false
+                }, {
+                    field: 'operate',
+                    title: 'Action',
+                    width: '80px',
+                    clickToSelect: false,
+                    events: operateEvents,
+                    formatter: operateFormatter
+                }, ],
+                
+            });
+        })
+        
+    </script>
+{/block}
+

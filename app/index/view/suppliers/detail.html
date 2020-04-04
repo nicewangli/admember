@@ -1,0 +1,194 @@
+{extend name='public/base' /}
+{block name='content'}
+
+<section class="content">
+
+    <div class="card">
+        <div class="card-body" style="padding-bottom: 8px">
+            <div class="row">
+                <div class="col-md-12">
+                    {include file="suppliers/form" /}
+                </div>
+            </div>
+        </div> <!-- end row -->
+    </div>
+
+    <!--sub page--->
+    <div class="card card-primary card-outline card-outline-tabs" style="border-top:2px">
+        <div class="card-header p-0 border-bottom-0">
+            <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="supplier_contact-tab" data-toggle="pill"
+                       href="#supplier_contact-panel" role="tab" aria-controls="supplier_contact-tab"
+                       aria-selected="true">聯繫人</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link tab-ajax" id="purchase_order-tab" data-toggle="pill"
+                       href="{:url('purchase_orders/panel',['panel'=>'supplier','supplier_id' => $item.id])}"
+                       data-target="#purchase_order-panel" role="tab"
+                       aria-controls="purchase_order-panel"
+                       aria-selected="false">採購單</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link tab-ajax" id="stockin-tab" data-toggle="pill"
+                       href="{:url('stockins/panel',['panel'=>'supplier','supplier_id' => $item.id])}"
+                       data-target="#stockin-panel" role="tab"
+                       aria-controls="stockin-panel"
+                       aria-selected="false">入庫單</a>
+                </li>
+
+             <!--   <li class="nav-item">
+                    <a class="nav-link tab-ajax" id="stockout-tab" data-toggle="pill"
+                       href="{:url('stockouts/panel',['panel'=>'supplier','supplier_id' => $item.id])}"
+                       data-target="#stockout-panel" role="tab"
+                       aria-controls="stockout-panel"
+                       aria-selected="false">出庫單</a>
+                </li>-->
+            </ul>
+        </div>
+
+
+
+        <div class="card-body">
+            <div class="tab-content" id="contact-subpanel">
+                <div class="tab-pane fade show active" id="supplier_contact-panel" role="tabpanel"
+                     aria-labelledby="supplier_contact-tab">
+                    {include file="supplier_contacts/panel" /}
+                </div>
+
+
+                <div class="tab-pane fade" id="purchase_order-panel" role="tabpanel"
+                     aria-labelledby="purchase_order-tab">
+                </div>
+
+                <div class="tab-pane fade" id="stockin-panel" role="tabpanel"
+                     aria-labelledby="stockin-tab">
+                </div>
+
+            <!--    <div class="tab-pane fade" id="stockout-panel" role="tabpanel"
+                     aria-labelledby="stockout-tab">
+                </div>-->
+            </div>
+        </div>
+    </div>
+</section>
+
+{/block}
+
+{block name="js"}
+<script type="text/javascript" >
+
+    window.operateEvents={
+        "click .edit" : function(e,value,row,index){supplier_contact(row.id)},
+        "click .del" : function(e,value,row,index){del(row.id)}
+    }
+
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+            '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+        ].join('&nbsp;&nbsp;');
+    }
+
+    function supplier_contact(id){
+        if(id){
+            var url = '{:url("supplier_contacts/edit?id=")}'+id
+        }else{
+            var url = '{:url("supplier_contacts/add")}?supplier_id={$supplier_id}'
+        }
+
+        layer.open({
+            type:2,
+            title:'supplier_contact Detail',
+            area:['500px','580px'],
+            content: url
+        });
+    }
+
+
+    function del(id){
+        // const that = $(this)
+        if(confirm('Are you sure to delete?')==false){
+            return false;
+        }else{
+            $.ajax({
+                url: "{:url('supplier_contacts/del')}",
+                data: {
+                    id: id,
+                },
+                type: "POST",
+                success(res){
+                    if(res.code == 200){
+                        $('#supplier_contact-grid').bootstrapTable('refresh');
+                    }
+                }
+            })
+        }
+    }
+
+    $(function(){
+        $('#supplier_contact-grid').bootstrapTable({
+            url: "{$grid_url}",            //请求后台的URL（*）
+            method: 'get',                                   //请求方式（*）
+            queryParams: function (params) {
+                return {
+                    offset: params.offset,  //页码
+                    limit: params.limit,   //页面大小
+                    search : params.search, //搜索
+                    order : params.order, //排序
+                    ordername : params.sort, //排序
+                    filter: params.filter,
+                };
+            },
+            toolbar: "#supplier_contact-toolbar",                    //工具按钮用哪个容器
+            pagination: true,                                //是否显示分页（*）
+            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            buttonsClass:"btn-sm btn btn-sm btn-default",
+            striped: true,                                   //是否显示行间隔色
+            cookie: true,
+            cookieIdTable: 'package_unit-Grid',
+            showRefresh: true,                               //是否显示刷新按钮
+            showColumns: true,                               //是否显示所有的列
+            stickyHeader: true,
+            stickyHeaderOffsetLeft: '3em',
+            stickyHeaderOffsetRight: '3em',
+            search: true,                                   //显示搜索框
+            pageSize: 10,                                    //每页的记录行数（*）
+            pageList: [50, 100],
+            columns: [{
+                checkbox: true,
+                clickToSelect: true
+            }, {
+                field: 'first_name',
+                title: '聯絡人',
+                searchable: true,
+            }, {
+                field: 'member_no',
+                title: '手提電話',
+                searchable: true,
+            },{
+                field: 'title',
+                title: '公司電話',
+                searchable: true,
+            },{
+                field: 'last_name',
+                title: '傳真號碼',
+                searchable: true,
+            },{
+                field: 'phone_mobile',
+                title: '電話地址',
+                searchable: true,
+            },{
+                field: 'operate',
+                title: '操作',
+                width: '80px',
+                clickToSelect: false,
+                events: operateEvents,
+                formatter: operateFormatter
+            }, ]
+        });
+    })
+</script>
+{/block}

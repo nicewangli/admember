@@ -1,0 +1,162 @@
+{extend name='public/base' /}
+{block name='content'}
+
+<section class="content" xmlns="http://www.w3.org/1999/html">
+
+    <div class="container-fluid">
+        <!-- form content -->
+        <div class="card">
+    <div class="card-body">
+
+        <form id="dataForm" class="form-horizontal dataForm" action="" method="post"
+              enctype="multipart/form-data">
+
+            <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
+
+            <div class="form-group row">
+                <div class="col-lg-10">
+                    <a class="btn flat btn-sm btn-default BackButton" href="index.html">
+                        <i class="fa fa-arrow-left"></i>
+                        返回
+                    </a>
+                </div>
+
+                <div class="col-lg-2">
+                    <button type="submit"class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
+                        保存
+                    </button>
+
+                    <button type="submit" class="fa fa-trash  btn flat btn-danger  dataFormSubmit btn-sm">
+                        刪除
+                    </button>
+                </div>
+            </div>
+
+            <div class="row pt-2">
+                <div class="col-xs-12 col-md-12">
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="salesorder_no">編號</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="salesorder_no" name="salesorder_no"
+                                   value="{$data.salesorder_no|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="store">店鋪</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="store"
+                                   name="store"
+                                   value="{$data.store|default=''}"
+                                   placeholder="銅鑼灣">
+                        </div>
+                    </div>
+
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="created_at">日期</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="created_at" name="created_at"
+                                   value="{$data.created_at|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="payment_term">貨倉</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="payment_term" name="payment_term"
+                                   value="{$data.payment_term|default=''}"
+                                   placeholder="銅鑼灣貨倉">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="abstract">摘要</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="abstract"
+                                   name="abstract"
+                                   value="{$data.abstract|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+            </div>
+        </form>
+    </div>
+            <!--sub page--->
+        </div>
+    </div><!--/. container-fluid -->
+</section>
+{/block}
+{block name="js"}
+
+<script type="text/javascript">
+
+    $('.fa-plus').click(function () {
+        let node = '';
+        let index = $('.table').children('tbody').children('tr').length;
+        node += '<tr><input type="hidden" name="item[' + index + '][id]"><td><input class="form-control" type="text" name="item[' + index + '][name]"></td><td><input class="form-control" type="text" name="item[' + index + '][description]"></td><td><input class="form-control amount" type="text" name="item[' + index + '][amount]"></td><td><a class="u-link-v5 g-color-gray-light-v6 g-color-secondary--hover g-text-underline--none--hover" href="#"><i class="fa fa-minus"></i></a></td></tr>';
+        $('.table').children('tbody').append(node);
+    })
+
+    $(document).on("click", '.fa-minus', function () {
+        let len = 0;
+        len = $('.table').children('tbody').children('tr').length;
+        if (len > 1) {
+            $(this).parents('tr').remove();
+            total();
+        }
+    })
+
+    $(document).on("change", ".amount", function () {
+        total();
+    })
+
+    function total() {
+        let total = 0.00;
+
+        $(".amount").each(function () {
+            total += parseFloat($(this).val());
+
+            $("#total").val(total.toFixed(2));
+        });
+
+        amount();
+    }
+
+
+    $(document).on("change", "#deduction", function () {
+        amount();
+    })
+
+    function amount() {
+        let total = parseFloat($("#total").val());
+        let deduction = $("#deduction").val();
+
+        if (deduction == '') {
+            deduction = 0
+        }
+
+        let final_total = total - parseFloat(deduction);
+        $("#final_total").val(final_total.toFixed(2));
+    }
+
+
+
+</script>
+{/block}

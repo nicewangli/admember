@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta charset="utf-8" />
+    <title>Service</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    {include file="public:head" /}
+    
+    <!-- jQuery -->
+    {js href="__PLUGIN__/jquery/jquery.min.js" /}
+    {js href="__PLUGIN__/layer/layer.js" /}
+
+    <!-- Bootstrap 4 -->
+    {js href="__PLUGIN__/bootstrap/js/bootstrap.bundle.min.js" /}
+    {js href="__JS__/adminlte.min.js" /}
+    {js href="__JS__/init.js" /}
+    {js href="__JS__/application.js" /}
+
+    <!-- 加载 Select2 -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.full.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Theme style -->
+    {css href="__CSS__/adminlte.min.css" /}
+    <!-- Custom style -->
+    {css href="__CSS__/application.css" /}
+    <!-- Ionicons -->
+    {css href="__CSS__/ionicons.min.css" /}
+    {css href="__PLUGIN__/icon-awesome/css/font-awesome.min.css" / }
+
+
+</head>
+<body>
+    <div class="container-fluid">
+        <form id="serviceForm">
+            <input type="hidden" id="id" name="id" value="{$data.id|default=''}">
+            <div class="card-body">
+                <div class="row pt-2">
+                    <div class="col-xs-12 col-md-6">
+                        <h5 style="color: #007bff;">基本資料</h5>
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="status">狀態：</label>
+                            <div class="col-md-7">
+                                <select class="form-control" id="status" name="status" value="{$data.status|default=''}">
+                                    <option value="可用" {notempty name="data"}{eq name="$data.status" value="可用"}selected="selected"{/eq}{/notempty}>可用</option>
+                                    <option value="停用" {notempty name="data"}{eq name="$data.status" value="停用"}selected="selected"{/eq}{/notempty}>停用</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="code">編號：</label>
+                            <div class="col-md-7">
+                                <input class="form-control" type="text" id="code" name="code"
+                                       value="{$data.code|default=''}"
+                                       placeholder="">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="category_id">類別：</label>
+                            <input type="hidden" name="category_id" id="category_id" value="{$data.category_id|default=''}">
+                            <div class="col-md-7">
+                                <select id="parent_category_id" name="parent_category_id"  class="form-control" required="required">
+                                    <option value="">&nbsp;</option>
+                                    <option value="{$data.parent_category_id|default=''}" selected> {$data.parent_category_name|default=''}</option>
+                                </select>
+
+                                <select id="child_category_id" name="child_category_id"  class="form-control">
+                                    <option value=""></option>
+                                    <option value="{$data.child_category_id|default=''}" selected>{$data.child_category_name|default=''}</option>
+                                    
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="name">名稱：</label>
+                            <div class="col-md-7">
+                                <input class="form-control" type="text" id="name" name="name"
+                                       value="{$data.name|default=''}"
+                                       placeholder="" required="">
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="summary">摘要：</label>
+                            <div class="col-md-7">
+                                <textarea class="form-control" id="summary" name="summary" rows="3">{$data.summary|default=''}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="price">價值：</label>
+                            <div class="col-md-7">
+                                <input class="form-control" type="text" id="price" name="price"
+                                       value="{$data.price|default='0.0'}"
+                                       placeholder="0.0" style="text-align: right;">
+                            </div>
+                        </div>
+
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="beautician_pay">美容師工錢：</label>
+                            <div class="col-md-7">
+                                <input class="form-control" type="text" id="beautician_pay" name="beautician_pay" value="{$data.beautician_pay|default='0.0'}" placeholder="" style="text-align: right;">
+                            </div>
+                        </div>
+
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="package_deduction">套票扣除值：</label>
+                            <div class="col-md-7">
+                                <input class="form-control" type="text" id="package_deduction" name="package_deduction" value="{$data.package_deduction|default='0.0'}" placeholder="" style="text-align: right;">
+                            </div>
+                        </div>
+
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="service_time">服務時間：</label>
+                            <div class="col-md-7" style="display: flex; align-items: center;">
+                                <input class="form-control" type="text" id="service_time" name="service_time"
+                                       value="{$data.service_time|default='0'}"
+                                       placeholder="" style="width: 68%; text-align: right;">（分鐘）
+                            </div>
+                        </div>
+
+                        <div class="form-group row ">
+                            <label class="col-md-3 control-label" for="description">備注：</label>
+                            <div class="col-md-7">
+                                <textarea class="form-control" id="description" name="description" rows="3">{$data.description|default=''}</textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-xs-12 col-md-6">
+                        <h5 style="color: #007bff;">產品使用表</h5>
+
+                        <div class="form-group row ">
+                            <p><a title="選擇" onclick="service_products()" class="btn btn-primary btn-sm " href="#">選擇</a></p>
+
+                            <table id="service_products" class="table table-hover table-striped table-sm datatable" width="100%">
+                                <thead>
+                                    <th width="5%"><input type="checkbox" name=""></th>
+                                    <th width="15%">次序</th>
+                                    <th>編號</th>
+                                    <th>名稱</th>
+                                    <th width="15%">售價</th>
+                                    <th width="15%">數量</th>
+                                </thead>
+                                <tbody>
+                                    {notempty name="service_product"}
+                                    {volist name="service_product" id="cp" key="key"}
+                                        <tr>
+                                            <input type="hidden" name="item[{$key}][product_id]" value="{$cp.id}">
+                                            <td width="5%"><input type="checkbox" name=""></td>
+                                            <td width="15%"><input type="number" name="item[{$key}][ordering]" value="{$cp.ordering}"style="width: 100%;"></td>
+                                            <td>{$cp.product_code}</td>
+                                            <td>{$cp.product_name}</td>
+                                            <td width="15%">{$cp.product_price}</td>
+                                            <td width="15%"><input type="number" name="item[{$key}][quantity]" value="{$cp.quantity}"style="width: 100%;"></td>
+                                        </tr>
+                                    {/volist}
+                                    {/notempty}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12 col-md-12">
+                        <div class="row">
+                            <div class="col-lg-12" align="center">
+                                <button class="btn flat btn-info btn-sm submit">
+                                    <i class=" fa fa-file-alt"></i>
+                                    Save
+                                </button>
+
+                                <button class="btn btn-default btn-sm">
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>   
+<script type="text/javascript">
+    function service_products(){
+        layer.open({
+            type: 2,
+            title: 'Products Information',
+            area: ['800px', '500px'],
+            content: '{:url("products/products?from_panel=service_products")}'
+        })
+    }
+
+
+    $(function(){
+        initRolesParentCategory();
+        $("#child_category_id").select2();
+        let parent_category_id = $("#parent_category_id").val();
+        if(parent_category_id){
+            initRolesChildCategory(parent_category_id);
+        }
+        
+        function initRolesParentCategory() {
+            $.ajax({
+                url: "{:url('product_categories/option')}",
+                data: {id: 0},
+                dataType: 'json',
+                success(res){
+                    $("#parent_category_id").select2({
+                        placeholder: "请选择", //默认input 文字
+                        data: res.results,
+                    })
+                }
+            })
+        }
+
+        $('#parent_category_id').on('select2:select', function (e) {
+            let data = e.params.data;
+            $("#child_category_id").children().not(":eq(0)").remove();
+            initRolesChildCategory(data.id);
+        })
+
+
+        function initRolesChildCategory(id) {
+            $.ajax({
+                url: "{:url('product_categories/option')}",
+                data: {id: id},
+                dataType: 'json',
+                success(res){
+                    $("#child_category_id").select2({
+                        placeholder: "请选择", //默认input 文字
+                        data: res.results,
+                    })
+                }
+            })
+        }
+
+
+        $(".submit").click(function(){
+            let url = '{:url("services/add")}';
+
+            let id = $("#id").val();
+            if (id) {
+                url = '{:url("services/edit?id=")}' + id
+            }
+            
+            let category_id = $("#parent_category_id").val();
+            let child_category_id = $("#child_category_id").val();
+
+            if (child_category_id) {
+                category_id = child_category_id
+            }
+
+            $("#category_id").val(category_id);
+
+            let params = $("#serviceForm").serialize();  
+
+            
+            $.ajax({
+                url: url,
+                data: params,
+                type: "POST",
+                success(res){
+                    if(res.code == 200){
+                        parent.$('#services-grid').bootstrapTable('refresh');
+                        //注意：parent 是 JS 自带的全局对象，可用于操作父页面
+                        let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                        parent.layer.close(index);
+                    }
+                }
+            })
+        });
+
+        $(".btn-default").click(function(){
+            let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+            parent.layer.close(index);
+        });
+        
+    })
+</script>
+</html>

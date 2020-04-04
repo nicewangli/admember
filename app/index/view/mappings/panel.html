@@ -1,0 +1,622 @@
+{extend name="public/base" /}
+
+{block name='content'}
+
+<!--数据列表页面-->
+<section class="content">
+
+    <!--顶部搜索筛选-->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                {notempty name="modules"}
+                {volist name="modules" id="val" key="index"}
+                    <a class="nav-link {eq name='index' value='1'}active{/eq}" id="v-pills-{$index}-tab" data-toggle="pill" href="#v-pills-{$index}" role="tab" aria-controls="v-pills-{$index}" aria-selected="true">{$val.name}</a>
+                {/volist}
+                {/notempty}
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-1" role="tabpanel" aria-labelledby="v-pills-1-tab">
+                    <div class="card card-primary card-outline card-outline-tabs" style="border-top:2px">
+                        <div class="card-header p-0 border-bottom-0">
+                            <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="package_unit-tab" data-toggle="pill" href="#package_unit-panel" role="tab" aria-controls="package_unit-tab" aria-selected="true">套票值單位</a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a class="nav-link tab-ajax" id="brand-tab" data-toggle="pill"
+                                       href="{:url('mappings/panel?category=brand')}" data-target="#brand-panel" role="tab"
+                                       aria-controls="brand-panel"
+                                       aria-selected="false">產品品牌</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link tab-ajax" id="products_unit-tab" data-toggle="pill"
+                                       href="{:url('mappings/panel?category=products_unit')}" data-target="#products_unit-panel" role="tab"
+                                       aria-controls="products_unit-panel"
+                                       aria-selected="false">產品單位</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link tab-ajax" id="products_category-tab" data-toggle="pill"
+                                       href="{:url('product_categories/index')}" data-target="#products_category-panel" role="tab"
+                                       aria-controls="products_category-panel"
+                                       aria-selected="false">產品類別</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="contact-subpanel">
+                                <div class="tab-pane fade show active" id="package_unit-panel" role="tabpanel"
+                                     aria-labelledby="package_unit-tab">
+                                    <!-- {include file="mappings/package_unit" /} -->
+                                    <div id="package_unit-toolbar">
+                                        <a title="Add" class="btn btn-primary btn-sm" onclick="modify(0, 'package_unit')" href="#">
+                                            <i class="fa fa-plus"></i> Add
+                                        </a>
+                                    </div>
+
+                                    <table id="package_unit-grid" class="table-striped">
+                                       
+                                    </table>
+                                </div>
+
+                                <div class="tab-pane fade" id="brand-panel" role="tabpanel"
+                                     aria-labelledby="brand-tab">
+
+                                </div>
+
+                                <div class="tab-pane fade" id="products_unit-panel" role="tabpanel"
+                                     aria-labelledby="products_unit-tab">
+
+                                </div>
+
+                                <div class="tab-pane fade" id="products_category-panel" role="tabpanel"
+                                     aria-labelledby="products_category-tab">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="v-pills-2" role="tabpanel" aria-labelledby="v-pills-2-tab">
+                    <div class="card card-primary card-outline card-outline-tabs" style="border-top:2px">
+                        <div class="card-header p-0 border-bottom-0">
+                            <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="member_no-tab" data-toggle="pill" href="#member_no-panel" role="tab" aria-controls="member_no-tab" aria-selected="true">狀態</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link tab-ajax" id="opt-tab" data-toggle="pill"
+                                       href="{:url('mappings/panel?category=opt')}" data-target="#opt-panel" role="tab"
+                                       aria-controls="opt-panel"
+                                       aria-selected="false">分類</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link tab-ajax" id="categors-tab" data-toggle="pill"
+                                       href="{:url('mappings/panel?category=categors')}" data-target="#categors-panel" role="tab"
+                                       aria-controls="categors-panel"
+                                       aria-selected="false">類別</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link tab-ajax" id="shop-tab" data-toggle="pill"
+                                       href="{:url('mappings/panel?category=shop')}" data-target="#shop-panel" role="tab"
+                                       aria-controls="shop-panel"
+                                       aria-selected="false">店鋪</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link tab-ajax" id="source-tab" data-toggle="pill"
+                                       href="{:url('mappings/panel?category=source')}" data-target="#source-panel" role="tab"
+                                       aria-controls="source-panel"
+                                       aria-selected="false">來源</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link tab-ajax" id="register_date-tab" data-toggle="pill"
+                                       href="{:url('mappings/panel?category=register_date')}" data-target="#register_date-panel" role="tab"
+                                       aria-controls="register_date-panel"
+                                       aria-selected="false">到店時間</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="contact-subpanel">
+                                <div class="tab-pane fade show active" id="member_no-panel" role="tabpanel"
+                                     aria-labelledby="member_no-tab">
+                                    <!-- {include file="mappings/package_unit" /} -->
+                                    <div id="member_no-toolbar">
+                                        <a title="Add" class="btn btn-primary btn-sm" onclick="modify(0, 'member_no')" href="#">
+                                            <i class="fa fa-plus"></i> Add
+                                        </a>
+                                    </div>
+
+                                    <table id="member_no-grid" class="table-striped">
+
+                                    </table>
+                                </div>
+
+                                <div class="tab-pane fade" id="opt-panel" role="tabpanel"
+                                     aria-labelledby="opt-tab">
+
+                                </div>
+
+                                <div class="tab-pane fade" id="categors-panel" role="tabpanel"
+                                     aria-labelledby="categors-tab">
+
+                                </div>
+
+                                <div class="tab-pane fade" id="shop-panel" role="tabpanel"
+                                     aria-labelledby="shop-tab">
+
+                                </div>
+
+                                    <div class="tab-pane fade" id="source-panel" role="tabpanel"
+                                         aria-labelledby="source-tab">
+
+                                    </div>
+
+                                <div class="tab-pane fade" id="register_date-panel" role="tabpanel"
+                                     aria-labelledby="register_date-tab">
+
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                <div class="tab-pane fade" id="v-pills-3" role="tabpanel" aria-labelledby="v-pills-3-tab">
+                    <div class="card card-primary card-outline card-outline-tabs" style="border-top:2px">
+                        <div class="card-header p-0 border-bottom-0">
+                            <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="notes-tab" data-toggle="pill" href="#notes-panel" role="tab" aria-controls="notes-tab" aria-selected="true">備注</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="contact-subpanel">
+                                <div class="tab-pane fade show active" id="notes-panel" role="tabpanel"
+                                     aria-labelledby="notes-tab">
+                                    <div id="notes-toolbar">
+                                        <a title="Add" class="btn btn-primary btn-sm" onclick="modify(0, 'notes')" href="#">
+                                            <i class="fa fa-plus"></i> Add
+                                        </a>
+                                    </div>
+
+                                    <table id="notes-grid" class="table-striped">
+                                       
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane fade" id="v-pills-4" role="tabpanel" aria-labelledby="v-pills-4-tab">
+                    <div class="card card-primary card-outline card-outline-tabs" style="border-top:2px">
+                        <div class="card-header p-0 border-bottom-0">
+                            <ul class="nav nav-tabs" id="custom-tabs-three-tab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="payment_method-tab" data-toggle="pill" href="#payment_method-panel" role="tab" aria-controls="payment_method-tab" aria-selected="true">付款方式</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link tab-ajax" id="expenditure-tab" data-toggle="pill"
+                                       href="{:url('mappings/panel?category=expenditure')}" data-target="#expenditure-panel" role="tab"
+                                       aria-controls="expenditure-panel"
+                                       aria-selected="false">支出项目</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <div class="tab-content" id="contact-subpanel">
+                                <div class="tab-pane fade show active" id="payment_method-panel" role="tabpanel"
+                                     aria-labelledby="payment_method-tab">
+                                    <div id="payment_method-toolbar">
+                                        <a title="Add" class="btn btn-primary btn-sm" onclick="modify(0, 'payment_method')" href="#">
+                                            <i class="fa fa-plus"></i> Add
+                                        </a>
+                                    </div>
+
+                                    <table id="payment_method-grid" class="table-striped">
+                                       
+                                    </table>
+                                </div>
+
+                                <div class="tab-pane fade" id="expenditure-panel" role="tabpanel"
+                                     aria-labelledby="expenditure-tab">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- {include file='public/content_common' /} -->
+
+{/block}
+
+{block name='js'}
+    <script type="text/javascript">
+        window.operateEvents={
+            "click .edit" : function(e,value,row,index){type_id = 'package_unit'; modify(row.id, type_id)},
+            "click .del" : function(e,value,row,index){type_id = 'package_unit'; del(row.id, type_id)}
+        }
+        window.operateEvents2={
+            "click .edit2" : function(e,value,row,index){type_id = 'member_no'; modify(row.id, type_id)},
+            "click .del2" : function(e,value,row,index){type_id = 'member_no'; del(row.id, type_id)}
+        }
+
+        window.operateEvents3={
+            "click .edit3" : function(e,value,row,index){type_id = 'notes'; modify(row.id, type_id)},
+            "click .del3" : function(e,value,row,index){type_id = 'notes'; del(row.id, type_id)}
+        }
+
+        window.operateEvents4={
+            "click .edit4" : function(e,value,row,index){type_id = 'payment_method'; modify(row.id, type_id)},
+            "click .del4" : function(e,value,row,index){type_id = 'payment_method'; del(row.id, type_id)}
+        }
+
+        function operateFormatter(value,row,index){
+            return [
+                '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+                '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+            ].join('');
+        }
+
+        function operateFormatter2(value,row,index){
+            return [
+                '<a class="btn btn-primary btn-xs edit2" href="#"><i class="fa fa-pencil"></i></a>',
+                '<a class="btn btn-danger btn-xs del2" href="#"><i class="fa fa-trash"></i></a>',
+            ].join('');
+        }
+
+        function operateFormatter3(value,row,index){
+            return [
+                '<a class="btn btn-primary btn-xs edit3" href="#"><i class="fa fa-pencil"></i></a>',
+                '<a class="btn btn-danger btn-xs del3" href="#"><i class="fa fa-trash"></i></a>',
+            ].join('');
+        }
+
+        function operateFormatter4(value,row,index){
+            return [
+                '<a class="btn btn-primary btn-xs edit4" href="#"><i class="fa fa-pencil"></i></a>',
+                '<a class="btn btn-danger btn-xs del4" href="#"><i class="fa fa-trash"></i></a>',
+            ].join('');
+        }
+     
+        function modify(id, type_id){
+            if (id) {
+                var url = '{:url("mappings/modify?type_id=")}' + type_id + '&id=' + id
+            } else {
+                var url = '{:url("mappings/modify?type_id=")}' + type_id;
+            }
+            layer.open({
+                type: 2,
+                title: 'Mapping Infomation',
+                area: ['800px', '470px'],
+                content: url
+            })
+        }
+
+        function del(id, type_id){
+            if(confirm('Are you sure to delete?')==false){
+                return false;
+            }else{
+                $.ajax({
+                    url: "{:url('Mappings/del')}",
+                    data: {
+                        id: id,
+                        from_panel: 1
+                    },
+                    type: "POST",
+                    success(res){
+                        if(res.code == 200){
+                            $('#' + type_id + '-grid').bootstrapTable('refresh');
+                        }
+                    }
+                })
+            }
+        }
+
+        $(function(){
+
+            $('#package_unit-grid').bootstrapTable({
+                url: '/index/mappings/lists',            //请求后台的URL（*）
+                method: 'get',                                   //请求方式（*）
+                queryParams: function (params) {
+                    return {
+                        offset: params.offset,  //页码
+                        limit: params.limit,   //页面大小
+                        search : params.search, //搜索
+                        order : params.order, //排序
+                        ordername : params.sort, //排序
+                        filter: params.filter,
+                        type_id: 'package_unit'
+                    };
+                },
+                toolbar: "#package_unit-toolbar",                    //工具按钮用哪个容器
+                pagination: true,                                //是否显示分页（*）
+                sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+                buttonsClass:"btn-sm btn btn-sm btn-default",
+                striped: true,                                   //是否显示行间隔色
+                cookie: true,
+                cookieIdTable: 'package_unit-Grid',
+                showRefresh: true,                               //是否显示刷新按钮
+                showColumns: true,                               //是否显示所有的列
+                clickToSelect: true,                             //是否在单击行时选择复选框或radiobox
+                stickyHeader: true,
+                stickyHeaderOffsetLeft: '3em',
+                stickyHeaderOffsetRight: '3em',
+                filterControl: true,
+                search: false,                                   //显示搜索框
+                pageSize: 10,                                    //每页的记录行数（*）
+                pageList: [10, 20, 50, 100],
+                columns: [{
+                    checkbox: true,
+                    clickToSelect: true
+                }, {
+                    field: 'id',
+                    title: 'ID',
+                    width: "120px",
+                    clickToSelect: true,                         //是否在单击行时选择复选框或radiobox
+                    sortable: true,                              //是否允许列可以排序
+                    filterControl: 'input'
+                }, {
+                    field: 'name',
+                    title: 'Name',
+                    searchable: true,
+                    filterControl: 'input'
+                }, {
+                    field: 'val',
+                    title: 'Value',
+                    filterControl: 'input'
+                }, {
+                    field: 'parent',
+                    title: 'Parent Item',
+                    visible: false,                              //是否为隐藏列项
+                    filterControl: 'input'
+                }, {
+                    field: 'ordering',
+                    title: 'Order',
+                    sortable: true
+                }, {
+                    field: 'operate',
+                    title: 'Action',
+                    width: '80px',
+                    clickToSelect: false,
+                    events: operateEvents,
+                    formatter: operateFormatter
+                }, ],
+            });
+
+
+
+            $('#member_no-grid').bootstrapTable({
+                url: '/index/mappings/lists',            //请求后台的URL（*）
+                method: 'get',                                   //请求方式（*）
+                queryParams: function (params) {
+                    return {
+                        offset: params.offset,  //页码
+                        limit: params.limit,   //页面大小
+                        search : params.search, //搜索
+                        order : params.order, //排序
+                        ordername : params.sort, //排序
+                        filter: params.filter,
+                        type_id: 'member_no'
+                    };
+                },
+                toolbar: "#member_no-toolbar",                    //工具按钮用哪个容器
+                pagination: true,                                //是否显示分页（*）
+                sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+                buttonsClass:"btn-sm btn btn-sm btn-default",
+                striped: true,                                   //是否显示行间隔色
+                cookie: true,
+                cookieIdTable: 'member_no-Grid',
+                showRefresh: true,                               //是否显示刷新按钮
+                showColumns: true,                               //是否显示所有的列
+                clickToSelect: true,                             //是否在单击行时选择复选框或radiobox
+                stickyHeader: true,
+                stickyHeaderOffsetLeft: '3em',
+                stickyHeaderOffsetRight: '3em',
+                filterControl: true,
+                search: false,                                   //显示搜索框
+                pageSize: 10,                                    //每页的记录行数（*）
+                pageList: [10, 20, 50, 100],
+                columns: [{
+                    checkbox: true,
+                    clickToSelect: true
+                }, {
+                    field: 'id',
+                    title: 'ID',
+                    width: "120px",
+                    clickToSelect: true,                         //是否在单击行时选择复选框或radiobox
+                    sortable: true,                              //是否允许列可以排序
+                    filterControl: 'input'
+                }, {
+                    field: 'name',
+                    title: 'Name',
+                    searchable: true,
+                    filterControl: 'input'
+                }, {
+                    field: 'val',
+                    title: 'Value',
+                    filterControl: 'input'
+                }, {
+                    field: 'parent',
+                    title: 'Parent Item',
+                    visible: false,                              //是否为隐藏列项
+                    filterControl: 'input'
+                }, {
+                    field: 'ordering',
+                    title: 'Order',
+                    sortable: true
+                }, {
+                    field: 'operate',
+                    title: 'Action',
+                    width: '80px',
+                    clickToSelect: false,
+                    events: operateEvents2,
+                    formatter: operateFormatter2
+                }, ],
+            });
+
+
+
+            $('#notes-grid').bootstrapTable({
+                url: '/index/mappings/lists',            //请求后台的URL（*）
+                method: 'get',                                   //请求方式（*）
+                queryParams: function (params) {
+                    return {
+                        offset: params.offset,  //页码
+                        limit: params.limit,   //页面大小
+                        search : params.search, //搜索
+                        order : params.order, //排序
+                        ordername : params.sort, //排序
+                        filter: params.filter,
+                        type_id: 'notes'
+                    };
+                },
+                toolbar: "#notes-toolbar",                    //工具按钮用哪个容器
+                pagination: true,                                //是否显示分页（*）
+                sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+                buttonsClass:"btn-sm btn btn-sm btn-default",
+                striped: true,                                   //是否显示行间隔色
+                cookie: true,
+                cookieIdTable: 'notes-Grid',
+                showRefresh: true,                               //是否显示刷新按钮
+                showColumns: true,                               //是否显示所有的列
+                clickToSelect: true,                             //是否在单击行时选择复选框或radiobox
+                stickyHeader: true,
+                stickyHeaderOffsetLeft: '3em',
+                stickyHeaderOffsetRight: '3em',
+                filterControl: true,
+                search: false,                                   //显示搜索框
+                pageSize: 10,                                    //每页的记录行数（*）
+                pageList: [10, 20, 50, 100],
+                columns: [{
+                    checkbox: true,
+                    clickToSelect: true
+                }, {
+                    field: 'id',
+                    title: 'ID',
+                    width: "120px",
+                    clickToSelect: true,                         //是否在单击行时选择复选框或radiobox
+                    sortable: true,                              //是否允许列可以排序
+                    filterControl: 'input'
+                }, {
+                    field: 'name',
+                    title: 'Name',
+                    searchable: true,
+                    filterControl: 'input'
+                }, {
+                    field: 'val',
+                    title: 'Value',
+                    filterControl: 'input'
+                }, {
+                    field: 'parent',
+                    title: 'Parent Item',
+                    visible: false,                              //是否为隐藏列项
+                    filterControl: 'input'
+                }, {
+                    field: 'ordering',
+                    title: 'Order',
+                    sortable: true
+                }, {
+                    field: 'operate',
+                    title: 'Action',
+                    width: '80px',
+                    clickToSelect: false,
+                    events: operateEvents3,
+                    formatter: operateFormatter3
+                }, ],
+            });
+
+
+
+            $('#payment_method-grid').bootstrapTable({
+                url: '/index/mappings/lists',            //请求后台的URL（*）
+                method: 'get',                                   //请求方式（*）
+                queryParams: function (params) {
+                    return {
+                        offset: params.offset,  //页码
+                        limit: params.limit,   //页面大小
+                        search : params.search, //搜索
+                        order : params.order, //排序
+                        ordername : params.sort, //排序
+                        filter: params.filter,
+                        type_id: 'payment_method'
+                    };
+                },
+                toolbar: "#payment_method-toolbar",                    //工具按钮用哪个容器
+                pagination: true,                                //是否显示分页（*）
+                sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+                buttonsClass:"btn-sm btn btn-sm btn-default",
+                striped: true,                                   //是否显示行间隔色
+                cookie: true,
+                cookieIdTable: 'payment_method-Grid',
+                showRefresh: true,                               //是否显示刷新按钮
+                showColumns: true,                               //是否显示所有的列
+                clickToSelect: true,                             //是否在单击行时选择复选框或radiobox
+                stickyHeader: true,
+                stickyHeaderOffsetLeft: '3em',
+                stickyHeaderOffsetRight: '3em',
+                filterControl: true,
+                search: false,                                   //显示搜索框
+                pageSize: 10,                                    //每页的记录行数（*）
+                pageList: [10, 20, 50, 100],
+                columns: [{
+                    checkbox: true,
+                    clickToSelect: true
+                }, {
+                    field: 'id',
+                    title: 'ID',
+                    width: "120px",
+                    clickToSelect: true,                         //是否在单击行时选择复选框或radiobox
+                    sortable: true,                              //是否允许列可以排序
+                    filterControl: 'input'
+                }, {
+                    field: 'name',
+                    title: 'Name',
+                    searchable: true,
+                    filterControl: 'input'
+                }, {
+                    field: 'val',
+                    title: 'Value',
+                    filterControl: 'input'
+                }, {
+                    field: 'parent',
+                    title: 'Parent Item',
+                    visible: false,                              //是否为隐藏列项
+                    filterControl: 'input'
+                }, {
+                    field: 'ordering',
+                    title: 'Order',
+                    sortable: true
+                }, {
+                    field: 'operate',
+                    title: 'Action',
+                    width: '80px',
+                    clickToSelect: false,
+                    events: operateEvents4,
+                    formatter: operateFormatter4
+                }, ],
+            });
+        })
+        
+    </script>
+{/block}

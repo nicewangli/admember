@@ -1,0 +1,907 @@
+{extend name="public:base" /}
+{block name="content"}
+<section class="content">
+    <div class="card">
+
+        <form class="form-horizontal" action="{:url('index',['act'=>'update'])}" method="post">
+
+            <div class="card card-primary card-outline card-outline-tabs" style="border-top:2px">
+                <div class="card-header p-3 border-bottom-0">
+                    <ul class="nav nav-tabs" role="tablist" id="myTab">
+                        <li class="nav-item ">
+                            <a class="nav-link active" data-toggle="tab" href="#report" role="tab" >
+                                收入報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#sell" >
+                                <i class="green ace-icon fa fa-floppy-o bigger-120"></i>
+                                銷售報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#reserve">
+                                儲值報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#inventory">
+                                收入報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#rests">
+                                銷售報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#salary">
+                                儲值報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#analyze">
+                                獎賞報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#accounting">
+                                服務使用報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#statement">
+                                套票退款報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#package">
+                                套票餘額調整報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#ticket">
+                                轉套票多付金額報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#transferred">
+                                已轉套票未付金額報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#expend">
+                                支出報表
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-toggle="tab" href="#showing">
+                                賬目總表
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <div class="card-body">
+                    <div class="tab-content">
+                        <div id="report" class="tab-pane fade show active">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+                        <div id="sell" class="tab-pane fade  in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="week"> 項目分類 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="week" name="week" size="1"
+                                            value="{$sysConfig.week}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1"></option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="week"> 動作 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="week" name="week" size="1"
+                                            value="{$sysConfig.week}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1"></option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="reserve" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="week"> 動作 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="week" name="week" size="1"
+                                            value="{$sysConfig.week}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1"></option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="inventory" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+                        <div id="rests" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="week"> 項目分類 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="week" name="week" size="1"
+                                            value="{$sysConfig.week}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1"></option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="week"> 動作 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="week" name="week" size="1"
+                                            value="{$sysConfig.week}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1"></option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="salary" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="week"> 動作 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="week" name="week" size="1"
+                                            value="{$sysConfig.week}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1"></option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="analyze" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="week"> 動作 </label>
+                                <div class="col-sm-5">
+                                    <select class="form-control" id="week" name="week" size="1"
+                                            value="{$sysConfig.week}">
+                                        <option value="0">(所有)</option>
+                                        <option value="1"></option>
+                                    </select>
+                                    <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="accounting" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+
+                        <div id="statement" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+                        <div id="package" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+                        <div id="ticket" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+                        <div id="transferred" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+                        <div id="expend" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+                        <div id="showing" class="tab-pane fade in">
+                            <div class="form-group row">
+                                <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="data_tom" name="data_tom" size="1"
+                                            value="{$sysConfig.data_tom}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+                                <h5>至</h5>
+                                <div class="col-xs-12 col-md-2">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0"></option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">年</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">月</option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">日</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xs-12 col-md-1">
+                                    <select class="form-control" id="print_language" name="print_language" size="1"
+                                            value="{$sysConfig.title}">
+                                        <option value="0">星期</option>
+                                    </select>
+                                </div>
+                                <span class="help-inline col-xs-12 col-sm-7">
+                        <span class="middle"></span>
+                    </span>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <!-- <div class="col-md-offset-2 col-md-9">
+            <button id="submit" class="btn btn-info" type="submit">
+                <i class="icon-ok bigger-110"></i>
+                提交
+            </button>
+
+            &nbsp; &nbsp; &nbsp;
+            <button class="btn btn-danger" type="reset">
+                <i class="icon-undo bigger-110"></i>
+                重置
+            </button>
+        </div>-->
+            </div>
+        </form>
+    </div>
+</section>
+{/block}

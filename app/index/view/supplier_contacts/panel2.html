@@ -1,0 +1,71 @@
+
+<div id="contacts-toolbar">
+    <div id="history-toolbar" class="toolbar-btn-action">
+        <a title="Add" class="btn btn-primary btn-sm " href="{:url('supplier_contacts/add')}">
+            新增
+        </a>
+    </div>
+</div>
+
+
+<div class="table-responsive">
+
+    <table id="supplier_contacts-grid">
+        <thead>
+        <tr>
+            <th data-field="member_no" data-sortable="true" data-filter-control="input" data-width="120">No.</th>
+            <th data-field="first_name" data-sortable="true" data-filter-control="input" data-formatter="showFm">Name
+            </th>
+            <th data-field="last_name" data-sortable="true" data-filter-control="input">Nick name</th>
+            <th data-field="title" data-sortable="true" data-filter-control="input">Title</th>
+            <th data-field="phone_mobile" data-sortable="true" data-filter-control="input">Mobile</th>
+            <th data-field="department" data-sortable="true" data-visible="false" data-filter-control="input">
+                Department
+            </th>
+            <th data-field="salutation" data-sortable="true" data-visible="false" data-filter-control="input">Mr/Ms</th>
+            <th data-field="birthdate" data-sortable="true" data-visible="false" data-filter-control="input">Dirthdate
+            </th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+
+
+<script>
+
+    function showFm(value, row) {
+        var show_url = "{:url('detail')}?id=" + row.id
+        var html = '<a href=' + show_url + '>' + value + '</a>'
+        return html;
+    }
+
+    $(function () {
+        $('#supplier_contacts-grid').bootstrapTable({
+            url: "{$panel_url}",
+            toolbar: "#supplier_contacts-toolbar",
+            pagination: true,
+            sidePagination: 'server',
+            buttonsClass: "btn-sm btn btn-sm btn-default",
+            striped: true,
+            cookie: true,
+            cookieIdTable: 'supplier_contacts-Grid',
+            showRefresh: true,
+            showColumns: true,
+            clickToSelect: true,
+            stickyHeader: true,
+            stickyHeaderOffsetLeft: '3em',
+            stickyHeaderOffsetRight: '3em',
+            filterControl: true,
+            pageSize: 10
+        });
+
+        $('.btn-search').click(function () {
+            $.cookie('accountGrid.bs.table.pageNumber', 1);
+            //$.post('leads/clear_session',{component:'lead'})
+        });
+
+
+    })
+
+</script>

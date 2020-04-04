@@ -1,0 +1,116 @@
+{extend name='public/base' /}
+{block name='content'}
+
+<section class="content" xmlns="http://www.w3.org/1999/html">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+
+                <form id="dataForm" class="form-horizontal dataForm" action="" method="post"
+                      enctype="multipart/form-data">
+                    <div class="form-group row">
+                        <div class="col-lg-10">
+                            <a class="btn flat btn-sm btn-default BackButton"href="index.html">
+                                <i class="fa fa-arrow-left"></i>
+                                Back
+                            </a>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <button type="submit"class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
+                                Save
+                            </button>
+
+                            <button type="submit" class="fa fa-trash  btn flat btn-danger  dataFormSubmit btn-sm">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="row pt-2">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group row ">
+                                <label class="col-md-1 control-label" for="id">ID</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" id="id" name="id"
+                                           value="{$data.id|default=''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-group row ">
+                                <label class="col-md-1 control-label" for="component">Component</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" id="component" name="component"
+                                           value="{$data.component|default=''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-group row ">
+                                <label class="col-md-1 control-label" for="column">Column</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" id="column" name="column"
+                                           value="{$data.column|default=''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row ">
+                                <label class="col-md-1 control-label" for="ordering">Ordering</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" id="ordering" name="ordering"
+                                           value="{$data.ordering|default=''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-group row ">
+                                <label class="col-md-1 control-label" for="mapping_type_id">Mapping type</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" id="mapping_type_id" name="mapping_type_id"
+                                           value="{$data.mapping_type_id|default=''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-group row ">
+                                <label class="col-md-1 control-label" for="module">New an item for</label>
+                                <div class="col-md-9">
+                                    <input class="form-control" type="text" id="module" name="module"
+                                           value="{$data.module|default=''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- /.content-wrapper -->
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+
+    </div>
+    </div> <!--container-fluid -->
+</section>
+<script>
+    /** 表单验证 **/
+    $('#dataForm').validate({
+        rules: {
+            'name': {
+                required: true,
+            }
+        }
+    });
+</script>
+{/block}

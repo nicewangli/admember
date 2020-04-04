@@ -1,0 +1,130 @@
+<div id="services-toolbar">
+    <a title="Add" onclick="services(0)" class="btn btn-primary btn-sm " href="#">
+        <i class="fa fa-plus"></i> Add
+    </a>
+
+</div>
+
+
+<table id="services-grid" class="table-striped datatable" width="100%">
+    
+</table>
+
+{block name='js'}
+    <script type="text/javascript">
+        window.operateEvents={
+            "click .edit" : function(e,value,row,index){services(row.id)},
+            "click .del" : function(e,value,row,index){del(row.id)}
+        }
+
+        function operateFormatter(value,row,index){
+            return [
+                '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+                '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+            ].join('');
+        }
+     
+        function services(id){
+            if (id) {
+                var url = '{:url("services/edit?id=")}' + id
+            } else {
+                var url = '{:url("services/add")}'
+            }
+            layer.open({
+                type: 2,
+                title: 'Service Information',
+                area: ['800px', '600px'],
+                content: url
+            })
+        }
+
+        function del(id){
+            // const that = $(this)
+            if(confirm('Are you sure to delete?')==false){
+                return false;
+            }else{
+                $.ajax({
+                    url: "{:url('services/del')}",
+                    data: {
+                        id: id,
+                        from_panel: 1
+                    },
+                    type: "POST",
+                    success(res){
+                        if(res.code == 200){
+                            // that.parent().parent().remove();
+                            location.reload();
+                        }
+                    }
+                })
+            }
+        }
+
+        $(function(){
+
+            $('#services-grid').bootstrapTable({
+                url: '/index/services/lists',            //请求后台的URL（*）
+                method: 'get',                                   //请求方式（*）
+                toolbar: "#services-toolbar",                    //工具按钮用哪个容器
+                pagination: true,                                //是否显示分页（*）
+                sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+                buttonsClass:"btn-sm btn btn-sm btn-default",
+                striped: true,                                   //是否显示行间隔色
+                cookie: true,
+                cookieIdTable: 'services-Grid',
+                showRefresh: true,                               //是否显示刷新按钮
+                showColumns: true,                               //是否显示所有的列
+                clickToSelect: false,                            //是否在单击行时选择复选框或radiobox
+                stickyHeader: true,
+                stickyHeaderOffsetLeft: '3em',
+                stickyHeaderOffsetRight: '3em',
+                filterControl: true,
+                search: false,                                   //显示搜索框
+                pageSize: 10,                                    //每页的记录行数（*）
+                pageList: [10, 20, 50, 100],
+                columns: [{
+                    checkbox: true,
+                    clickToSelect: true
+                }, {
+                    field: 'code',
+                    title: 'Product Code',
+                    width: "120px",
+                    clickToSelect: true,                        //是否在单击行时选择复选框或radiobox
+                    sortable: true,                              //是否允许列可以排序
+                    filterControl: 'input'
+                }, {
+                    field: 'category',
+                    title: 'Category',
+                    searchable: true,
+                    filterControl: 'select'
+                }, {
+                    field: 'name',
+                    title: 'Name',
+                    filterControl: 'input'
+                }, {
+                    field: 'status',
+                    title: 'Status',
+                    filterControl: 'select'
+                }, {
+                    field: 'price',
+                    title: 'Price',
+                    visible: false, 
+                    sortable: true
+                }, {
+                    field: 'part',
+                    title: 'Part Number',
+                    visible: false, 
+                    sortable: true
+                }, {
+                    field: 'operate',
+                    title: 'Action',
+                    width: '80px',
+                    clickToSelect: false,
+                    events: operateEvents,
+                    formatter: operateFormatter
+                }, ],
+            });
+        })
+        
+    </script>
+{/block}

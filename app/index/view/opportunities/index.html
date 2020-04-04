@@ -1,0 +1,158 @@
+{extend name="public/base" /}
+{block name='content'}
+
+<!--数据列表页面-->
+<section class="content">
+
+    <!--顶部搜索筛选-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <!--数据列表顶部-->
+                <div id="opportunitie-toolbar">
+                    <a title="Add" onclick="doc()" class="btn btn-primary btn-sm " href="#">
+                        <i class="fa fa-plus"></i> 新增
+                    </a>
+                </div>
+
+                <div class="card-body table-responsive">
+
+                    <table id="opportunitie-grid" class="table-striped">
+
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+{/block}
+
+
+{block name="js"}
+<script type="text/javascript" >
+
+    window.operateEvents={
+        "click .edit" : function(e,value,row,index){doc(row.id)},
+        "click .del" : function(e,value,row,index){del(row.id)}
+    }
+
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+            '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+        ].join('&nbsp;&nbsp;');
+    }
+
+    function doc(id){
+        if(id){
+            var url = '{:url("opportunities/edit?id=")}'+id
+        }else{
+            var url = '{:url("opportunities/add")}'
+        }
+
+        layer.open({
+            type:2,
+            title:'新增商機',
+            area:['800px','750px'],
+            content: url
+        });
+    }
+
+
+    function del(id){
+        // const that = $(this)
+        if(confirm('Are you sure to delete?')==false){
+            return false;
+        }else{
+            $.ajax({
+                url: "{:url('opportunities/del')}",
+                data: {
+                    id: id,
+                },
+                type: "POST",
+                success(res){
+                    if(res.code == 200){
+                        $('#opportunitie-grid').bootstrapTable('refresh');
+                    }
+                }
+            })
+        }
+    }
+
+    $(function(){
+        $('#opportunitie-grid').bootstrapTable({
+            url: "{$grid_url}",            //请求后台的URL（*）
+            method: 'get',                                   //请求方式（*）
+            queryParams: function (params) {
+                return {
+                    offset: params.offset,  //页码
+                    limit: params.limit,   //页面大小
+                    search : params.search, //搜索
+                    order : params.order, //排序
+                    ordername : params.sort, //排序
+                    filter: params.filter,
+                };
+            },
+            toolbar: "#opportunitie-toolbar",                    //工具按钮用哪个容器
+            pagination: true,                                //是否显示分页（*）
+            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            buttonsClass:"btn-sm btn btn-sm btn-default",
+            striped: true,                                   //是否显示行间隔色
+            cookie: true,
+            cookieIdTable: 'package_unit-Grid',
+            showRefresh: true,                               //是否显示刷新按钮
+            showColumns: true,                               //是否显示所有的列
+            stickyHeader: true,
+            stickyHeaderOffsetLeft: '3em',
+            stickyHeaderOffsetRight: '3em',
+            search: true,                                   //显示搜索框
+            pageSize: 50,                                    //每页的记录行数（*）
+            pageList: [50, 100],
+            columns: [{
+                checkbox: true,
+                clickToSelect: true
+            }, {
+                field: 'title',
+                title: '關於',
+                searchable: true,
+            }, {
+                field: 'account_id',
+                title: '賬號',
+                searchable: true,
+            }, {
+                field: 'contact_id',
+                title: '聯繫',
+                searchable: true,
+            }, {
+                field: 'campaign_id',
+                title: '名稱',
+                searchable: true,
+            }, {
+                field: 'status',
+                title: '狀態',
+                searchable: true,
+            }, {
+                field: 'sales_stage',
+                title: '阶段',
+                searchable: true,
+            },{
+                field: 'amount',
+                title: '銷售估算 ($)',
+                searchable: true,
+            }, {
+                field: 'operate',
+                title: '操作',
+                width: '80px',
+                clickToSelect: false,
+                events: operateEvents,
+                formatter: operateFormatter
+            }, ]
+        });
+    })
+
+</script>
+{/block}
+

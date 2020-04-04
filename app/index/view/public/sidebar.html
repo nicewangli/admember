@@ -1,0 +1,50 @@
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<!-- Brand Logo -->
+<a href="index" class="brand-link">
+    <img src="__IMAGE__/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+         style="opacity: .8">
+    <span class="brand-text font-weight-light"> {$sysConfig.sitename|default='Adaptive'}</span>
+</a>
+
+<!-- Sidebar -->
+<div class="sidebar">
+
+<!-- Sidebar Menu -->
+<nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+        {volist name="permission" id="v"}
+        <li class="nav-item {notempty name='v.children'}has-treeview  {if condition="($current_permission.id eq $v.id) or ($v.id eq $current_permission.pid) or ($v.id eq $current_permission_father.pid) or ($v['id'] eq $current_permission_father.pid)"}menu-open{/if}{/notempty}">
+
+            <a href="{empty name="v.children"}{:url($v['url'])}{else /}#{/empty}" class='nav-link {empty name="v.children"}{if condition="($current_permission.id eq $v.id) or ($v.id eq $current_permission.pid) or ($v.id eq $current_permission_father.pid) or ($v['id'] eq $current_permission_father.pid)"} active{/if}{/empty}'>
+                <i class="{$v.icon}"></i>
+                <p>
+                    {$v.title}
+                    {notempty name="v.children"}
+                    <i class="fas fa-angle-left right"></i>
+                    {/notempty}
+                </p>
+            </a>
+            
+            {notempty name="v.children"}
+            <ul class="nav nav-treeview">
+                {volist name="v.children" id="vv"}
+                <li class="nav-item">
+                    <a href="{empty name="vv.children"}{:url($vv['url'])}{else /}#{/empty}" class='nav-link {if condition="($current_permission.id eq $vv.id) or ($vv.id eq $current_permission.pid) or ($vv.id eq $current_permission_father.pid) or ($vv.id eq $current_permission_father.pid)"} active {/if}'>
+                            <i class="{$vv.icon}"></i>
+                            <p>
+                                {$vv.title}
+                            </p>
+                    </a>
+                </li>
+                {/volist}
+            </ul>
+            {/notempty}
+        </li>
+        {/volist}
+    </ul><!-- /.nav-list -->
+</nav>
+<!-- /.sidebar-menu -->
+</div>
+<!-- /.sidebar -->
+</aside>

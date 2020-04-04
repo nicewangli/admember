@@ -1,0 +1,60 @@
+{extend name='public/layer_base' /}
+{block name='content'}
+
+<section class="content">
+    <div>
+        <form class="form-horizontal" id="equipment-form" method="post" action="{$act}">
+
+            <input type="hidden" id="id" name="id" value="{$item.id|default=''}">
+            <input type="hidden" id="store_id" name="store_id" value="{$item.store_id|default=''}">
+            <div class="row pt-2">
+                <div class="col-xs-12 col-md-12">
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="name">名稱</label>
+                        <div class="col-md-9">
+                            <input class="form-control" type="text" id="name" name="name"
+                                   value="{$item.name|default=''}"
+                                   placeholder="">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <hr>
+    <div class="col-md-12" align="center">
+        <button id="equipment-submit" type="button" class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
+            保存
+        </button>
+        &nbsp;
+        <button class="btn btn-sm btn-default layer-close">刪除</button>
+    </div>
+
+</section>
+{/block}
+
+{block name="js"}
+
+<script type="text/javascript">
+
+    $("#equipment-submit").click(function(){    // 提交按钮触发事件
+        var form_action = $("#equipment-form").attr("action");    // 获取 表单的 提交地址
+        $.post(form_action,$("#equipment-form").serialize(),function(data){
+            layer.msg(data['msg']);
+            if(data['code'] == 200){
+                parent.layer.closeAll();
+                parent.$('#equipment-grid').bootstrapTable('refresh')
+            }
+        });
+    });
+
+    $('.layer-close').on('click', function () {
+        parent.layer.closeAll();
+    });
+
+
+</script>
+{/block}

@@ -1,0 +1,157 @@
+<div id="purchase_order-toolbar">
+    <a title="Add" onclick="purchase_order()" class="btn btn-primary btn-sm " href="#">
+        <i class="fa fa-plus"></i> 新增
+    </a>
+</div>
+
+
+<div class="table-responsive">
+
+    <table id="purchase_order-grid" class="table-striped">
+
+    </table>
+</div>
+{block name="js"}
+<script type="text/javascript" >
+    window.operateEvents={
+        "click .edit" : function(e,value,row,index){purchase_order(row.id)},
+        "click .del" : function(e,value,row,index){del(row.id)},
+        "click .form" : function(e,value,row,index){form(row.id)},
+    }
+
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+            '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+            '<a class="btn btn-success btn-xs form" href="#"><i class="fa fa-link"></i></a>'
+        ].join('&nbsp;&nbsp;');
+    }
+
+    function purchase_order(id){
+        if(id){
+            var url = '{:url("purchase_orders/edit?id=")}'+id
+        }else{
+            var url = '{:url("purchase_orders/add")}?supplier_id={$supplier_id}'
+        }
+
+        var index = layer.open({
+            type: 2,
+            content: url,
+            offset:"rb",
+            area:['1660px','910px'],
+            title: "Purchase order",
+            maxmin: true,
+        });
+
+    }
+    function form(id) {
+        if (id){
+            var url = '{:url("stockins/add")}?supplier_id={$supplier_id}'
+        }
+        var index = layer.open({
+            type: 2,
+            content: url,
+            offset:"rb",
+            area:['1660px','910px'],
+            title: "Stockins order",
+            maxmin: true,
+        });
+    }
+
+
+    function del(id){
+        // const that = $(this)
+        if(confirm('Are you sure to delete?')==false){
+            return false;
+        }else{
+            $.ajax({
+                url: "{:url('purchase_orders/del')}",
+                data: {
+                    id: id,
+                },
+                type: "POST",
+                success(res){
+                    if(res.code == 200){
+                        $('#purchase_order-grid').bootstrapTable('refresh');
+                    }
+                }
+            })
+        }
+    }
+
+    $(function(){
+        $('#purchase_order-grid').bootstrapTable({
+            url: "{$grid_url}",            //请求后台的URL（*）
+            method: 'get',                                   //请求方式（*）
+            queryParams: function (params) {
+                return {
+                    offset: params.offset,  //页码
+                    limit: params.limit,   //页面大小
+                    search : params.search, //搜索
+                    order : params.order, //排序
+                    ordername : params.sort, //排序
+                    filter: params.filter,
+                };
+            },
+            toolbar: "#purchase_order-toolbar",                    //工具按钮用哪个容器
+            pagination: true,                                //是否显示分页（*）
+            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            buttonsClass:"btn-sm btn btn-sm btn-default",
+            striped: true,                                   //是否显示行间隔色
+            cookie: true,
+            cookieIdTable: 'package_unit-Grid',
+            showRefresh: true,                               //是否显示刷新按钮
+            showColumns: true,                               //是否显示所有的列
+            stickyHeader: true,
+            stickyHeaderOffsetLeft: '3em',
+            stickyHeaderOffsetRight: '3em',
+            search: true,                                   //显示搜索框
+            pageSize: 10,                                    //每页的记录行数（*）
+            pageList: [50, 100],
+            columns: [{
+                checkbox: true,
+                clickToSelect: true
+            }, {
+                field: 'purchase_order_no',
+                title: '採購訂單號',
+                searchable: true,
+            }, {
+                field: 'created_at',
+                title: '創建日期',
+                searchable: true,
+            },{
+                field: 'payment_term',
+                title: '付款條件',
+                searchable: true,
+            },{
+                field: 'account_id',
+                title: '帳戶',
+                searchable: true,
+            },{
+                field: 'supplier_phone',
+                title: '供應商電話',
+                searchable: true,
+            },{
+                field: 'from_user',
+                title: '銷售代表',
+                searchable: true,
+            },{
+                field: 'supplier_address',
+                title: '供應商地址',
+                searchable: true,
+            },{
+                field: 'from_email',
+                title: '郵箱',
+            },{
+                field: 'operate',
+                title: '操作',
+                width: '120px',
+                clickToSelect: false,
+                events: operateEvents,
+                formatter: operateFormatter
+            }, ]
+        });
+    })
+
+</script>
+{/block}

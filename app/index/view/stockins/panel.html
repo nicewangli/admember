@@ -1,0 +1,145 @@
+
+
+
+<div id="stockin-toolbar">
+    <a title="Add" onclick="stockin()" class="btn btn-primary btn-sm " href="#">
+        <i class="fa fa-plus"></i> 新增
+    </a>
+</div>
+
+
+<div class="table-responsive">
+
+    <table id="stockin-grid" class="table-striped">
+
+    </table>
+</div>
+{block name="js"}
+<script type="text/javascript" >
+
+    window.operateEvents={
+        "click .edit" : function(e,value,row,index){stockin(row.id)},
+        "click .del" : function(e,value,row,index){del(row.id)}
+    }
+
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+            '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+        ].join('&nbsp;&nbsp;');
+    }
+
+    function stockin(id){
+        if(id){
+            var url = '{:url("stockins/edit?id=")}'+id
+        }else{
+            var url = '{:url("stockins/add")}?supplier_id={$supplier_id}'
+        }
+
+        layer.open({
+            type:2,
+            title:'Stockins Detail',
+            maxmin : true,
+            offset:"rb",
+            area:['1660px','910px'],
+            content: url,
+        });
+    }
+
+
+    function del(id){
+        // const that = $(this)
+        if(confirm('Are you sure to delete?')==false){
+            return false;
+        }else{
+            $.ajax({
+                url: "{:url('stockins/del')}",
+                data: {
+                    id: id,
+                },
+                type: "POST",
+                success(res){
+                    if(res.code == 200){
+                        $('#stockin-grid').bootstrapTable('refresh');
+                    }
+                }
+            })
+        }
+    }
+
+    $(function(){
+        $('#stockin-grid').bootstrapTable({
+            url: "{$grid_url}",            //请求后台的URL（*）
+            method: 'get',                                   //请求方式（*）
+            queryParams: function (params) {
+                return {
+                    offset: params.offset,  //页码
+                    limit: params.limit,   //页面大小
+                    search : params.search, //搜索
+                    order : params.order, //排序
+                    ordername : params.sort, //排序
+                    filter: params.filter,
+                };
+            },
+            toolbar: "#stockin-toolbar",                    //工具按钮用哪个容器
+            pagination: true,                                //是否显示分页（*）
+            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            buttonsClass:"btn-sm btn btn-sm btn-default",
+            striped: true,                                   //是否显示行间隔色
+            cookie: true,
+            cookieIdTable: 'package_unit-Grid',
+            showRefresh: true,                               //是否显示刷新按钮
+            showColumns: true,                               //是否显示所有的列
+            stickyHeader: true,
+            stickyHeaderOffsetLeft: '3em',
+            stickyHeaderOffsetRight: '3em',
+            search: true,                                   //显示搜索框
+            pageSize: 10,                                    //每页的记录行数（*）
+            pageList: [50, 100],
+            columns: [{
+                checkbox: true,
+                clickToSelect: true
+            }, {
+                field: 'quotation_no',
+                title: '編號',
+                searchable: true,
+            }, {
+                field: 'store',
+                title: '店鋪',
+                searchable: true,
+            },{
+                field: 'date',
+                title: '日期',
+                searchable: true,
+            },{
+                field: 'opt',
+                title: '貨倉',
+                searchable: true,
+            },{
+                field: 'supplier',
+                title: '供應商',
+                searchable: true,
+            },{
+                field: 'name',
+                title: '名稱',
+                searchable: true,
+            },{
+                field: 'billing_phone',
+                title: '電話',
+                searchable: true,
+            },{
+                field: 'operate',
+                title: '操作',
+                width: '80px',
+                clickToSelect: false,
+                events: operateEvents,
+                formatter: operateFormatter
+            }, ]
+        });
+    })
+
+
+
+
+</script>
+{/block}

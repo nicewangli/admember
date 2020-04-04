@@ -1,0 +1,68 @@
+{extend name='public/popup' /}
+{block name='content'}
+
+ <div class="table-responsive">
+
+    <table id="qsearch-grid">
+        <thead>
+        <tr>
+            <th data-radio="true" data-field="false"></th>
+            <th data-field="first_name" data-sortable="true" data-filter-control="input">First Name</th>
+            <th data-field="last_name" data-sortable="true" data-filter-control="input">Last Name</th>
+            <th data-field="phone_mobile" data-sortable="true" data-filter-control="input">Mobile</th>
+            <th data-field="email1" data-sortable="true" data-filter-control="input">Email</th>
+            </th>
+        </tr>
+        </thead>
+    </table>
+</div>
+
+
+{/block}
+
+{block name="js"}
+<script>
+
+    $(function () {
+        $('#qsearch-grid').bootstrapTable({
+            url: "{$grid_url}",
+            pagination: true,
+            sidePagination: 'server',
+            buttonsClass: "btn-sm btn btn-sm btn-default",
+            striped: true,
+            smartDisplay: true,
+            filterControl: true,
+            pageSize: 5,
+            pageSize: 5,
+            pageList:[5,10],
+            smartDisplay:true,
+            formatRecordsPerPage: function formatRecordsPerPage(pageNumber) {
+                return "".concat(pageNumber);
+            },
+            formatShowingRows: function formatShowingRows(pageFrom, pageTo, totalRows, totalNotFiltered) {
+                if (totalNotFiltered !== undefined && totalNotFiltered > 0 && totalNotFiltered > totalRows) {
+                    return "Showing ".concat(pageFrom, " to ").concat(pageTo, " of ").concat(totalRows, " rows (filtered from ").concat(totalNotFiltered, " total rows)");
+                }
+
+                return "Showing ".concat(pageFrom, " to ").concat(pageTo, " of ").concat(totalRows, "");
+            },
+            onCheck: function (row,e) {
+               parent.$("#lead_name").val(row.first_name+' '+row.last_name)
+               parent.$("#lead_id").val(row.id)
+               var index = parent.layer.getFrameIndex(window.name)
+               parent.layer.close(index);
+            },
+            onClickRow: function (row,e) {
+                parent.$("#lead_name").val(row.first_name+' '+row.last_name)
+                parent.$("#lead_id").val(row.id)
+                var index = parent.layer.getFrameIndex(window.name)
+                parent.layer.close(index);
+            }
+        });
+
+
+
+    })
+
+</script>
+{/block}

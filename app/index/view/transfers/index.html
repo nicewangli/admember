@@ -1,0 +1,141 @@
+{extend name="public/base" /}
+{block name='content'}
+
+<!--数据列表页面-->
+<section class="content">
+
+    <!--顶部搜索筛选-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <!--数据列表顶部-->
+                <div class="card-header ">
+                    <div>
+                        <a title="Add" onclick="doc()" class="btn btn-primary btn-sm " href="#">
+                            <i class="fa fa-plus"></i> 新增
+                        </a>
+
+
+
+                        <div class=" float-right ">
+                            <form class="form-inline searchForm" id="searchForm" action="{:url('transfers/index')}"
+                                  method="get">
+                                <input type="hidden" value="0" id="export_data" name="export_data">
+                                <div class="input-group  pr-1">
+                                    <input type="text" name="search" id="search" class="form-control"
+                                           placeholder="Search"
+                                           value="{$search|default=''}">
+                                </div>
+
+                                <div class="input-group pr-1">
+                                    <button class="btn  btn-primary btn-sm" type="submit" onclick="$('#export_data').val(0)">
+                                        搜索
+                                    </button>
+                                </div>
+
+                                <div class="form-group">
+                                    <button class="btn btn-sm btn-success exportData"
+                                            type="submit" onclick="$('#export_data').val(1)"><i
+                                            class="fa fa-file-excel-o"></i>&nbsp;導出
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div> <!-- card-header -->
+
+
+                <div class="card-body table-responsive">
+                    <table class="table table-hover table-bordered datatable"  width="100%">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input id="dataCheckAll" type="checkbox" onclick="checkAll(this)" class="checkbox"
+                                       placeholder="All/Cancel">
+                            </th>
+                            <th>次序</th>
+                            <th>起始倉</th>
+                            <th>至倉</th>
+                            <th>摘要</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach name="data" id="item"}
+                        <tr>
+                            <td>
+                                <input type="checkbox" onclick="checkThis(this)" name="data-checkbox"
+                                       data-id="{$item.id}" class="checkbox data-list-check" value="{$item.id}"
+                                       placeholder="Select/Cancel">
+                            </td>
+                            <td>{$item.id}</td>
+                            <td>{$item.from_wh_name}</td>
+                            <td>{$item.to_wh_name}</td>
+                            <td>{$item.description}</td>
+                            <td class="td-do">
+                                <a  href="javascript:void(0)" onclick="doc('{$item.id}')"
+                                    class="btn btn-primary btn-xs" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+
+                                <a class="btn btn-danger btn-xs AjaxButton" href="{:url('del',['id'=>$item.id])}" title="Delete"
+                                   data-id="{$item.id}" data-confirm-title="Confirm Delete"
+                                   data-confirm-content='Are you sure to delete?' data-url="{:url('del')}">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 数据列表底部 -->
+                <div class="card-footer">
+                    {$page|raw}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{/block}
+
+
+
+{block name="js"}
+<script type="text/javascript" >
+
+    window.operateEvents={
+        "click .edit" : function(e,value,row,index){doc(row.id)},
+        "click .del" : function(e,value,row,index){del(row.id)}
+    }
+
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+            '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+        ].join('&nbsp;&nbsp;');
+    }
+
+    function doc(id){
+        if(id){
+            var url = '{:url("transfers/edit?id=")}'+id
+        }else{
+            var url = '{:url("transfers/add")}?supplier_id={}'
+        }
+
+        layer.open({
+            type:2,
+            title:'transfers Detail',
+            offset:"rb",
+            area:['1660px','910px'],
+            content: url,
+        });
+
+    }
+
+</script>
+{/block}
+

@@ -1,0 +1,71 @@
+<div>
+    <a title="Add" onclick="doc()" class="btn btn-primary btn-sm " href="#">
+        <i class="fa fa-plus"></i> Add
+    </a>
+
+    <div class=" float-right ">
+        <form class="form-inline searchForm" id="searchForm" action="#" method="GET">
+            <input type="hidden" value="0" id="export_data" name="export_data">
+            <div class="form-group pr-1">
+                <input type="text" name="search" id="search" class="form-control"
+                       placeholder="Search"
+                       value="{$search|default=''}">
+            </div>
+
+            <div class="form-group pr-1">
+                <button class="btn btn-sm btn-primary" type="submit" onclick="$('#export_data').val(0)"><i
+                        class="fa fa-search"></i>
+                    Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row pt-3">
+
+    <table class="table table-hover table-bordered datatable" data-toggle="table" width="100%">
+        <thead>
+        <tr>
+            <th>Regarding</th>
+            <th>Details</th>
+            <th>Account</th>
+            <th>Contact</th>
+            <th>Filename</th>
+            <th>Size</th>
+
+            <th>Action</th>
+
+
+        </tr>
+        </thead>
+        <tbody>
+        {foreach name="data" id="item"}
+        <tr>
+
+            <td><a href="javascript:void(0)" onclick="doc('{$item.id}')">{$item.regarding}</a></td>
+            <td>{$item.detail}</td>
+            <td>{$item.account_id}</td>
+            <td>{$item.contact_id}</td>
+            <td>{$item.file_name}</td>
+            <td>{$item.file_size}</td>
+
+
+            <td class="td-do">
+                <a href="{:url('to_download',['id'=>$item.id])}"
+                   class="btn btn-primary btn-xs" title="Download">
+                    <i class="fa fa-download"></i>
+
+                </a>
+                <a class="btn btn-danger btn-xs AjaxButton" href="{:url('del',['id'=>$item.id])}" title="Delete"
+                   data-id="{$item.id}" data-confirm-title="Confirm Delete"
+                   data-confirm-content='Are you sure to delete?' data-url="{:url('del')}">
+                    <i class="fa fa-trash"></i>
+
+                </a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+</div>

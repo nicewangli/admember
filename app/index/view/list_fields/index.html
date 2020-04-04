@@ -1,0 +1,141 @@
+{extend name="public/base" /}
+{block name='content'}
+
+<!--数据列表页面-->
+<section class="content">
+
+    <!--顶部搜索筛选-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <!--数据列表顶部-->
+                <div class="card-header ">
+                    <div>
+                        <a title="Add" class="btn btn-primary btn-sm " href="{:url('add')}">
+                            <i class="fa fa-plus"></i> Add
+                        </a>
+                        <a class="btn btn-danger btn-sm  AjaxButton" href="#" title="Delete selected"
+                           data-confirm-title="Confirm delete" data-confirm-content="Are you sure to delete?"
+                           data-id="checked" data-url="{:url('del')}">
+                            <i class="fa fa-trash"></i> Delete
+                        </a>
+
+                        <a class="btn btn-default btn-sm ReloadButton" title="Refresh">
+                            <i class="fa fa-refresh"></i> Refresh
+                        </a>
+
+
+                        <div class=" float-right ">
+
+                            <form class="form-inline searchForm" id="searchForm" action="{:url('index')}" method="GET">
+
+                                <div class="form-group pr-1">
+                                    <input value="{$_keywords ? $_keywords : '' ;}"
+                                           name="_keywords" id="_keywords" class="form-control input-sm" placeholder="">
+                                </div>
+
+
+                                <div class="form-group pr-1">
+                                    <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-search"></i>
+                                        Search
+                                    </button>
+                                </div>
+
+                                <div class="form-group">
+                                    <button onclick="exportData()" class="btn btn-sm btn-success exportData"
+                                            type="button"><i
+                                            class="fa fa-file-excel-o"></i>&nbsp;Export
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div> <!-- card-header -->
+
+
+                <div class="card-body table-responsive">
+                    <table class="table table-hover table-bordered datatable"  width="100%">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input id="dataCheckAll" type="checkbox" onclick="checkAll(this)" class="checkbox"
+                                       placeholder="All/Cancel">
+                            </th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Order</th>
+
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach name="data" id="item"}
+                        <tr>
+                            <td>
+                                <input type="checkbox" onclick="checkThis(this)" name="data-checkbox"
+                                       data-id="{$item.id}" class="checkbox data-list-check" value="{$item.id}"
+                                       placeholder="Select/Cancel">
+                            </td>
+                            <td>{$item.id}</td>
+                            <td>{$item.name}</td>
+                            <td>{$item.ordering}</td>
+
+                            <td class="td-do">
+                                <a href="{:url('edit',['id'=>$item.id])}"
+                                   class="btn btn-primary btn-xs" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+
+                                </a>
+                                <a class="btn btn-danger btn-xs AjaxButton" href="#" title="Delete"
+                                   data-id="{$item.id}" data-confirm-title="Confirm Delete"
+                                   data-confirm-content='Are you sure to delete?' data-url="{:url('del')}">
+                                    <i class="fa fa-trash"></i>
+
+                                </a>
+
+                            </td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 数据列表底部 -->
+                <div class="card-footer">
+                    {$page|raw}
+                    <label class="control-label pull-right" style="margin-right: 10px; font-weight: 100;">
+                        <small>Total {$total} entries</small>
+                        &nbsp;&nbsp;
+                        <small>show</small>
+                        &nbsp;
+                        <select class="input-sm" onchange="changePerPage(this)">
+                            <option value="10"
+                                    {if $admin.per_page==10}selected{/if}>10
+                            </option>
+                            <option value="20"
+                                    {if $admin.per_page==20}selected{/if}>20
+                            </option>
+                            <option value="30"
+                                    {if $admin.per_page==30}selected{/if}>30
+                            </option>
+                            <option value="50"
+                                    {if $admin.per_page==50}selected{/if}>50
+                            </option>
+                            <option value="100"
+                                    {if $admin.per_page==100}selected{/if}>100
+                            </option>
+                        </select>
+                        &nbsp;
+                        <small>per page</small>
+                    </label>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+{include file='public/content_common' /}
+
+{/block}
+

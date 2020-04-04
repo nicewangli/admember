@@ -1,0 +1,289 @@
+
+{extend name='public/base' /}
+{block name='content'}
+
+<section class="content">
+    <div class="container-fluid">
+        <!--sub page--->
+        <div class="card card-primary card-outline card-outline-tabs">
+            <div class="card-body">
+                <form class="form-horizontal" action="{notempty name="userinfo"}{:url('index',['act'=>'update','uid'=>$userinfo.uid])}{else /}{:url('index',['act'=>'update','uid'=>0])}{/notempty}" method="post">
+
+
+                <div class="form-group row">
+                        <div class="col-11">
+                            <a class="btn flat btn-sm btn-default BackButton" href="{:url('index')}">
+                                <i class="fa fa-arrow-left"></i>
+                                返回
+                            </a>
+                        </div>
+
+                        <div class="col-auto">
+                            <button id="submit" class="btn btn-info" type="submit">
+                                <i class="icon-ok bigger-110"></i>
+                                提交
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group row pt-2">
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="member_no">編號</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="member_no" name="member_no"
+                                           value="{$userinfo.member_no ?? ''}"
+                                           placeholder="SF059">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="grade">級別</label>
+                                <div class="col-md-7">
+                                    <select class="form-control" id="grade" name="grade" size="1"
+                                            value="{$userinfo.grade ?? ''}">
+                                        <option value="0">admin</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="last_name">名稱(中文)</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="last_name" name="last_name"
+                                           value="{$userinfo.last_name ?? ''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="first_name">名稱(英文)</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="first_name" name="first_name"
+                                           value="{$userinfo.first_name ?? ''}"
+                                           placeholder="test">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="for_short">名稱(簡稱)</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="for_short" name="for_short"
+                                           value="{$userinfo.for_short ?? ''}"
+                                           placeholder="test">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="sex">性別</label>
+                                <div class="col-md-7">
+                                    <select class="form-control" id="sex" name="sex" size="1"
+                                            value="{$userinfo.sex ?? ''}">
+                                        <option value="0">男</option>
+                                        <option value="1">女</option>
+
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="birthday">出生日期</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="birthday" name="birthday"
+                                           value="{$userinfo.birthday ?? ''}"
+                                           placeholder="年/月/日">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="identity_card">身份證號碼</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="identity_card" name="identity_card"
+                                           value="{$userinfo.identity_card ?? ''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label"
+                                       for="marital_status">婚姻狀況</label>
+                                <div class="col-md-7">
+                                    <select class="form-control" id="marital_status" name="marital_status" size="1"
+                                            value="{$userinfo.marital_status ?? ''}">
+                                        <option value="0">單身</option>
+                                        <option value="1">已婚</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="phone_mobile">手提電話</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="phone_mobile"
+                                           name="phone_mobile"
+                                           value="{$userinfo.phone_mobile ?? ''}"
+                                           placeholder="60803311">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="phone_work">住宅電話</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="phone_work" name="phone_work"
+                                           value="{$userinfo.phone_work ?? ''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="region">傳真號碼</label>
+                                <div class="col-md-7">
+                                    <input class="form-control js-datepicker" type="text" id="region"
+                                           name="region"  value="{$userinfo.region ?? ''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="email">電郵地址</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="email" id="email" name="email"
+                                           value="{$userinfo.email ?? ''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="expiry_date">地址</label>
+                                <div class="col-md-7">
+                            <textarea class="form-control" id="expiry_date" name="expiry_date"
+                                      size="1"
+                                      value=""
+                                      placeholder="{$userinfo.expiry_date ?? ''}"></textarea>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="remark">備註</label>
+                                <div class="col-md-7">
+                            <textarea class="form-control" id="remark" name="remark"
+                                      size="1"
+                                      value=""
+                                      placeholder="{$userinfo.remark ?? ''}"></textarea>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="date_of_accession">加入日期</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="date_of_accession"
+                                           name="date_of_accession"
+                                           value="{$userinfo.date_of_accession ?? ''}"
+                                           placeholder="2020-02-11">
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="category">職位</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="category"
+                                           name="category"
+                                           value="{$userinfo.category ?? ''}"
+                                           placeholder="職員">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="shop">狀態</label>
+                                <div class="col-md-7">
+                                    <select class="form-control" id="shop" name="shop" size="1"
+                                            value="{$userinfo.shop ?? ''}">
+                                        <option value="0">可登入</option>
+                                        <option value="1">沒有權限</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="source">顯示語言</label>
+                                <div class="col-md-7">
+                                    <select class="form-control" id="source" name="source"
+                                            size="1" value="{$userinfo.source ?? ''}">
+                                        <option value="0">繁體中文</option>
+                                        <option value="1">English</option>
+
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="user_name">使用者名稱</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="user_name" name="user_name"
+                                           value="{$userinfo.user_name ?? ''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="new_password">新密碼</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="new_password" name="new_password"
+                                           value="{$userinfo.new_password ?? ''}"
+                                           placeholder="">
+                                </div>
+                            </div>
+
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="store">店鋪</label>
+                                <div class="col-md-7">
+                                    <select class="form-control" id="store" name="store" size="1"
+                                            value="{$userinfo.store ?? ''}">
+                                        <option value="0">銅鑼灣</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.card -->
+        </div>
+
+
+    </div><!--/. container-fluid -->
+</section>
+
+{/block}
+
+
+
+
+
+
+

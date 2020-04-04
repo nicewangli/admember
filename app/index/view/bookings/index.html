@@ -1,0 +1,237 @@
+{extend name="public/base" /}
+{block name='style'}
+{css href="__PLUGIN__/fullcalendar/core/main.min.css"}
+{css href="__PLUGIN__/fullcalendar/daygrid/main.min.css"}
+{css href="__PLUGIN__/fullcalendar/timegrid/main.min.css"}
+{css href="__PLUGIN__/fullcalendar/bootstrap/main.min.css"}
+{/block}
+
+{block name="head_js"}
+
+{/block}
+
+
+{block name='content'}
+<!--数据列表页面-->
+<section class="content">
+
+    <!--顶部搜索筛选-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body table-responsive">
+                    <form role="form">
+                        <div class="row">
+                            <!-- Left -->
+                            <div class="col-md-5"  valign="top">
+                                <div class="form-group row">
+                                    <div class="col-md-3">店舖:</div>
+                                    <div class="col-md-8">
+                                        <select class="form-control form-control-sm">
+                                            <option value="銅鑼灣">銅鑼灣</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-3">日期:</div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <input class="form-control form-control-sm datePicker" type="text"
+                                                       id="date_start" name="date_start"
+                                                       value="{$item.date_start|default=''}"
+                                                       placeholder="">
+                                            </div>
+                                            <div class="col-md-2  d-flex  justify-content-center"> 至 </div>
+                                            <div class="col-md-5">
+                                                <input class="form-control form-control-sm datePicker" type="text"
+                                                       id="date_end" name="date_end"
+                                                       value="{$item.date_end|default=''}"
+                                                       placeholder="">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-3">美容師 / 房間:</div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <select class="form-control form-control-sm"></select>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <select class="form-control form-control-sm"></select>
+                                            </div>
+                                        </div>
+                                   </div>
+                                </div>
+
+                            </div>
+                            <!-- Right -->
+                            <div class="col-md-6" valign="top">
+                                <div class="form-group row">
+                                    <div class="col-md-2">會員 / 非會員:</div>
+                                    <div class="col-md-5">
+                                        <input type="text" class="form-control form-control-sm">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-5">
+                                        <select class="form-control form-control-sm" size="4" multiple></select>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- Filter -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <button class="btn btn-sm col-md-1 ml-2 btn-outline-primary">列表</button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-success">新預約</button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-warning">已通知</button>
+                                <button class="btn btn-sm col-md-1 ml-2 bg-orange">新客已通知</button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-danger">未能聯絡</button>
+                                <button class="btn btn-sm col-md-1 ml-2 bg-info">已到</button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-secondary">缺席</button>
+                                <button class="btn btn-sm col-md-1 ml-2 bg-pink">已扣除套票</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Calendar -->
+                    <div class="row">
+                        <div id='calendar'></div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+{/block}
+
+
+{block name='js'}
+{js href="__PLUGIN__/fullcalendar/core/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/daygrid/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/timegrid/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/interaction/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/bootstrap/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/premium/resource-common/main.min.js"}
+{js href="__PLUGIN__/fullcalendar/premium/resource-daygrid//main.min.js"}
+{js href="__PLUGIN__/fullcalendar/premium/resource-timegrid/main.min.js"}
+
+<script>
+    var calendar;
+    $(function () {
+        var calendarEl = document.getElementById('calendar');
+
+         calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: [ 'interaction', 'resourceDayGrid', 'resourceTimeGrid' ],
+            defaultView: 'resourceTimeGridDay',
+            defaultDate: '2020-02-07',
+            editable: true,
+            selectable: true,
+            eventLimit: true,
+            allDaySlot:false,
+            minTime: "10:00:00",
+            maxTime: "23:00:00",
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'resourceTimeGridDay,resourceTimeGridTwoDay,timeGridWeek,dayGridMonth'
+            },
+            views: {
+                resourceTimeGridTwoDay: {
+                    type: 'resourceTimeGrid',
+                    duration: { days: 2 },
+                    buttonText: '2 days',
+                }
+            },
+
+            //// uncomment this line to hide the all-day slot
+            //allDaySlot: false,
+
+            resources: [
+                { id: '5', title: 'A1\nMandy(Sup)' },
+                { id: '6', title: 'A2\nlcy(BC)', eventColor: 'green' },
+                { id: '7', title: 'A3\nCarmen(BM)', eventColor: 'orange' },
+                { id: '8', title: 'A4\n歡(BM)', eventColor: 'red' },
+                { id: '9', title: 'A5\nCat(BM)',eventColor: '#6c757d' },
+                { id: '10', title: 'B1\nLuna(BC)', eventColor: 'green' },
+                { id: '11', title: 'B2\nMoon(BM)', eventColor: 'orange' },
+                { id: '12', title: 'B3\nSammi(BM)', eventColor: 'red' },
+                { id: '13', title: 'B4\nLily(BM)', eventColor: '#c82333' },
+                { id: '14', title: 'B5\n大莉', eventColor: 'red' },
+                { id: '15', title: 'C1\nTeresa(Bc)', eventColor: 'green' },
+                { id: '16', title: 'C2\nNoel(BC)', eventColor: 'orange' },
+                { id: '17', title: 'C4\n亞愛(BM)', eventColor: 'red' },
+                { id: '18', title: 'C5\nNak(BM)', eventColor: '#17a2b8' },
+                { id: '19', title: 'D1\nDebbie(BC)', eventColor: '#17a2b8' },
+
+            ],
+            events: [
+                { id: '1', resourceId: '5', start: '2020-02-07T10:30:00', end: '2020-02-07T11:00:00', title: 'event a' , color: '#17a2b8'},
+                { id: '101', resourceId: '5', start: '2020-02-07T11:30:00', end: '2020-02-07T12:30:00', title: 'event b', color: 'green' },
+                { id: '102', resourceId: '5', start: '2020-02-07T12:30:00', end: '2020-02-07T14:00:00', title: 'event c', color: 'green' },
+                { id: '2', resourceId: '6', start: '2020-02-07T11:00:00', end: '2020-02-07T12:00:00', title: 'event 2' },
+                { id: '201', resourceId: '6', start: '2020-02-07T15:00:00', end: '2020-02-07T16:00:00', title: 'event 2a', color: '#17a2b8' },
+                { id: '202', resourceId: '6', start: '2020-02-07T16:30:00', end: '2020-02-07T18:00:00', title: 'event 2b', color: 'orange' },
+                { id: '3', resourceId: '7', start: '2020-02-07T12:00:00', end: '2020-02-07T13:00:00', title: 'event 3' },
+                { id: '4', resourceId: '8', start: '2020-02-07T10:30:00', end: '2020-02-07T11:30:00', title: 'event 4' },
+                { id: '5', resourceId: '9', start: '2020-02-07T11:00:00', end: '2020-02-07T12:00:00', title: 'event 5' },
+                { id: '6', resourceId: '10', start: '2020-02-07T15:30:00', end: '2020-02-07T16:00:00', title: 'event 6' },
+                { id: '7', resourceId: '11', start: '2020-02-07T12:00:00', end: '2020-02-07T15:00:00', title: 'event 7' },
+                { id: '8', resourceId: '12', start: '2020-02-07T07:30:00', end: '2020-02-07T09:30:00', title: 'event 8' },
+                { id: '9', resourceId: '13', start: '2020-02-07T10:30:00', end: '2020-02-07T15:00:00', title: 'event 9' },
+                { id: '10', resourceId: '14', start: '2020-02-07T13:00:00', end: '2020-02-07T15:00:00', title: 'event 10' },
+                { id: '11', resourceId: '15', start: '2020-02-07T18:00:00', end: '2020-02-07T19:30:00', title: 'event 11' },
+                { id: '12', resourceId: '16', start: '2020-02-07T18:00:00', end: '2020-02-07T19:00:00', title: 'event 12' },
+                { id: '13', resourceId: '17', start: '2020-02-07T18:30:00', end: '2020-02-07T20:30:00', title: 'event 13' },
+                { id: '14', resourceId: '18', start: '2020-02-07T14:00:00', end: '2020-02-07T15:00:00', title: 'event 14' },
+                { id: '15', resourceId: '19', start: '2020-02-07T19:00:00', end: '2020-02-07T21:00:00', title: 'event 15' },
+            ],
+             select: function(info) {
+                 var start = moment(info.start);
+                 var end = moment(info.end);
+                 var month_day = start.format("HH")
+                 if(month_day == "00"){
+                     var date_start = start.format("YYYY-MM-DD")+" "+moment().format('HH:mm:ss');
+                     var date_end = start.format("YYYY-MM-DD")+" "+moment().add(1, 'hours').format("HH:mm:ss");
+                 }else{
+                     var date_start = start.format("YYYY-MM-DD HH:mm:ss");
+                     if(start.format("YYYY-MM-DD") == end.format("YYYY-MM-DD")) {
+                         var date_end = end.format("YYYY-MM-DD HH:mm:ss");
+                     } else {
+                         var date_end = date_start;
+                     }
+                 }
+
+                 var url = "{:url('bookings/add')}?date_start=" + date_start + "&date_end=" + date_end;
+                 bookingWin(url);
+             },
+             eventClick: function(info) {
+                 //var url = "{:url('bookings/edit')}?id=" + info.event.id;
+                 var url = "{:url('bookings/add')}?date_start=" + date_start + "&date_end=" + date_end;
+                 bookingWin(url);
+             }
+        });
+
+        calendar.render();
+
+
+    });
+
+
+
+</script>
+{/block}
