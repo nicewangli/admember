@@ -70,8 +70,6 @@ class Transfers extends Application
         return View::fetch();
     }
 
-
-
     //添加
     public function add(Request $request, Transfer $model, TransferValidate $validate, TransferItem $transferItem)
     {

@@ -9,6 +9,7 @@ use app\Application;
 use app\model\QuotationItem;
 use app\model\Stockin;
 use app\model\StockinItem;
+use app\model\WarehouseProduct;
 use think\Request;
 use think\facade\View;
 use app\validate\StockinValidate;
@@ -116,7 +117,7 @@ class Stockins extends Application
 
 
     //添加
-    public function add(Request $request, Stockin $model, StockinValidate $validate, StockinItem $stockinItem)
+    public function add(Request $request, Stockin $model, StockinValidate $validate, StockinItem $stockinItem,WarehouseProduct $wp)
     {
         $item = [];
         if ($request->isPost()) {
@@ -128,6 +129,8 @@ class Stockins extends Application
             $result = $model::create($param);
             $account_id = $result->id;
             $stockinItem->saveItem($account_id, $param);
+            //写入库存表
+            $wp->saveChangeWP($param,'stockin');
             if ($result) {
                 return json(['code' => 200,'msg' => ' successfully.']);
             } else {

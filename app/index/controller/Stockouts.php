@@ -7,6 +7,8 @@ namespace app\index\controller;
 
 use app\Application;
 use app\model\SalesOrderItem;
+use app\model\Warehouse;
+use app\model\WarehouseProduct;
 use think\facade\View;
 use think\Request;
 use app\model\Stockout;
@@ -122,17 +124,23 @@ Add standard terms'];
 
 
     //添加
-    public function add(Request $request, Stockout $model, StockoutValidate $validate, SalesOrderItem $SalesOrderItem)
+
+    public function add(Request $request, Stockout $model, StockoutValidate $validate, SalesOrderItem $SalesOrderItem,WarehouseProduct $wp)
     {
         $item = [];
+        //查询仓库数据，用于页面显示下拉框
+        $warehouse = Warehouse::select();
         if ($request->isPost()) {
             $param = $request->param();
+            $wp->saveChangeWP($param,'stockout');die;
+//            dump($param);die;
             $validate_result = $validate->scene('add')->check($param);
             if (!$validate_result) {
                 return json(['code' => 0,'msg' => $validate->getError()]);
             }
 
             $result = $model::insertGetId($param);
+
             $param['id'] = $result;
             if ($result) {
                 return json(['code' => 200,'msg' => ' successfully.']);
@@ -143,6 +151,7 @@ Add standard terms'];
             $item['supplier_id'] = input('get.supplier_id');
         }
         View::assign([
+            "warehouse" => $warehouse,
             'item' => $item,
             'act' => url('add'),
         ]);

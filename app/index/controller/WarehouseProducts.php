@@ -48,6 +48,16 @@ class WarehouseProducts extends Application
 }
 
     //點倉
+
+    /**
+     * @param Request $request
+     * @param WarehouseValidate $validate
+     * @param CheckWarehouseLog $cwLog
+     * @return \think\response\Json|void
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function edit(Request $request,WarehouseValidate $validate,CheckWarehouseLog $cwLog)
     {
         if($request->isPost()) {
@@ -58,20 +68,15 @@ class WarehouseProducts extends Application
             if (!$validate_result) {
                 return $this->error($validate->getError());
             }
-            //插入日志表数据处理
-            $checkWarehouseLog = [
-                'warehouse_id' => $model->warehouse_id,
-                'product_id'   => $model->product_id,
-                'from_quantity'=> $model->quantity,
-                'to_quantity' => $param['quantity'],
-                'operator_id' => Session::get('uid'),
-            ];
+
+            $cwLog->addCheckLog($model,$param['quantity']);
+
             //库仓表的修改
             $result = $model->save($param);
 
-            //日志表插入
-            $cwResult = $cwLog->insert($checkWarehouseLog);
-            if ($result&&$cwResult) {
+//            日志表插入
+//            $cwResult = $cwLog->save($checkWarehouseLog);
+            if ($result) {
                 return json(['code' => 200,'msg' => 'Update success.']);
             } else {
                 return json(['code' => 0,'msg' => 'Update fail']);
