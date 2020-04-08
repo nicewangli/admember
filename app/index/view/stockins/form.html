@@ -467,7 +467,9 @@
         $(".amount").each(function () {
 
             quantity = parseFloat($(this).parent().siblings().children('.quantity').val());
+            console.log(quantity);
             product_price = parseFloat($(this).parent().siblings().children('.product_price').val());
+            console.log(product_price);
             // total_discount = parseFloat($(this).parent().siblings().children('.amount').val());
           // console.log(quantity,product_price)
             amount = parseFloat(product_price * quantity);
@@ -489,7 +491,7 @@
         $("#total_amount").val(total_amount.toFixed(1));
         $("#h5").text('$'+total_amount.toFixed(1));
 
-        payment_amount();
+        // payment_amount();
     }
 
 

@@ -182,7 +182,7 @@ $(document).ready( function (){
             } else {
                 parent.$('#'+from_panel).find('tbody').empty();
                 $.each(rows, function(index, element){
-                    nodes += '<tr> <input type="hidden" name="item[' + index + '][product_id]" value="' + element.id + '"> <td width="5%"><input type="checkbox" name=""></td> <td width="15%"><input type="number" name="item[' + index + '][ordering]" value="' + parseInt(index+1) + '" style="width: 100%;"></td> <td>' + element.code + '</td> <td>' + element.name + '</td> <td width="15%">' + element.price + '</td> <td width="15%"><input type="number" name="item[' + index + '][quantity]" value="1" style="width: 100%;"></td> </tr>';
+                    nodes += '<tr> <input type="hidden" name="item[' + index + '][product_id]" value="' + element.id + '"> <td width="5%"><input type="checkbox" name=""></td> <td width="15%"><input type="number" name="item[' + index + '][ordering]" value="' + parseInt(index+1) + '" style="width: 100%;"></td> <td>' + element.code + '</td> <td>' + element.name + '</td> <td width="13%"><input type="text" name="item[' + index + '][price]" value="' + element.price + '" class="form-control text-right product_price" style="width: 100%;"></td> <td width="15%"><input type="number" class="form-control text-right quantity" name="item[' + index + '][quantity]" value="1" style="width: 100%;"></td> <td width="13%"><input type="text" name="item[' + index + '][total]" value="' + element.price + '" class="form-control text-right amount" style="width: 100%;" readonly=""></td></tr>';
                 })
 
                 parent.$('#'+from_panel).find('tbody').append(nodes);

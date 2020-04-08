@@ -122,6 +122,7 @@ class Stockins extends Application
         $item = [];
         if ($request->isPost()) {
             $param = $request->param();
+//            dump($param);die;
             $validate_result = $validate->scene('add')->check($param);
             if (!$validate_result) {
                 return json(['code' => 0,'msg' => $validate->getError()]);
