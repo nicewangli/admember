@@ -7,8 +7,6 @@ namespace app\index\controller;
 
 use app\Application;
 use app\model\SalesOrderItem;
-use app\model\Warehouse;
-use app\model\WarehouseProduct;
 use think\facade\View;
 use think\Request;
 use app\model\Stockout;
