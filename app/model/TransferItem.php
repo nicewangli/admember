@@ -8,16 +8,24 @@ class TransferItem extends Model
 {
     public function saveItem($id, $param)
     {
-
+        //记录转仓 产品仓库实现替换
+        $updateProduct = [];
+        $product = new Product();
         $this->where('transfer_id', $id)->delete();
 
         $data = $param['item'];
-        foreach ($data as $key => $value){
-            $data[$key]['transfer_id'] = $id;
-
+        if(!empty($data)) {
+            foreach ($data as $key => $value){
+                $data[$key]['transfer_id'] = $id;
+                $updateProduct[] = [
+                    'id' => $data[$key]['product_id'],
+                    'warehouse'=>$param['to_wh_id'],
+                ];
+            }
+            $product->saveAll($updateProduct);
+            $this->insertAll($data);
         }
 
-        $this->insertAll($data);
     }
 
     public function findItems($id)

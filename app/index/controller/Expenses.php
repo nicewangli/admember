@@ -116,7 +116,8 @@ class Expenses extends Application
                 }
             }
             unset($params['file']);
-
+            //编号
+            $param['code'] = Expenses::getConfigNo('expenditure','expense');
             $result = $Expense::insertGetId($params);
             $params['id'] = $result;
             if ($result) {

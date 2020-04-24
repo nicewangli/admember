@@ -6,6 +6,7 @@
 namespace app\index\controller;
 
 use app\Application;
+use app\model\Invoice;
 use think\facade\View;
 use think\facade\Request;
 use app\model\Member;
@@ -32,8 +33,16 @@ class Members extends Application
         $sort = isset($param['sort']) ?  $param['sort'] :  'first_name';
         $order = $param['order'];
         $where = [];
-        if(isset($param['account_id'])){
-            $where['account_id'] = $param['account_id'];
+          if(isset($param['filter'])){
+            $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
+
+            $query_fields = ['first_name','last_name','phone_mobile','phone_work','email1'];
+            foreach ($query_fields as $field){
+                if(isset($filter[$field])) {
+                    $where[] = [$field, 'like', $filter[$field] . '%'];
+                }
+            }
+
         }
         $items = Member::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
         $total = Member::count();
@@ -102,6 +111,8 @@ class Members extends Application
             if (!$validate_result) {
                 return $this->error($validate->getError());
             }
+            //编号
+            $param['member_no'] = Members::getConfigNo('membership','member');
             $result = $model::create($param);
             return $this->redirect(url("index"));
         }
@@ -155,12 +166,12 @@ class Members extends Application
     }
 
 
-    public function find_member(Member $model)
+    public function find_member(Member $model,Invoice $invoice)
     {
         $member_no = input('member_no');
         $where['member_no'] = $member_no;
         $member = $model->findMember($where);
-
+        $invoices =$invoice->findInvoice($member->id);
         if ($member) {
             
             $member['no_service'] = true;
@@ -168,9 +179,144 @@ class Members extends Application
             if (!empty($service)) {
                 $member['no_service'] = false;
             }
+        }
+        return json(['member' => $member,'invoices' => $invoices]);
+    }
 
+
+
+    public  function transaction(){
+
+
+        $param = input('get.');
+        $grid_url = url("lists");
+
+
+        $start_date = $params["start_date"] ?? date('Y-m-01');
+        $end_date  =  $params["end_date"] ??  date('Y-m-t');
+
+
+        $days = getDays($start_date, $end_date);
+
+
+        $param = input('get.');
+        $where = [];
+        $url = url("Members/transaction");
+        if(isset($param['id'])){
+            $url = url("Members/transaction",["id" => $param['id']]);
         }
 
-        return json(['member' => $member]);
+        View::assign([
+            'days' => $days,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+
+        ]);
+
+        return View::fetch('transaction',['transaction_url' => $url,'grid_url' => $grid_url]);
+    }
+
+
+
+
+    public function treatment(){
+
+        $param = input('get.');
+        $grid_url = url("lists");
+
+        return View::fetch('treatment',['grid_url' => $grid_url]);
+    }
+
+
+
+    public function services(){
+
+        $param = input('get.');
+        $grid_url = url("lists");
+
+
+        $start_date = $params["start_date"] ?? date('Y-m-01');
+        $end_date  =  $params["end_date"] ??  date('Y-m-t');
+
+
+        $days = getDays($start_date, $end_date);
+
+
+        $param = input('get.');
+        $where = [];
+        $url = url("Members/services");
+        if(isset($param['id'])){
+            $url = url("Members/services",["id" => $param['id']]);
+        }
+
+        View::assign([
+            'days' => $days,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+
+        ]);
+
+        return View::fetch('services',['services_url' => $url,'grid_url' => $grid_url]);
+    }
+
+
+    public function stored_value(){
+
+        $param = input('get.');
+        $grid_url = url("lists");
+
+        $start_date = $params["start_date"] ?? date('Y-m-01');
+        $end_date  =  $params["end_date"] ??  date('Y-m-t');
+
+
+        $days = getDays($start_date, $end_date);
+
+
+        $param = input('get.');
+        $where = [];
+        $url = url("Members/stored_value");
+        if(isset($param['id'])){
+            $url = url("Members/stored_value",["id" => $param['id']]);
+        }
+
+        View::assign([
+            'days' => $days,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+
+        ]);
+
+        return View::fetch('stored_value',['stored_value_url' => $url,'grid_url' => $grid_url]);
+    }
+
+
+
+    public function reward(){
+
+        $param = input('get.');
+        $grid_url = url("lists");
+
+        $start_date = $params["start_date"] ?? date('Y-m-01');
+        $end_date  =  $params["end_date"] ??  date('Y-m-t');
+
+
+        $days = getDays($start_date, $end_date);
+
+
+        $param = input('get.');
+        $where = [];
+        $url = url("Members/reward");
+        if(isset($param['id'])){
+            $url = url("Members/reward",["id" => $param['id']]);
+        }
+
+        View::assign([
+            'days' => $days,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+
+        ]);
+
+        return View::fetch('reward',['reward_url' => $url,'grid_url' => $grid_url]);
     }
 }

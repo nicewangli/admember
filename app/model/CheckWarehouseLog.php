@@ -12,7 +12,6 @@ class CheckWarehouseLog extends Model
      * 封裝写入库存日志方法
      * @param WarehouseProduct $warehouseProduct
      * @param $quantity
-     * @return bool
      */
     public function addCheckLog(WarehouseProduct $warehouseProduct,$quantity)
     {

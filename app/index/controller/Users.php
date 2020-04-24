@@ -52,6 +52,8 @@ class Users extends Application
                 }
 
                 $data['password'] = password($data['password']);
+                //编号
+                $data['member_no'] = Users::getConfigNo('employee_data','user');
                 $r = Db::name('users')->insert($data);
                 if ($r) {
                     addlog('新增用户，用户名：'.$data['username'], $this->user['username']);
@@ -90,7 +92,7 @@ class Users extends Application
             }
         }
 
-        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->field('u.uid,u.first_name,u.last_name,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,g.title')->order('u.uid desc')->paginate(20);
+        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->field('u.uid,u.first_name,u.last_name,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,g.title')->order('u.uid desc')->paginate(10);
         View::assign('list', $list);
         return View::fetch();
     }

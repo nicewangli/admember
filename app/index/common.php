@@ -7,13 +7,15 @@
 *
 **/
 
+use app\index\controller\Setting;
 use app\model\Lead;
 use app\model\Contact;
 use app\model\Store;
 use app\model\User;
+use think\Config;
 use think\facade\Db;
 use think\facade\Session;
-
+use app\Application;
 
 function addlog($log, $username=false)
 {
@@ -47,13 +49,14 @@ function setContact($item,$contact_id)
             if (!empty($contact['lead_id'])) {
                 $item = setLead($item, $contact['lead_id']);
             }
-            return $item;
         }
     }
+    return $item;
+
 }
 
-
-function getDays($month, $year){
+#Get days by year and month
+function getDays_ym($month, $year){
     // Start of Month
     $start = new DateTime("{$year}-{$month}-01");
     $month = $start->format('F');
@@ -72,11 +75,26 @@ function getDays($month, $year){
         // Next Day
         $start->add(new DateInterval("P1D"));
     }
+    // Return results
+    return $results;
+}
 
+function getDays($start_date, $end_date){
+    $results = array();
+
+    while (strtotime($start_date) <= strtotime($end_date)) {
+        $start = new DateTime($start_date);
+        $day              = $start->format('D');
+        $sort_date        = $start->format('j');
+        $date             = $start->format('Y-m-d');
+        $results[$date]   = ['day' => $day,'sort_date' => $sort_date,'date' => $date];
+        $start_date = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)));
+    }
 
     // Return results
     return $results;
 }
+
 
 function getDayItem($attendances,$user_id,$vdate){
     $atts = [];
@@ -96,6 +114,21 @@ function getOptions($type_id){
     $data = Db::name('mapping')->where(['type_id' => $type_id])->select();
     return $data;
 }
+
+function getUsers(){
+    $data = Db::name('users')->field("uid,concat_ws(' ',first_name,last_name) as name")->select();
+    return $data;
+}
+
+function flash_messages(){
+    $types = ['success','error','info','warning'];
+    foreach ($types as $type){
+        if(session("?flash_".$type)){
+            echo "<script>tips('".session('flash_'.$type)."','".$type."')</script>";
+        }
+    }
+}
+
 
 /**
  * 获取当前用户信息
@@ -123,3 +156,19 @@ function getWarehouse()
     $store = Store::find($user->store_id);
     return $store->warehouse_id;
 }
+
+
+//function getConfigNo($app,$type='',$dbName){
+//    $app = new Application($app);
+//    $no = '';
+//    $count = Db::table($dbName)->select()->count();
+//    $no = (string)$count;
+//    //员工编号拼凑
+//    if($type == 'employee') {
+//        for($i = strlen($no); $i < strlen($app->sysConfig['value5']); ++$i) {
+//            $no = '0'.$no;
+//        }
+//        $no = $app->sysConfig['employee_data'].$no;
+//    }
+//    return $no;
+//}

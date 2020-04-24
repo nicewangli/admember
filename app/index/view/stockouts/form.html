@@ -40,17 +40,11 @@
                     </div>
 
                     <div class="form-group row">
-                        <label class="col-md-3 control-label" for="warehouse_id">貨倉</label>
+                        <label class="col-md-3 control-label" for="payment_term">貨倉</label>
                         <div class="col-md-7">
-                            <select class="form-control"  name="warehouse_id" id="warehouse_id">
-                            <option value=""></option>
-                            {volist name="warehouse" id="wh"}
-                            <option value="{$wh.id}">{$wh.name}</option>
-                            {/volist}
-                        </select>
-<!--                            <input class="form-control" type="text" id="payment_term" name="payment_term"-->
-<!--                                   value="{$data.payment_term|default=''}"-->
-<!--                                   placeholder="銅鑼灣貨倉">-->
+                            <input class="form-control" type="text" id="payment_term" name="payment_term"
+                                   value="{$data.payment_term|default=''}"
+                                   placeholder="銅鑼灣貨倉">
                         </div>
                     </div>
 
@@ -77,40 +71,6 @@
 
                 </div>
             </div>
-            <div class="form-group ">
-                <p><a title="選擇" onclick="service_products()" class="btn btn-primary btn-sm " href="#">選擇</a></p>
-
-                <table id="service_products" class="table table-hover table-striped table-sm datatable" width="100%">
-                    <thead>
-                    <th width="5%"><input type="checkbox" name=""></th>
-                    <th width="5%">次序</th>
-                    <th>編號</th>
-                    <th>名稱</th>
-                    <th width="15%">售價</th>
-                    <th width="15%">數量</th>
-                    <th width="15%">金額</th>
-
-                    </thead>
-                    <tbody>
-                    {empty name="pur_items" }
-                    {notempty name="service_product"}
-                    {volist name="service_product" id="cp" key="key"}
-                    <tr>
-                        <input type="hidden" name="item[{$key}][product_id]" value="{$cp.product_id}">
-                        <td width="5%"><input type="checkbox" name=""></td>
-                        <td width="5%"><input type="number" name="item[{$key}][ordering]" value="{$cp.ordering}"style="width: 50%;"></td>
-                        <td>{$cp.product_code}</td>
-                        <td>{$cp.product_name}</td>
-                        <td width="15%"><input type="number" class="product_price" name="item[{$key}][product_price]" value="{$cp.product_price}"style="width: 100%;"></td>
-                        <td width="15%"><input type="number" class="quantity" name="item[{$key}][quantity]" value="{$cp.quantity}"style="width: 100%;"></td>
-                        <td width="15%"><input class="amount" type="number" name="item[{$key}][amount]"  value="{$cp.amount}" style="width: 100%;"></td>
-                    </tr>
-                    {/volist}
-                    {/notempty}
-                    {/empty}
-                    </tbody>
-                </table>
-            </div>
         </form>
     </div>
 
@@ -130,15 +90,6 @@
 {block name="js"}
 
 <script type="text/javascript">
-
-    function service_products(){
-        layer.open({
-            type: 2,
-            title: 'Products Information',
-            area: ['800px', '500px'],
-            content: '{:url("products/products?from_panel=service_products")}'
-        })
-    }
 
     $("#stockout-submit").click(function () {    // 提交按钮触发事件
         var form_action = $("#stockout-form").attr("action");    // 获取 表单的 提交地址

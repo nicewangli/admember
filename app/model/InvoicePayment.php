@@ -26,7 +26,7 @@ class InvoicePayment extends Model
 
     public function findPayments($id)
     {
-        $result = $this->alias('ip')->leftJoin('mappings m', 'ip.method = m.id')->field('ip.*, m.item_value as payment_method')->where('ip.invoice_id', $id)->order('ip.id ASC')->select()->toArray();        return $result;
+        $result = $this->alias('ip')->leftJoin('mapping m', 'ip.method = m.id')->field('ip.*, m.val as payment_method')->where('ip.invoice_id', $id)->order('ip.id ASC')->select()->toArray();        return $result;
         return $result;
     }
 

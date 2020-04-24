@@ -26,7 +26,7 @@ class PackageStagingPayment extends Model
 
     public function findPayments($id)
     {
-        $result = $this->alias('psi')->leftJoin('mappings m', 'psi.method = m.id')->field('psi.*, m.item_value as payment_method')->where('psi.package_staging_id', $id)->order('psi.id ASC')->select()->toArray();
+        $result = $this->alias('psi')->leftJoin('mapping m', 'psi.method = m.id')->field('psi.*, m.val as payment_method')->where('psi.package_staging_id', $id)->order('psi.id ASC')->select()->toArray();
         return $result;
     }
 

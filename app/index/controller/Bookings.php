@@ -82,6 +82,8 @@ class Bookings extends Application
 
         if (Request::isPost()) {
             $param = input('post.');
+            //编号
+            $param['code'] = Bookings::getConfigNo('reservation','booking');
             $res = $model::create($param);
             if ($res) {
                 $event = ['id' => $res['id'],'start' => $res['date_start'],'end' => $res['date_end'],'title' => $res['title']];

@@ -15,5 +15,10 @@ class PackageStaging extends Model
     public $softDelete = true;
     protected $defaultSoftDelete = 0;
     protected $autoWriteTimestamp = true;
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
     
 }

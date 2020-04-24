@@ -93,6 +93,7 @@ class Leads extends Application
 
 
 
+
     public function panel()
     {
         $param = input('get.');
@@ -131,7 +132,6 @@ class Leads extends Application
     //修改
     public function edit($id, Request $request, Lead $model, LeadValidate $validate)
     {
-
         $item = $model::find($id);
         if ($request::isPost()) {
             $param  = input('post.');

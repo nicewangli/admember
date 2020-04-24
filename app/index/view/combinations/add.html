@@ -101,7 +101,7 @@
                                 <select class="form-control" id="unit" name="unit" value="{$data.unit|default=''}">
                                     <option value=""></option>
                                     {volist name="products_unit" id="val"}
-                                        <option value="{$val.id}" {notempty name="data"}{eq name="$data.unit" value="$val.id"}selected="selected"{/eq}{/notempty}>{$val.item_value}</option>
+                                        <option value="{$val.id}" {notempty name="data"}{eq name="$data.unit" value="$val.id"}selected="selected"{/eq}{/notempty}>{$val.val}</option>
                                     {/volist}
                                 </select>
                             </div>
@@ -113,7 +113,7 @@
                                 <select class="form-control" id="brand" name="brand" value="{$data.brand|default=''}">
                                     <option value=""></option>
                                     {volist name="brand" id="val"}
-                                        <option value="{$val.id}" {notempty name="data"}{eq name="$data.brand" value="$val.id"}selected="selected"{/eq}{/notempty}>{$val.item_value}</option>
+                                        <option value="{$val.id}" {notempty name="data"}{eq name="$data.brand" value="$val.id"}selected="selected"{/eq}{/notempty}>{$val.val}</option>
                                     {/volist}
                                 </select>
                             </div>

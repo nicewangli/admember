@@ -118,6 +118,7 @@ class Contacts extends Application
             if (!$validate_result) {
                 return $this->error($validate->getError());
             }
+
             $result = $model::create($param);
             return $this->redirect(url("index"));
         }

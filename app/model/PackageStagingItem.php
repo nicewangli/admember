@@ -10,6 +10,10 @@ use think\facade\Db;
 
 class PackageStagingItem extends Model
 {
+    public function packageStaging()
+    {
+        return $this->belongsTo(PackageStaging::class);
+    }
 
     public function saveItem($id, $data)
     {
@@ -34,4 +38,6 @@ class PackageStagingItem extends Model
     {
         $this->where('package_staging_id', $id)->delete();
     }
+
+
 }

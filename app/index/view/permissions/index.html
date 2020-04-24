@@ -35,7 +35,7 @@
 
                 <div class="card-body table-responsive">
     <form id="form" method="post" action="{:url('index',['act'=>'del'])}">
-        <table class="table table-striped table-bordered table-hover">
+        <table class="table table-striped table-bordered table-hover table-sm">
         <thead>
             <tr>
                 <th class="center"><input class="check-all" type="checkbox" value=""></th>
@@ -65,7 +65,7 @@
     </table>
     </form>
 </div>
-<div class="row">
+<div class="card-footer">
 {$list->render()|raw}
 </div>
    </div>

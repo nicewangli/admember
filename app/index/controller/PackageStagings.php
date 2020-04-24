@@ -6,6 +6,7 @@
 namespace app\index\controller;
 
 use app\Application;
+use app\model\ServicePackage;
 use think\facade\View;
 use think\Request;
 use app\model\PackageStaging;
@@ -86,17 +87,27 @@ class PackageStagings extends Application
 
 
     //添加
-    public function add(Request $request, PackageStaging $model, PackageStagingValidate $validate,PackageStagingItem $packageStagingItem, PackageStagingPayment $packageStagingPayment, PackageStagingSeller $packageStagingSeller)
+    public function add(Request $request, PackageStaging $model, PackageStagingValidate $validate,PackageStagingItem $packageStagingItem, PackageStagingPayment $packageStagingPayment, PackageStagingSeller $packageStagingSeller,Invoice $invoice)
     {
+//        $member_id = input('member_id',2);
+//        $invoiceArr = $invoice->where('member_id','=',$member_id)->select()->toArray();
+
         if ($request->isPost()) {
             $param = input('post.');
             $validate_result = $validate->scene('add')->check($param);
             if (!$validate_result) {
                 return $this->error($validate->getError());
             }
-
+            if(!empty($param['invoice_id'])) {
+                $i = $invoice->find($param['invoice_id']);
+                $i->final_total -= $param['final_total'];
+                dump($i->final_total);die;
+                $i->save();
+            }
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
+            //编号
+            $param['ps_no'] = PackageStagings::getConfigNo('package_staging','package_staging');
             $result = $model::create($param);
             $package_staging_id = $result->id;
             if (isset($param['service'])) {
@@ -198,5 +209,18 @@ class PackageStagings extends Application
         $package_staging_id = input('package_staging_id');
         $package_staging = $model->where('package_staging_id', $package_staging_id)->find();
         return json(['package_staging' => $package_staging]);
+    }
+
+    public function get_package(ServicePackage $model,PackageStaging $packageStaging,PackageStagingItem $packageStagingItem)
+    {
+        $member_id = input('member_id');
+        $invoice_id = input('invoice_id');
+        $where = [];
+        $where[] = ['ps.invoice_id','=',$invoice_id];
+        $where[] = ['ps.member_id','=',$member_id];
+        $item = $packageStagingItem->alias('psi')->leftJoin('package_staging ps','psi.package_staging_id = ps.id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->field('psi.*,ps.ps_no,sp.name as sp_name,sp.code')->where($where)->select()->toArray();
+        //根据invoice_id  member_id  package_staging_id,package_staging_item,,service_package_id
+        $data = ['rows' => $item];
+        return json($data);
     }
 }

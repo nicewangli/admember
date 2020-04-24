@@ -7,6 +7,8 @@ namespace app\index\controller;
 
 use app\Application;
 use app\model\SalesOrderItem;
+use app\model\Warehouse;
+use app\model\WarehouseProduct;
 use think\facade\View;
 use think\Request;
 use app\model\Stockout;
@@ -136,6 +138,8 @@ Add standard terms'];
             if (!$validate_result) {
                 return json(['code' => 0,'msg' => $validate->getError()]);
             }
+            //编号
+            $param['so_no'] = Stockins::getConfigNo('dekura','stockout');
 
             $result = $model::insertGetId($param);
 

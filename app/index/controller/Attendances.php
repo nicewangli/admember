@@ -19,14 +19,13 @@ class Attendances extends Application
     public function index(Request $request,Attendance $attendance,User $user)
     {
 
-        $arrayDays = getDays(3, 2020);
-        $startDays = $arrayDays;
-        $endDays = $arrayDays;
+         $params = $request->param();
 
-        $keys = array_keys($endDays);
-        $endDays[$keys[count($keys)-1]]['selected'] = true;
+           $start_date = $params["start_date"] ?? date('Y-m-01');
+           $end_date  =  $params["end_date"] ??  date('Y-m-t');
 
 
+        $days = getDays($start_date, $end_date);
         $attendances = $attendance->select();
         $users = $user->field("uid,first_name")->select()->toArray();
         foreach ($users as $key => $value) {
@@ -34,25 +33,54 @@ class Attendances extends Application
             $users[$key]['attendance'] = $attendance::where($where)->select()->toArray();
         }
 
-        $user_id = input('get.user_id');
+        $user_id = $params['user_id'] ?? '';
 
         View::assign([
-            'startDays' => $startDays,
-            'endDays' => $endDays,
+            'days' => $days,
             'grid_url' => url('lists',['user_id' => $user_id]),
             'user_id' => $user_id,
             'users' => $users,
             'attendances' => $attendances,
-            'start_date' => '',
-            'end_date' => '',
-
+            'start_date' => $start_date,
+            'end_date' => $end_date,
         ]);
         return View::fetch();
     }
 
 
 
+/*  public function detail(){
+      $arrayDays = getDays(3, 2020);
+      $startDays = $arrayDays;
+      $endDays = $arrayDays;
 
+      $keys = array_keys($endDays);
+      $endDays[$keys[count($keys)-1]]['selected'] = true;
+
+
+      $attendances = Attendance::select();
+      $users = User::field("uid,first_name")->select()->toArray();
+      foreach ($users as $key => $value) {
+          $where=['user_id' => $value['uid'], 'vdate' => 'vdate'];
+          $users[$key]['attendance'] = Attendance::where($where)->select()->toArray();
+      }
+
+      $user_id = input('get.user_id');
+
+      View::assign([
+          'startDays' => $startDays,
+          'endDays' => $endDays,
+          'grid_url' => url('lists',['user_id' => $user_id]),
+          'user_id' => $user_id,
+          'users' => $users,
+          'attendances' => $attendances,
+          'start_date' => '',
+          'end_date' => '',
+          'getdate'=> '',
+
+      ]);
+      return view('detail');
+  }*/
 
 
     //添加

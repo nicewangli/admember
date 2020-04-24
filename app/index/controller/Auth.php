@@ -62,11 +62,9 @@ class Auth extends Application
             } else {
                 Session::set('auth', $auth);
             }
-            //TODO
             Session::set('uid', $user->uid);
-
             addlog('Login success', $user->username);
-            return $this -> success('Login success！', url('index/index'));
+            return redirect(url('index/index'))->with("flash_info","Login Success");
         } else {
             addlog('username or password incorrect。', $data['username']);
             return $this -> error('Username or password incorrect!', url('auth/index'));

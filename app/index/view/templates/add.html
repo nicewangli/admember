@@ -1,93 +1,110 @@
-{extend name='public/base' /}
+{extend name='public/popup' /}
 {block name='content'}
+<section class="content">
+    <form class="form-horizontal" id="template-form" method="post" action="{$act}" enctype="multipart/form-data">
+        <input type="hidden" id="id" name="id" value="{$item.id|default=''}">
 
-<section class="content" xmlns="http://www.w3.org/1999/html">
-    <div class="container-fluid">
+        <div class="row pt-2">
+            <div class="col-xs-12 col-md-12">
 
-        <!-- form content -->
-        <div class="card">
-            <div class="card-body">
-                <form id="dataForm" class="form-horizontal dataForm" action="" method="post"
-                      enctype="multipart/form-data">
-                    <!-- Columns start at 50% wide on mobile and bump up to 33.3% wide on desktop -->
-
-                    <div class="form-group row">
-                        <div class="col-lg-10">
-                            <a class="btn flat btn-sm btn-default BackButton" href="index.html">
-                                <i class="fa fa-arrow-left"></i>
-                                Back
-                            </a>
-                        </div>
-
-                        <div class="col-lg-2">
-                            <button type="submit"class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
-                                Save
-                            </button>
-
-                            <button type="submit" class="fa fa-trash  btn flat btn-danger  dataFormSubmit btn-sm">
-                                Delete
-                            </button>
-                        </div>
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="msg_type">Category</label>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" id="msg_type" name="msg_type"
+                               value="{$data.msg_type|default=''}"
+                               placeholder="">
                     </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="template_id">Template</label>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" id="template_id" name="template_id"
+                               value="{$data.template_id|default=''}"
+                               placeholder="">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="subject">Subject</label>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" id="subject" name="subject"
+                               value="{$data.subject|default=''}"
+                               placeholder="">
+                    </div>
+                </div>
 
 
-                    <div class="row pt-2">
-                        <div class="col-xs-12 col-md-12">
-
-                            <div class="form-group row">
-                                <label class="col-md-2 control-label" for="category">Category</label>
-                                <div class="col-md-8">
-                                    <input class="form-control" type="text" id="category" name="category"
-                                           value="{$data.category|default=''}"
-                                           placeholder="">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <label class="col-md-2 control-label" for="name">Name</label>
-                                <div class="col-md-8">
-                                    <input class="form-control" type="text" id="name" name="name"
-                                           value="{$data.name|default=''}"
-                                           placeholder="">
-                                </div>
-                            </div>
-
-
-                            <div class="form-group row">
-                                <label class="col-md-2 control-label" for="ordering">Ordering</label>
-                                <div class="col-md-8">
-                                    <input class="form-control" type="text" id="ordering" name="ordering"
-                                           value="{$data.ordering|default=''}"
-                                           placeholder="">
-                                </div>
-                            </div>
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="delivery_time">Delivery time</label>
+                    <div class="col-md-8">
+                        <input class="form-control" type="text" id="delivery_time" name="delivery_time"
+                               value="{$data.delivery_time|default=''}"
+                               placeholder="">
+                    </div>
+                </div>
 
 
 
-                            <div class="form-group row">
-                                <label class="col-md-2 control-label"for="content">Content</label>
-                                <div class="col-md-8 ">
+                <div class="form-group row">
+                    <label class="col-md-2 control-label"></label>
+                    <div class="col-md-8 ">
                                   <textarea class="form-control" id="content" name="content"
                                             rows="10"
                                             value="{$data.content|default=''}">{$data.content|default=''}</textarea>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
-</section>
-<script>
-    /** 表单验证 **/
-    $('#dataForm').validate({
-        rules: {
-            'name': {
-                required: true,
-            },
+    </form>
 
-        }
+
+    <hr>
+    <div class="col-md-12" align="center">
+        <button id="template-submit" type="button" class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
+            Save
+        </button>
+        &nbsp;
+        <button class="btn btn-sm btn-default layer-close">Close</button>
+    </div>
+
+</section>
+
+
+{/block}
+{block name="js"}
+
+<script type="text/javascript">
+    $(function () {
+        $("#template").change(function () {
+            let file = this.fields[0];
+            $("#url").text(file.name)
+        })
+    })
+
+
+    $("#template-submit").click(function () {    // 提交按钮触发事件
+        var formAction = $("#template-form").attr("action");
+        var formData= $("#template-form").serializeFiles();
+        $.ajax({
+            url         : formAction,
+            data        : formData,
+            cache       : false,
+            contentType : false,
+            processData : false,
+            type        : 'POST',
+            success     : function(data, textStatus, jqXHR){
+                layer.msg(data['msg']);
+                if (data['code'] == 200) {
+                    layer_close()
+                    parent.$('#template-grid').bootstrapTable('refresh')
+                }
+            }
+        });
+
     });
+
+
+
 </script>
 {/block}

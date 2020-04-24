@@ -27,7 +27,7 @@ class Mappings extends Application
                 $record = [];
                 $record['id'] = $item->id;
                 $record['name'] = $item->name;
-                $record['item_value'] = $item->item_value;
+                $record['val'] = $item->val;
                 $record['parent'] = $item->parent;
                 $record['ordering'] = $item->ordering;
                 $body[] = $record;
@@ -123,7 +123,7 @@ class Mappings extends Application
             $id = input('post.id', 0, 'intval');
             $type_id = input('post.type_id', 0);
             $name = input('post.name');
-            $item_value = input('post.item_value');
+            $val = input('post.val');
             $parent = input('post.parent');
             $ordering = input('post.ordering', 0, 'intval');
             $module_id = input('post.module_id', 0, 'intval');
@@ -131,7 +131,7 @@ class Mappings extends Application
             $data = [
                 'type_id'=> $type_id,
                 'name' => $name,
-                'item_value' => $item_value,
+                'val' => $val,
                 'parent' => $parent,
                 'ordering' => $ordering,
                 'module_id' => $module_id,
@@ -177,7 +177,7 @@ class Mappings extends Application
         $where = [];
 
         if(isset($param['search'])){
-            $where[] = ['item_value', 'like', '%'.$param['search'].'%'];
+            $where[] = ['val', 'like', '%'.$param['search'].'%'];
         }
         
         if(isset($param['type_id'])){
@@ -192,8 +192,8 @@ class Mappings extends Application
             if(isset($filter['name'])){
                 $where[] = ['name', 'like', '%'.$filter['name'].'%'];
             }
-            if(isset($filter['item_value'])){
-                $where[] = ['item_value', 'like', '%'.$filter['item_value'].'%'];
+            if(isset($filter['val'])){
+                $where[] = ['val', 'like', '%'.$filter['val'].'%'];
             }
             if(isset($filter['parent'])){
                 $where[] = ['parent', 'like', '%'.$filter['parent'].'%'];
@@ -229,7 +229,7 @@ class Mappings extends Application
     {
         $type_id = input('type_id');
 
-        $list = $model->field('id, item_value as text')->where('type_id', $type_id)->order('ordering asc')->select();
+        $list = $model->field('id, val as text')->where('type_id', $type_id)->order('ordering asc')->select();
 
         return json(['code' => 200, 'results' => $list]);
     }

@@ -145,6 +145,8 @@ class Products extends Application
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
 
+            //编号
+            $param['code'] = Products::getConfigNo('product','product');
             $result = $model::create($param);
             return json(['code' => 200]);
         }

@@ -2345,7 +2345,7 @@ INSERT INTO `leads` (`id`, `delete_time`, `created_time`, `updated_time`, `updat
 CREATE TABLE IF NOT EXISTS `listbox_item` (
   `id` int(11) NOT NULL,
   `type_id` varchar(25) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
-  `item_value` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
+  `val` varchar(255) COLLATE utf8_unicode_ci DEFAULT '',
   `name` varchar(50) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `parent` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ordering` int(4) NOT NULL DEFAULT 0,
@@ -2357,7 +2357,7 @@ CREATE TABLE IF NOT EXISTS `listbox_item` (
 -- 转存表中的数据 `listbox_item`
 --
 
-INSERT INTO `listbox_item` (`id`, `type_id`, `item_value`, `name`, `parent`, `ordering`, `updated_time`, `delete_time`) VALUES
+INSERT INTO `listbox_item` (`id`, `type_id`, `val`, `name`, `parent`, `ordering`, `updated_time`, `delete_time`) VALUES
 (3123, '0', '', '123', '', 0, NULL, 0),
 (12312, '0', '3123', '123', '3123', 3123, NULL, NULL),
 (1, '0', '1', '1222', '1', 1, NULL, 0);

@@ -1,6 +1,7 @@
 <?php
 namespace app;
 
+use think\facade\Db;
 use think\facade\Session;
 use think\facade\View;
 use app\model\User;
@@ -66,6 +67,8 @@ class Application extends BaseController
 
 
         $no_need_to_check_action = [
+            'refund_packages',
+            'list',
             'lists',
             'panel',
             'qsearch',
@@ -90,6 +93,12 @@ class Application extends BaseController
             'find_invoice',
             'services',
             'service_lists',
+            'transaction',
+            'treatment',
+            'services',
+            'stored_value',
+            'reward',
+            'get_package'
         ];
 
 
@@ -111,6 +120,16 @@ class Application extends BaseController
         list($identifier, $token) = str_split($auth, 32);
         if (ctype_alnum($identifier) && ctype_alnum($token)) {
             $user = User::where(['identifier'=>$identifier,'token'=>$token,'status'=>1])->find();
+            if ($user) {
+                if ($token == $user->token && $user->identifier == password($user->uid . md5($user->username . $user->salt))) {
+//                    $status = false;
+                }else{
+                    return $this->redirect("/index/auth/index")->with('toastr', 'Login failed!');
+                }
+            }else{
+//                return $this->redirect("/auth/index");
+                return $this->redirect('/index/auth/index')->with('toastr', 'Login failed!');
+            }
             $this->user = $user;
         }
 
@@ -145,6 +164,28 @@ class Application extends BaseController
             }
         }
         return $tree;
+    }
+	
+	
+	//登录提示
+    protected function flash_msg($value,$name='success')
+    {
+        Session::flash('flash_'.$name, $value);
+    }
+
+	
+
+    //编号 生成
+    protected function getConfigNo($type,$dbName)
+    {
+        $count = Db::table($dbName)->select()->count();
+        $no = (string)($count+1);
+        //编号拼凑
+        for ($i = strlen($no); $i < strlen($this->sysConfig[$type . '_code']); ++$i) {
+            $no = '0'.$no;
+        }
+        $no = $this->sysConfig[$type].$no;
+        return $no;
     }
 
 }

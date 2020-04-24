@@ -6,6 +6,9 @@
 namespace app\index\controller;
 
 use app\Application;
+use app\model\Member;
+use app\model\PackageStaging;
+use app\model\PackageStagingItem;
 use think\Request;
 use app\model\Product;
 use app\model\Mapping;
@@ -240,7 +243,7 @@ class ServicePackages extends Application
             if ($id) {
                 $items = $packageItem->alias('spi')->leftJoin('service s', 'spi.service_id = s.id')->field('spi.*, s.code, s.name')->where('spi.service_package_id', $id)->order($sort.' '.$order)->select()->toArray();
             }else{
-                $items = Invoice::alias('i')->leftJoin('invoice_item it', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->leftJoin('mappings m', 'm.id = sp.package_unit')->field('sp.id, sp.code, sp.name, sp.price, sp.expiration_date, sp.package_value, sp.package_value_used, m.item_value as package_unit')->where($where)->order($sort.' '.$order)->select()->toArray();
+                $items = Invoice::alias('i')->leftJoin('invoice_item it', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->leftJoin('mappings m', 'm.id = sp.package_unit')->field('sp.id, sp.code, sp.name, sp.price, sp.expiration_date, sp.package_value, sp.package_value_used, m.val as package_unit')->where($where)->order($sort.' '.$order)->select()->toArray();
             }
         }
 
@@ -256,4 +259,7 @@ class ServicePackages extends Application
         ];
         return json($data);
     }
+
+
+
 }

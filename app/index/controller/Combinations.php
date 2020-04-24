@@ -54,7 +54,7 @@ class Combinations extends Application
                 $where[] = ['category_id', '=', $category_id];
             }
             if(isset($filter['brand_name'])){
-                $brand_id = $mapping::where('item_value', $filter['brand_name'])->value('id');
+                $brand_id = $mapping::where('val', $filter['brand_name'])->value('id');
                 $where[] = ['brand', '=', $brand_id];
             }
         }
@@ -76,7 +76,7 @@ class Combinations extends Application
                 $items[$key]['category'] = $category::where('id', $value['category_id'])->value('name');
             }
             if($value['brand']){
-                $items[$key]['brand_name'] = $mapping::where('id', $value['brand'])->value('item_value');
+                $items[$key]['brand_name'] = $mapping::where('id', $value['brand'])->value('val');
             }
             
             if (!empty($ids)) {
@@ -106,7 +106,8 @@ class Combinations extends Application
             }
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
-
+            //编号
+            $param['code'] = Combinations::getConfigNo('product_mix','combination');
             $result = $model::create($param);
 
             if (isset($param['item'])) {

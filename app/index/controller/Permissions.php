@@ -81,7 +81,7 @@ class Permissions extends Application
             return View::fetch('form');
         }
 
-        $list = Db::name('permissions')->field('id,pid,url,title,icon,status,o')->order('o ASC')->paginate(25);
+        $list = Db::name('permissions')->field('id,pid,url,title,icon,status,o')->order('o ASC')->paginate(10);
         View::assign('list', $list);
         return View::fetch();
     }

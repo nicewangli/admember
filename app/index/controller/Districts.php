@@ -32,7 +32,7 @@ class Districts extends Application
                 $record = [];
                 $record['id'] = $item->id;
                 $record['name'] = $item->name;
-                $record['item_value'] = $item->item_value;
+                $record['val'] = $item->val;
                 $record['parent'] = $item->parent;
                 $record['ordering'] = $item->ordering;
                 $body[] = $record;
@@ -148,14 +148,14 @@ class Districts extends Application
             $id = input('post.id', 0, 'intval');
             $id = input('post.id', 0);
             $name = input('post.name');
-            $item_value = input('post.item_value');
+            $val = input('post.val');
             $parent = input('post.parent');
             $ordering = input('post.ordering', 0, 'intval');
 
             $data = [
                 'id'=> $id,
                 'name' => $name,
-                'item_value' => $item_value,
+                'val' => $val,
                 'parent' => $parent,
                 'ordering' => $ordering,
                 'updated_at' => date('Y-m-d H:i:s', time())
@@ -198,7 +198,7 @@ class Districts extends Application
         $where = [];
 
         if(isset($param['search'])){
-            $where[] = ['item_value', 'like', '%'.$param['search'].'%'];
+            $where[] = ['val', 'like', '%'.$param['search'].'%'];
         }
         
         if(isset($param['id'])){

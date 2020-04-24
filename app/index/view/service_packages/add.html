@@ -142,7 +142,7 @@
                                 <select class="form-control" id="package_unit" name="package_unit" value="{$data.package_unit|default=''}">
                                     <option value=""></option>
                                     {volist name="package_unit" id="val"}
-                                        <option value="{$val.id}" {notempty name="data"}{eq name="$data.package_unit" value="$val.id"}selected="selected"{/eq}{/notempty}>{$val.item_value}</option>
+                                        <option value="{$val.id}" {notempty name="data"}{eq name="$data.package_unit" value="$val.id"}selected="selected"{/eq}{/notempty}>{$val.val}</option>
                                     {/volist}
                                 </select>
                             </div>

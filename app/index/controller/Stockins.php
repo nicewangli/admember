@@ -127,6 +127,9 @@ class Stockins extends Application
             if (!$validate_result) {
                 return json(['code' => 0,'msg' => $validate->getError()]);
             }
+            //编号
+            $param['si_no'] = Stockins::getConfigNo('ikura','stockin');
+
             $result = $model::create($param);
             $account_id = $result->id;
             $stockinItem->saveItem($account_id, $param);

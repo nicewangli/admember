@@ -10,6 +10,7 @@ class Setting extends Application
 {
     public function index($act=null)
     {
+//        Setting::getConfigNo();
         if ($act == 'update') {
             if (!Request::isPost()) {
                 return $this->error('update failed！');
@@ -33,4 +34,7 @@ class Setting extends Application
         }
         return View::fetch('form');
     }
+
+
+
 }

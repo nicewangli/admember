@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
@@ -56,11 +56,13 @@
                         <h5 style="color: #007bff;">發票資料</h5>
 
                         <div class="form-group row">
-                            <label class="col-md-3 control-label" for="invoice_no">編號：</label>
+                            <label class="col-md-3 control-label" for="invoice_id">編號：</label>
                             <div class="col-md-7">
-                                <input class="form-control" type="hidden" id="invoice_id" name="invoice_id" value="{$data.invoice_id|default=''}" required>
-
-                                <input class="form-control" type="text" id="invoice_no" value="{$data.invoice_no|default=''}" required>
+                                <select name="invoice_id" id="invoice_id" class="form-control">
+                                    <option value=""></option>
+                                </select>
+<!--                                <input class="form-control" type="hidden" id="invoice_id" name="invoice_id" value="{$data.invoice_id|default=''}" required>-->
+<!--                                <input class="form-control" type="text" id="invoice_no" value="{$data.invoice_no|default=''}" required>-->
                             </div>
                         </div>
 
@@ -290,6 +292,7 @@
                     <div class="col-xs-12 col-md-4">
                         <div class="border">
                             <input type="hidden" name="final_total" id="final_total" value="{$data.final_total|default='0.0'}">
+                            <input type="hidden" name="final_totals" id="final_totals" value="{$data.final_totals|default='0.0'}">
                             <div id="final_total_text">
                                 {if condition="isset($data.final_total) && $data.final_total > 0"}
                                     尚欠：${$data.final_total}
@@ -380,7 +383,8 @@
                     // document.title = '首次分期';
                     parent.layer.title('首次分期', index);
                     parent.$("#staging_title").text('首次分期');
-                    layer.close(layer.index); 
+                    parent.$("#invoice_id").attr('disabled',true);
+                    layer.close(layer.index);
                 }
                 ,btn2: function(index, layero){
                     //按钮【按钮二】的回调
@@ -535,6 +539,7 @@
             }
         }
         $("#final_total").val(final_total.toFixed(1));
+        $("#final_totals").val(final_total.toFixed(1));
         $("#final_total_text").text('應付：$'+final_total.toFixed(1));
 
         $("#total_amount").val(total_amount.toFixed(1));
@@ -612,22 +617,29 @@
             })
         }
 
-        $(document).on("input propertychange", "#invoice_no", function () {
-            let invoice_no = $(this).val();
+        $(document).on("change", "#invoice_id", function () {
+            let nodes = '';
+            let invoice_id = $(this).val();
             let member_id = $("#member_id").val();
             let params = {};
-            params['invoice_no'] = invoice_no;
+            params['invoice_id'] = invoice_id;
             if (member_id) {
                 params['member_id'] = member_id;
             }
             $.ajax({
-                url: "{:url('invoices/find_invoice')}",
+                // url: "{:url('invoices/find_invoice')}",
+                url: "{:url('package_stagings/get_package')}",
                 data: params,
                 success(res){
-                    if(res.code == 200){
-                        let invoice = res.invoice;
-                        $("#invoice_id").val(invoice.id);
-                        $("#invoice_no").val(invoice.invoice_no);
+                    if(res){
+                        // let invoice = res.invoice;
+                        // $("#invoice_id").val(invoice.id);
+                        // $("#invoice_no").val(invoice.invoice_no);
+                        // $('#invoice_id').empty();
+                        $.each(res.rows,function (index,element) {
+                            nodes += '<tr class="border-b service"> <td width="8%" align="center" data-id=""><input type="checkbox" class="checkbox" value="' + index + '"><input type="hidden" class="service_packages" value="' + element.id + '"></td> <td width="5%"> <input type="hidden" name="service[' + index + '][service_package_id]" value="' + element.id + '">  </td> <td width="13%">' + element.code + '</td> <td width="15%">' + element.sp_name + '</td> <td width="10%"><input type="number" min="1" name="service[' + index + '][quantity]" value="'+element.quantity+'" class="form-control text-right quantity" style="width: 100%;"></td> <td width="13%"><input type="text" name="service[' + index + '][price]" value="' + element.price + '" class="form-control text-right price" style="width: 100%;"></td> <td width="10%"><input type="text" name="service[' + index + '][discount]" value="0.0" class="form-control text-right discount" style="width: 100%;"></td> <td width="13%"><input type="text" name="service[' + index + '][total]" value="' + element.total + '" class="form-control text-right total" style="width: 100%;" readonly=""></td><td width="13%"><input type="text" name="service[' + index + '][current_payment]" value="" class="form-control text-right current_payment" style="width: 100%;"></td> </tr>';
+                        });
+                        $('#member').before(nodes);
                     }else{
                         layer.tips(res.msg, '#invoice_no', {
                             tips: 3
@@ -655,6 +667,12 @@
                                 tips: 3
                             });
                         }
+                        let nodes = '<option value=""></option>';
+                        $('#invoice_id').empty();
+                        $.each(res.invoices,function (index,element) {
+                            nodes += '<option value="'+element.id+'">'+element.invoice_no+'</option>';
+                        });
+                        $('#invoice_id').append(nodes);
                     }else{
                         $("#member_id").val('');
                         $("#name").val('');

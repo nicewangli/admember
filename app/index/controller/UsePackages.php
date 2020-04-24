@@ -98,6 +98,8 @@ class UsePackages extends Application
 
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
+            //编号
+            $param['code'] = UsePackages::getConfigNo('service_packages','use_package');;
             $result = $model::create($param);
             $use_package_id = $result->id;
 

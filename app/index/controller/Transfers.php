@@ -70,6 +70,8 @@ class Transfers extends Application
         return View::fetch();
     }
 
+
+
     //添加
     public function add(Request $request, Transfer $model, TransferValidate $validate, TransferItem $transferItem)
     {
@@ -79,11 +81,12 @@ class Transfers extends Application
         $item = [];
         if ($request->isPost()) {
             $param = $request->param();
-//            dump($param['item']);die;
             $validate_result = $validate->scene('add')->check($param);
             if (!$validate_result) {
                 return json(['code' => 0,'msg' => $validate->getError()]);
             }
+            //编号
+            $param['transfer_no'] = Transfers::getConfigNo('turnover','transfer');
             $result = $model::create($param);
             $transfer_id = $result->id;
             $transferItem->saveItem($transfer_id, $param);
@@ -127,7 +130,7 @@ class Transfers extends Application
 //            if (!$validate_result) {
 //                return $this->error($validate->getError());
 //            }
-            $result = $item->save( );
+            $result = $item->save($param);
             $transferItem->saveItem($id, $param);
             if ($result) {
                 return json(['code' => 200,'msg' => 'Update success.']);

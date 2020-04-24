@@ -16,7 +16,41 @@ class Ars extends Application
 {
 
     //列表
-    public function index(Request $request, Ar $model)
+    public function index()
+    {
+
+        $param = input('get.');
+        $grid_url = url("lists");
+        return View::fetch('index',['grid_url' => $grid_url]);
+    }
+
+    public function lists(){
+        $param = input('get.');
+        $limit = $param['limit'];
+        $offset = $param['offset'];
+        $sort = isset($param['sort']) ?  $param['sort'] :  'keyword';
+        $order = $param['order'];
+        $where = [];
+        if(isset($param['account_id'])){
+            $where[] = ['account_id', '=', $param['account_id']];
+        }
+        if(isset($param['contact_id'])){
+            $where[] = ['contact_id', '=', $param['contact_id']];
+        }
+        if(!empty($param['search'])){
+            $where[] = ['keyword', 'like', '%'.$param['search'].'%'];
+        }
+        $items = Ar::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
+        $total = Ar::where($where)->count();
+        $data = [
+            'rows' => $items,
+            'total' => $total,
+        ];
+        return $data;
+    }
+
+
+    public function export(Request $request, Ar $model)
     {
 
         $param = $request->param();
@@ -56,37 +90,53 @@ class Ars extends Application
     public function add(Request $request, Ar $model, ArValidate $validate)
     {
 
+        $item = [];
         if ($request->isPost()) {
-            $param = input('post.');
+            $param = $request->param();
             $validate_result = $validate->scene('add')->check($param);
             if (!$validate_result) {
-                return $this->error($validate->getError());
+                return json(['code' => 0, 'msg' => $validate->getError()]);
             }
 
-            $result = $model::create($param);
-              return $this->redirect(url("index"));
-
+            $result = $model::insertGetId($param);
+            $param['id'] = $result;
+            if ($result) {
+                return json(['code' => 200, 'msg' => ' successfully.']);
+            } else {
+                return json(['code' => 0]);
+            }
         }
-           return view('add');
+        View::assign([
+            'item' => $item,
+            'act' => url('add'),
+        ]);
+        return view('add');
     }
 
     //修改
     public function edit($id, Request $request, Ar $model, ArValidate $validate)
     {
-
-        $data = $model::find($id);
+        $item = $model::find($id);
         if ($request->isPost()) {
-            $param = input('post.');
+            $param = $request->param();
             $validate_result = $validate->scene('edit')->check($param);
             if (!$validate_result) {
-                return $this->error($validate->getError());
+                return error($validate->getError());
             }
-            $result= $data->save($param);
+
+            $result = $item->save($param);
+            if ($result) {
+                return json(['code' => 200,'msg'=> 'Success']);
+            } else {
+                return json(['code' => 0,'msg'=> 'Failed!']);
+
+            }
 
         }
-        View::assign([
-            'data' => $data,
 
+        View::assign([
+            'item' => $item,
+            'act' => url('edit'),
         ]);
         return View::fetch('add');
 

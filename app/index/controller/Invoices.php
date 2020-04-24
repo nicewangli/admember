@@ -22,6 +22,39 @@ class Invoices extends Application
     //列表
     public function index(Request $request, Invoice $model)
     {
+
+        $param = $request->param();
+        $start_date = $params["start_date"] ?? date('Y-m-01');
+
+        $invoice = $model->select();
+        if (isset($param['export_data']) && $param['export_data'] == 1) {
+            $header = ['Invoice No'];
+            $body = [];
+            $data = $model->select();
+            foreach ($data as $item) {
+                $record = [];
+                $record['invoice_no'] = $item->invoice_no;
+
+
+                $body[] = $record;
+            }
+            return exportData($header, $body, 'Stockin-' . date('Y-m-d-H-i-s'));
+        }
+        $search = input('get.search');
+
+        $data = $model::whereOr([
+            ['invoice_no', 'like', $search . '%'],
+
+        ])->paginate();
+        //关键词，排序等赋值
+        View::assign([
+            'data' => $data,
+            'page' => $data->render(),
+            'total' => $data->total(),
+            'search' => $search,
+            'start_date' => $start_date,
+            'invoice' => $invoice
+        ]);
         return View::fetch();
     }
 
@@ -41,10 +74,20 @@ class Invoices extends Application
              if(isset($filter['invoice_no'])){
                 $where[] = ['invoice_no', 'like', '%'.$filter['invoice_no'].'%'];
             }
+
+            if(isset($filter['start_date'])){
+                $where[] = ['start_date', '=', $filter['start_date']];
+            }
+
+            if(isset($filter['end_date'])){
+                $where[] = ['end_date', '=', $filter['end_date']];
+            }
+
+
             if(isset($filter['invoice_date'])){
                 $where[] = ['invoice_date', '=', $filter['invoice_date']];
             }
-            
+
             if(isset($filter['store'])){
                 $store_id = $store::where('name', $filter['store'])->value('id');
                 $where[] = ['store_id', '=', $store_id];
@@ -54,16 +97,21 @@ class Invoices extends Application
                 $where[] = ['member_id', '=', $member_id];
             }
         }
-        
+
+
+
         if (isset($param['limit'])) {
             $limit = $param['limit'];
             $offset = $param['offset'];
 
+            $search = input('search');
+            $where[] = ['invoice_no', 'like', $search .'%'];
             $items = $model::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
 
         }else{
             $items = $model::where($where)->order($sort.' '.$order)->select();
         }
+//        var_dump($where);
 
         $total = $model::where($where)->count();
 
@@ -76,9 +124,12 @@ class Invoices extends Application
             }
         }
 
+
+
         $data = [
             'rows' => $items,
             'total' => $total,
+            'search' => $search
         ];
         return json($data);
     }
@@ -109,6 +160,8 @@ class Invoices extends Application
 
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
+            //编号
+            $param['invoice_no'] = Invoices::getConfigNo('invoice','invoice');;
             $result = $model::create($param);
             $invoice_id = $result->id;
             if (isset($param['service'])) {
@@ -188,7 +241,7 @@ class Invoices extends Application
             $invoicePayment->delPayments($value);
             $invoiceSeller->delSellers($value);
         }
-        
+
         return json(['code' => 200]);
     }
 

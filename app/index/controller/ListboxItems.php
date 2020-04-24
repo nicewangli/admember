@@ -27,7 +27,7 @@ class ListboxItems extends Application
                 $record = [];
                 $record['id'] = $item->id;
                 $record['name'] = $item->name;
-                $record['item_value'] = $item->item_value;
+                $record['val'] = $item->val;
                 $record['parent'] = $item->parent;
                 $record['ordering'] = $item->ordering;
                 $body[] = $record;

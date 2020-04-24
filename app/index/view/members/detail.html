@@ -131,38 +131,38 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link tab-ajax" id="activity-tab" data-toggle="pill"
-                       href="{:url('activities/panel',['panel'=>'contacts','contact_id' => $item.id])}" data-target="#activity-panel" role="tab"
-                       aria-controls="activity-panel"
+                    <a class="nav-link tab-ajax" id="transaction-tab" data-toggle="pill"
+                       href="{:url('members/transaction',['id' => $item.id])}" data-target="#members-transaction" role="tab"
+                       aria-controls="members-transaction"
                        aria-selected="false">消費記錄</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link tab-ajax" id="document-tab" data-toggle="pill"
-                       href="{:url('documents/panel',['panel'=>'contacts','contact_id' => $item.id])}" data-target="#panel-panel" role="tab"
-                       aria-controls="document-panel"
+                    <a class="nav-link tab-ajax" id="treatment-tab" data-toggle="pill"
+                       href="{:url('members/treatment',['id' => $item.id])}" data-target="#members-treatment" role="tab"
+                       aria-controls="members-treatment"
                        aria-selected="false">套票記錄</a>
                 </li>
 
 
                 <li class="nav-item">
-                    <a class="nav-link tab-ajax" id="opportunity-tab"
-                       href="{:url('opportunities/panel',['panel'=>'contacts','contact_id' => $item.id])}" data-target="#opportunity-panel" role="tab"
-                       aria-controls="opportunity-panel"
+                    <a class="nav-link tab-ajax" id="services-tab"
+                       href="{:url('members/services',['id' => $item.id])}" data-target="#members-services" role="tab"
+                       aria-controls="members-services"
                        aria-selected="false">服務記錄</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link tab-ajax" id="quotation-tab"
-                       href="{:url('quotations/panel',['panel'=>'contacts','contact_id' => $item.id])}" data-target="#quotation-panel" role="tab"
-                       aria-controls="quotation-panel"
+                    <a class="nav-link tab-ajax" id="stored_value-tab"
+                       href="{:url('members/stored_value',['id' => $item.id])}" data-target="#members-stored_value" role="tab"
+                       aria-controls="members-stored_value"
                        aria-selected="false">儲值記錄</a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link tab-ajax" id="sales_order-tab"
-                       href="{:url('sales_orders/panel')}" data-target="#sales_order-panel" role="tab"
-                       aria-controls="sales_order-panel"
+                    <a class="nav-link tab-ajax" id="reward-tab"
+                       href="{:url('members/reward',['id'=>$item.id])}" data-target="#members-reward" role="tab"
+                       aria-controls="members-reward"
                        aria-selected="false">獎賞記錄</a>
                 </li>
 
@@ -176,29 +176,29 @@
                 </div>
 
 
-                <div class="tab-pane fade" id="activity-panel" role="tabpanel"
-                     aria-labelledby="activity-tab">
+                <div class="tab-pane fade" id="members-transaction" role="tabpanel"
+                     aria-labelledby="transaction-tab">
 
                 </div>
 
-                <div class="tab-pane fade" id="document-panel" role="tabpanel"
-                     aria-labelledby="document-tab">
+                <div class="tab-pane fade" id="members-treatment" role="tabpanel"
+                     aria-labelledby="treatment-tab">
 
                 </div>
 
-                <div class="tab-pane fade" id="opportunity-panel" role="tabpanel"
-                     aria-labelledby="opportunity-tab">
+                <div class="tab-pane fade" id="members-services" role="tabpanel"
+                     aria-labelledby="services-tab">
 
                 </div>
 
-                <div class="tab-pane fade" id="quotation-panel" role="tabpanel"
-                     aria-labelledby="quotation-tab">
+                <div class="tab-pane fade" id="members-stored_value" role="tabpanel"
+                     aria-labelledby="stored_value-tab">
 
                 </div>
 
 
-                <div class="tab-pane fade" id="sales_order-panel" role="tabpanel"
-                     aria-labelledby="sales_order-tab">
+                <div class="tab-pane fade" id="members-reward" role="tabpanel"
+                     aria-labelledby="reward-tab">
 
                 </div>
             </div>

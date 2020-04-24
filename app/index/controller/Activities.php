@@ -152,6 +152,8 @@ class Activities extends Application
             }
         }else{
             $item = [];
+            $item = new Activity();
+
             $param = input('get.');
             $item['date_start'] = isset($param['date_start']) ? $param['date_start'] : date("Y-m-d H:i:s");
             $item['date_end'] = isset($param['date_end'])  ? $param['date_end'] : date("Y-m-d H:i:s", strtotime("+1 hour"));
