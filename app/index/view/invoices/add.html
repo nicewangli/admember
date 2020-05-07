@@ -15,6 +15,8 @@
     {js href="__PLUGIN__/bootstrap-table/bootstrap-table.min.js" /}
     <!-- Bootstrap 4 -->
     {js href="__PLUGIN__/bootstrap/js/bootstrap.bundle.min.js" /}
+    {js href="__PLUGIN__/moment/moment.min.js" /}
+    {js href="__PLUGIN__/daterangepicker/daterangepicker.js" /}
     {js href="__JS__/adminlte.min.js" /}
     {js href="__JS__/init.js" /}
     {js href="__JS__/application.js" /}
@@ -24,7 +26,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Theme style -->
     {css href="__CSS__/adminlte.min.css" /}
-    
+    {css href="__PLUGIN__/daterangepicker/daterangepicker.css" /}
     <!-- Ionicons -->
     {css href="__PLUGIN__/icon-awesome/css/font-awesome.min.css" / }
     {css href="__CSS__/ionicons.min.css" /}
@@ -666,6 +668,20 @@
                 }
             })
         }
+
+        $("#invoice_date").daterangepicker({
+            "singleDatePicker": true,
+            "timePicker": true,
+            "timePicker24Hour": true,
+            "timePickerSeconds": true,
+            "startDate": $("#invoice_date").val() ? $("#invoice_date").val() : moment().format("YYYY-MM-DD HH:mm:ss"),
+            "locale": {
+                "format": "YYYY-MM-DD HH:mm:ss",
+            }
+        }).on('apply.daterangepicker', function(ev, picker) {
+            // console.log(picker.startDate.format('YYYY-MM-DD HH:mm:ss'));
+            $("#invoice_date").val(picker.startDate.format('YYYY-MM-DD HH:mm:ss'))
+        });
 
         $(document).on("input propertychange", "#member_no", function () {
             let member_no = $(this).val();

@@ -11,6 +11,7 @@ class Expense extends Model
 {
     protected $name = 'expense';
 
+    use SoftDelete;
 
     //可搜索字段
     protected $searchField = [];
@@ -21,14 +22,9 @@ class Expense extends Model
     //可做为时间
     protected $timeField = [];
 
-    //格式化大小
-    public function getFileSizeAttr($value)
+    public function items()
     {
-        $units = array(' B', ' KB', ' MB', ' GB', ' TB');
-        for ($i = 0; $value >= 1024 && $i < 4; $i++) {
-            $value /= 1024;
-        }
-        return round($value, 2) . $units[$i];
+        return $this->hasMany(ExpenseItem::class);
     }
 
 

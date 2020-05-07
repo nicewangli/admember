@@ -187,7 +187,7 @@ class Invoices extends Application
     //修改
     public function edit($id, Request $request, Invoice $model, InvoiceValidate $validate,InvoiceItem $invoiceItem, InvoicePayment $invoicePayment, InvoiceSeller $invoiceSeller, Member $member)
     {
-        $item=$model->alias('i')->leftJoin('store s','i.store_id = s.id')->leftJoin('member m','i.member_id = m.id')->field('i.*, s.name as store_name, m.first_name as member')->find($id);
+        $item=$model->alias('i')->leftJoin('store s','i.store_id = s.id')->field('i.*, s.name as store_name')->find($id);
 
         $member_info = [];
         if ($item['member_id']) {

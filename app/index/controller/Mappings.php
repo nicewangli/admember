@@ -238,6 +238,7 @@ class Mappings extends Application
     {
         $from_panel = input('from_panel');
         $type_id = input('type_id');
-        return View::fetch('mappings', ['type_id' => $type_id, 'from_panel' => $from_panel]);
+        $ids = input('ids', '');
+        return View::fetch('mappings', ['type_id' => $type_id, 'from_panel' => $from_panel, 'ids' => $ids]);
     }
 }

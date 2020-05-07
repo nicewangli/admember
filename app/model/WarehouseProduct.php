@@ -42,7 +42,7 @@ class WarehouseProduct extends  Model
             } else {
                 $warehouseProduct['product_id'] = $items[$k]['product_id'];
                 $warehouseProduct['quantity'] = $items[$k]['quantity'];
-                $this->save($warehouseProduct);
+                $this->insert($warehouseProduct);
                 $result = $this->where($where)->find();
                 $model->addCheckLog($result,$result->quantity);
             }

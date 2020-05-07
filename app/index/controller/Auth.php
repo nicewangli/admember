@@ -2,6 +2,7 @@
 namespace app\index\controller;
 use app\Application;
 
+use app\model\Store;
 use think\facade\Session;
 use app\model\User;
 
@@ -9,6 +10,9 @@ class Auth extends Application
 {
     public function index()
     {
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
+
         $auth = Session::get('auth');
         if ($auth) {
             list($identifier, $token) = str_split($auth,32);
@@ -24,7 +28,7 @@ class Auth extends Application
                 }
             }
         }
-        return $this->view->fetch();
+        return $this->view->fetch('index',['storeArr'=>$storeArr]);
     }
 
     public function login()

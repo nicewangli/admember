@@ -97,10 +97,9 @@
             return false;
         }else{
             $.ajax({
-                url: "{:url('use_packages/del')}",
+                url: "{:url('refund_packages/del')}",
                 data: {
                     id: id,
-                    from_panel: 1
                 },
                 type: "POST",
                 success(res){
@@ -152,14 +151,17 @@
                 checkbox: true,
                 clickToSelect: true
             }, {
-                field: 'invoice',
-                title: '發票編號',
-                width: "120px",
-                clickToSelect: true,                        //是否在单击行时选择复选框或radiobox
-                sortable: true,                              //是否允许列可以排序
-                filterControl: 'input'
+                field: 'member',
+                title: '會員',
+                filterControl: 'select'
             }, {
                 field: 'refund',
+                title: '退款',
+                sortable: true,                              //是否允许列可以排序
+                searchable: true,
+                filterControl: 'select'
+            },{
+                field: 'create_time',
                 title: '退款時間',
                 sortable: true,                              //是否允许列可以排序
                 searchable: true,
@@ -168,11 +170,11 @@
                 field: 'store',
                 title: '店鋪',
                 filterControl: 'input'
-            }, {
-                field: 'member',
-                title: '會員',
-                filterControl: 'select'
-            }, {
+            },  {
+                field: 'user',
+                title: '操作人',
+                filterControl: 'input'
+            },{
                 field: 'operate',
                 title: '操作',
                 width: '80px',

@@ -11,7 +11,7 @@
                 <!--数据列表顶部-->
                 <div class="card-header ">
                     <div>
-                        <a title="Add" onclick="doc()" class="btn btn-primary btn-sm " href="#">
+                        <a title="Add" onclick="modify()" class="btn btn-primary btn-sm " href="#">
                             <i class="fa fa-plus"></i> 新增
                         </a>
 
@@ -50,16 +50,14 @@
                 </div> <!-- card-header -->
 
 
-                <div class="card-body table-responsive table-sm">
+                <div class="card-body table-responsive">
                     <table class="table table-hover table-bordered datatable" data-toggle="table" width="100%">
                         <thead>
                         <tr>
-                            <th>類型</th>
-                            <th>名称</th>
-                            <th>備註</th>
-                            <th>數量</th>
-                            <th>金額</th>
-
+                            <th>編號</th>
+                            <th>日期</th>
+                            <th>店鋪</th>
+                            <th>總金額</th>
 
                             <th>操作</th>
 
@@ -70,23 +68,19 @@
                         {foreach name="data" id="item"}
                         <tr>
 
-                            <td><a href="javascript:void(0)" onclick="doc('{$item.id}')">{$item.type}</a></td>
-                            <td>{$item.name}</td>
-                            <td>{$item.comment}</td>
-                            <td>{$item.quantity}</td>
-                            <td>{$item.amount}</td>
+                            <td>{$item.code}</td>
+                            <td>{$item.expense_time}</td>
+                            <td>{$item.store_name}</td>
+                            <td>{$item.total}</td>
 
 
                             <td class="td-do">
-                                <a href="{:url('to_download',['id'=>$item.id])}"
-                                   class="btn btn-primary btn-xs" title="Download">
-                                    <i class="fa fa-download"></i>
-
+                                <a href="#" onclick="modify('{$item.id}')" class="btn btn-primary btn-xs">
+                                    <i class="fa fa-pencil"></i>
                                 </a>
+
                                 <a class="btn btn-danger btn-xs AjaxButton" href="{:url('del',['id'=>$item.id])}"
-                                   title="Delete"
-                                   data-id="{$item.id}" data-confirm-title="Confirm Delete"
-                                   data-confirm-content='Are you sure to delete?' data-url="{:url('del')}">
+                                   title="Delete" onclick="if(confirm('Are you sure to delete?')==false)return false;">
                                     <i class="fa fa-trash"></i>
 
                                 </a>
@@ -98,7 +92,6 @@
                 </div>
                 <!-- 数据列表底部 -->
                 <div class="card-footer">
-                    {$page|raw}
                 </div>
             </div>
         </div>
@@ -110,18 +103,23 @@
 <script type="text/javascript">
 
 
-    function doc(id) {
+    function modify(id) {
+        let height = document.documentElement.clientHeight;
+        let width = document.documentElement.clientWidth;
+        if (width > 1000) {
+            width = 1000;
+        }
 
+        let url = '{:url("expenses/add")}';
         if (id) {
-            var url = '{:url("expenses/edit?id=")}' + id
-        } else {
-            var url = '{:url("expenses/add")}'
+            url = '{:url("expenses/edit?id=")}' + id;
         }
 
         layer.open({
             type: 2,
-            title: 'New expenses',
-            area: ['650px', '600px'],
+            title: 'Expense Detail',
+            maxmin: true,
+            area: [width + 'px', height + 'px'],
             content: url
         });
     }

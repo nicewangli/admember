@@ -15,16 +15,40 @@ class PackageStagingItem extends Model
         return $this->belongsTo(PackageStaging::class);
     }
 
-    public function saveItem($id, $data)
+    public function saveItem($id, $data,$invoice_id='')
     {
+        //TODO 判斷是否存在发票对应的服务套票，如果有就加payment没有就直接
+        $item = $this->alias('psi')->leftJoin('package_staging ps','psi.package_staging_id = ps.id')->field('psi.service_package_id,SUM(current_payment) as sum_payment,psi.id')->group('psi.service_package_id')->where('ps.invoice_id','=',$invoice_id)->select()->toArray();
+        $updateArr = [];
+        if(count($item) == 0) {
         foreach ($data as $key => $value){
-            if (isset($value['id'])) {
-                $this->update($data[$key]);
-            }else{
                 $data[$key]['package_staging_id'] = $id;
+                $data[$key]['payment'] =$data[$key]['current_payment'];
+                $data[$key]['usable_value'] =$data[$key]['current_payment'];
+
                 $this->insert($data[$key]);
+        }
+
+        } else {
+            foreach ($item as $keys=>$row) {
+                foreach ($data as $key => $value){
+                    if (isset($value['id'])) {
+                        $this->update($data[$key]);
+                    }else{//分期  当前发票下 多个ps_id -》psi_id
+                        $data[$key]['package_staging_id'] = $id;
+                        if($row['service_package_id'] == $data[$key]['service_package_id']) {
+                            $data[$key]['payment'] = $row['sum_payment'] + $data[$key]['current_payment'];
+                            $data[$key]['usable_value'] = $data[$key]['payment'];
+                            $this->insert($data[$key]);
+                            //TODO:根据i_id找出psi数据集，批量更新
+                            $updateArr[$keys] = ['id' => $row['id'],'payment' => $data[$key]['payment'],'usable_value' =>$data[$key]['usable_value']];
+                        }
+
+                    }
+                }
             }
         }
+        $this->saveAll($updateArr);
     }
 
     public function findItems($id)
@@ -39,5 +63,9 @@ class PackageStagingItem extends Model
         $this->where('package_staging_id', $id)->delete();
     }
 
+    public function saveAllItem()
+    {
+
+    }
 
 }

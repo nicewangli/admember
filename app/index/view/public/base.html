@@ -11,26 +11,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 
     {include file="public:head" /}
-    <!-- Custom style -->
-    {block name="style"}{/block}
-    <!-- Theme style -->
     {css href="__CSS__/adminlte.min.css" /}
     <!-- Custom style -->
     {css href="__CSS__/application.css" /}
+    <!-- Custom style -->
+    {block name="style"}{/block}
+    <!-- Theme style -->
 
+    <!-- 加载 Select2 -->
     {block name="head_js"}{/block}
 </head>
-<body class="hold-transition sidebar-mini {$user.skin}">
+<body class="hold-transition layout-top-nav {$user.skin}">
 <div class="wrapper">
     <!-- Navbar -->
     {block name='navbar'}
         {include file="public:navbar" /}
     {/block}
 
-    <!-- Main Sidebar Container -->
-    {block name='sidebar'}
-        {include file="public:sidebar" /}
-    {/block}
+
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">

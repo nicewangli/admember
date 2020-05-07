@@ -7,6 +7,7 @@ namespace app\index\controller;
 
 use app\Application;
 use app\model\SalesOrderItem;
+use app\model\Store;
 use app\model\Warehouse;
 use app\model\WarehouseProduct;
 use think\facade\View;
@@ -128,11 +129,14 @@ Add standard terms'];
     public function add(Request $request, Stockout $model, StockoutValidate $validate, SalesOrderItem $SalesOrderItem,WarehouseProduct $wp)
     {
         $item = [];
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
+
         //查询仓库数据，用于页面显示下拉框
         $warehouse = Warehouse::select();
         if ($request->isPost()) {
             $param = $request->param();
-            $wp->saveChangeWP($param,'stockout');die;
+            $wp->saveChangeWP($param,'stockout');
 //            dump($param);die;
             $validate_result = $validate->scene('add')->check($param);
             if (!$validate_result) {
@@ -156,6 +160,7 @@ Add standard terms'];
             "warehouse" => $warehouse,
             'item' => $item,
             'act' => url('add'),
+            'storeArr' => $storeArr,
         ]);
         return view('form');
     }
@@ -164,6 +169,8 @@ Add standard terms'];
     //修改
     public function edit($id, Request $request, Stockout $model, StockoutValidate $validate, SalesOrderItem $SalesOrderItem)
     {
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
         $referer=$request->header('Referer');
         $action= getAction($referer);
         if ($action == 'Stockouts'){
@@ -191,6 +198,7 @@ Add standard terms'];
         View::assign([
             'item' => $item,
             'act' => url('edit'),
+            'storeArr' => $storeArr,
         ]);
         return view('form',['data'=>$item,'sal_items'=>$sal_items,'fromdatail'=>$fromdatail,'action'=>url('edit?id='.$id),'back'=>$back]);
 

@@ -252,10 +252,19 @@ function getUserId(){
 function getStore(){
     $user_id = getUserId();
 
-    $store_id = User::where('uid', $user_id)->value('store');
+    $store_id = User::where('uid', $user_id)->value('store_id');
     $store = Store::find($store_id);
 
     return $store;
+}
+
+// 员工1对多店铺
+function getStoreArr(){
+    $storeModel = new Store();
+    $user_id = getUserId();
+    $storeIds = User::where('uid', $user_id)->value('store_id');
+    $storeArr = explode(',',$storeIds);
+    return $storeModel->whereIn('id',$storeArr)->select()->toArray();
 }
 
 

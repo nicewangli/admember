@@ -39,7 +39,8 @@
 
 .collapsed {
     /* hide it for small displays*/
-    display: none;
+    /*TODO:author:csp */
+    /*display: none;*/
 }
 .content-header .breadcrumb{
     padding-left: 10px;
@@ -89,6 +90,14 @@
 
 .select2-container--default .select2-selection--single .select2-selection__arrow b::before {
   content: "\f0dc";
+}
+
+
+.select2-hidden-accessible,
+.select2-hidden-accessible:focus {
+    left: auto!important;
+    top: auto!important;
+    margin: -1px;
 }
 
 #v-pills-tab{

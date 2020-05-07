@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 use app\Application;
+use app\model\Store;
 use think\facade\Db;
 use think\facade\View;
 use think\facade\Config;
@@ -20,23 +21,27 @@ class Report extends Application
     
     #基本报表
     public function basic(){
-    	return view();
+        $storeArr = getStoreArr();
+    	return View::fetch('basic',['storeArr'=>$storeArr]);
     }
     
     
    #零售报表
     public function retail(){
-        return view();
+        $storeArr = getStoreArr();
+        return View::fetch('retail',['storeArr'=>$storeArr]);
     }
 
     #庫存报表
     public function inventory(){
-        return view();
+        $storeArr = getStoreArr();
+        return View::fetch('inventory',['storeArr'=>$storeArr]);
     }
 
     #薪金报表
     public function salary(){
-        return view();
+        $storeArr = Store::select();
+        return view('salary',['storeArr'=>$storeArr]);
     }
 
     #零售报表
@@ -51,7 +56,8 @@ class Report extends Application
 
     #預約报表
     public function booking(){
-        return view();
+        $storeArr = getStoreArr();
+        return View::fetch('booking',['storeArr'=>$storeArr]);
     }
 
 }

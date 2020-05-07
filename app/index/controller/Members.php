@@ -7,6 +7,7 @@ namespace app\index\controller;
 
 use app\Application;
 use app\model\Invoice;
+use app\model\Store;
 use think\facade\View;
 use think\facade\Request;
 use app\model\Member;
@@ -105,6 +106,8 @@ class Members extends Application
 
     public function add(Request $request, Member $model, MemberValidate $validate)
     {
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
         if ($request::isPost()) {
             $param           =input('post.');
             $validate_result = $validate->scene('add')->check($param);
@@ -116,13 +119,15 @@ class Members extends Application
             $result = $model::create($param);
             return $this->redirect(url("index"));
         }
-        return view('add');
+        return view('add',['storeArr'=>$storeArr]);
     }
 
 
     //详情
     public function detail($id, Request $request, Member $model, MemberValidate $validate)
     {
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
         $item = $model::find($id);
         if ($request::isPost()) {
             $param  = input('post.');
@@ -132,13 +137,14 @@ class Members extends Application
             }
             $item->save($param);
         }
-        return view('detail', ['item' => $item]);
+        return view('detail', ['item' => $item,'storeArr'=>$storeArr]);
     }
 
     //修改
     public function edit($id, Request $request, Member $model, MemberValidate $validate)
     {
-
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
         $item = $model::find($id);
         if ($request::isPost()) {
             $param  = input('post.');
@@ -149,7 +155,7 @@ class Members extends Application
             $item->save($param);
         }
 
-        return view('edit', ['item' => $item]);
+        return view('edit', ['item' => $item,'storeArr'=>$storeArr]);
     }
 
     //删除

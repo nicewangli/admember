@@ -37,8 +37,7 @@
 </head>
 <body>
 <div class="container-fluid">
-    <input type="hidden" id="from_panel" value="{$from_panel}">
-    <input type="hidden" id="ids" value="{$ids}">
+    <input type="hidden" id="invoice_id" value="{$invoice_id}">
     <input type="hidden" id="member_id" value="{$member_id}">
     <input type="hidden" id="type" value="{$type}">
     <div class="card-body">
@@ -49,37 +48,18 @@
 
                 </table>
             </div>
-
-            <div class="col-xs-12 col-md-12 pt-2">
-                <div class="row">
-                    <div class="col-lg-12" align="center">
-                        <button class="btn flat btn-info btn-sm submit">
-                            <i class=" fa fa-file-alt"></i>
-                            Submit
-                        </button>
-
-                        <button class="btn btn-default btn-sm">
-                            Close
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
 </body>
 <script type="text/javascript">
     $(document).ready( function (){
-        let ids = $("#ids").val();
-        let member_id = $("#member_id").val();
         let type = $("#type").val();
-        let change_refund = 0.0;
-        function operateFormatter(value,row,index){
-            value = row.total - row.current_payment;
-            return value;
-        }
+        let member_id = $("#member_id").val();
+        let invoice_id = $("#invoice_id").val();
+
         $('#service_packages-grid').bootstrapTable({
-            url: '/index/refund_packages/list',            //请求后台的URL（*）
+            url: '/index/package_stagings/get_package',            //请求后台的URL（*）
             method: 'get',                                   //请求方式（*）
             queryParams: function (params) {
                 return {
@@ -89,8 +69,9 @@
                     order : params.order, //排序
                     ordername : params.sort, //排序
                     filter: params.filter,
-                    ids: ids,
                     member_id: member_id,
+                    invoice_id:invoice_id,
+                    type:type,
                 };
             },
             contentType: 'text/html',
@@ -113,11 +94,7 @@
             pageSize: 10,                                    //每页的记录行数（*）
             pageList: [10, 20, 50, 100],
             singleSelect: false,                              //开启单选,想要获取被选中的行数据必须要有该参数
-            columns: [{
-                field: 'checked',
-                checkbox: true,
-                clickToSelect: true
-            }, {
+            columns: [ {
                 field: 'invoice_no',
                 title: '發票',
                 width: "120px",
@@ -125,20 +102,20 @@
                 sortable: true,                              //是否允许列可以排序
                 filterControl: 'input'
             }, {
-                field: 'member_no',
-                title: '會員',
+                field: 'ps_no',
+                title: '套票編號',
                 searchable: true,
                 filterControl: 'select'
             }, {
                 field: 'sp_name',
-                title: '套票',
+                title: '服務套票',
                 filterControl: 'input'
             }, {
                 field: 'total',
                 title: '套票金額',
                 filterControl: 'select'
             }, {
-                field: 'sum_payment',
+                field: 'current_payment',
                 title: '已付金額',
                 sortable: true
             }, {
@@ -146,47 +123,9 @@
                 title: '使用金額',
                 filterControl: 'select',
                 sortable: true
-            }, {
-                field: 'usable_value',
-                title: '可退金額',
-                sortable: true
             }, ],
         });
 
-        $(".submit").click(function(){
-            let from_panel = $("#from_panel").val();
-            let rows= $("#service_packages-grid").bootstrapTable('getAllSelections');
-            if(rows.length<=0){
-                alert("请选择一行");
-                return;
-            }else {
-
-                let nodes = '';
-                if (from_panel == 'refund_package') {
-                    let number = parseInt(parent.$(".items_count").val());
-                    ids = ids.split(",");
-                    $.each(rows, function(index, element){
-                        if (ids.indexOf(element.id.toString()) == -1) {
-                            if(type === 'edit') {
-                                change_refund = element.usable_value;
-                            }
-                            nodes += '<tr class="border-b service"> <td width="3%" align="center" data-id=""><input type="checkbox" class="checkbox" value="' + number + '"><input type="hidden" name="service[' + number + '][invoice_id]" value="' + element.invoice_id + '"><input type="hidden" name="service[' + number + '][final_total]" value="' + element.final_total + '"></td> <td width="5%"> <input type="hidden" name="service[' + number + '][package_staging_item_id]" value="' + element.id + '"><input type="hidden" name="service[' + number + '][member_id]" value="' + element.member_id + '">  <td width="10%">' + element.invoice_no + '</td> <td width="6%">' + element.ps_no + '</td> <td width="10%"><input type="text" min="1"  value="'+element.sp_name+'" class="form-control text-right quantity" style="width: 100%;"></td> <td width="10%"><input type="text"  value="' + element.total + '" class="form-control text-right price" style="width: 100%;"></td> <td width="10%"><input type="text" value="'+element.sum_payment+'" class="form-control text-right discount" style="width: 100%;"></td> <td width="13%"><input type="text"  value="' + element.package_value_used + '" class="form-control text-right used" style="width: 100%;" readonly=""></td> <td width="8%"><input type="text" name="service[' + number + '][total]"  value="' + element.sum_payment + '" class="form-control text-right total" style="width: 100%;" readonly=""></td><td width="8%"><input type="text" name="service[' + number + '][refund]" value="' + element.usable_value + '" class="form-control text-right refund" style="width: 100%;"><input type="hidden" name="service[' + number + '][change_refund]" value="'+change_refund+'" style="width: 100%;"></td></tr>';
-
-                            number++;
-                        }
-                    })
-                    parent.$("#service_package").removeClass('hidden');
-                    parent.$("#refund").before(nodes);
-                    parent.$(".items_count").val(number);
-                    parent.total();
-                }
-
-
-                //注意：parent 是 JS 自带的全局对象，可用于操作父页面
-                let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                parent.layer.close(index);
-            }
-        });
 
         $(".btn-default").click(function(){
             let index = parent.layer.getFrameIndex(window.name); //获取窗口索引

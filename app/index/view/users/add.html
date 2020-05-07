@@ -7,7 +7,7 @@
         <!--sub page--->
         <div class="card card-primary card-outline card-outline-tabs">
             <div class="card-body">
-                <form class="form-horizontal" action="{notempty name="userinfo"}{:url('index',['act'=>'update','uid'=>$userinfo.uid])}{else /}{:url('index',['act'=>'update','uid'=>0])}{/notempty}" method="post">
+                <form id="test_form" class="form-horizontal" action="{notempty name="userinfo"}{:url('index',['act'=>'update','uid'=>$userinfo.uid])}{else /}{:url('index',['act'=>'update','uid'=>0])}{/notempty}" method="post">
 
 
                 <div class="form-group row">
@@ -69,7 +69,7 @@
                             <div class="form-group row">
                                 <label class="col-md-3 control-label" for="for_short">名稱(簡稱)</label>
                                 <div class="col-md-7">
-                                    <input class="form-control" type="text" id="for_short" name="for_short"
+                                    <input class="form-control" type="text" id="for_short" name="username"
                                            value="{$userinfo.for_short ?? ''}"
                                            placeholder="test">
                                 </div>
@@ -249,7 +249,7 @@
                             <div class="form-group row">
                                 <label class="col-md-3 control-label" for="new_password">新密碼</label>
                                 <div class="col-md-7">
-                                    <input class="form-control" type="text" id="new_password" name="new_password"
+                                    <input class="form-control" type="text" id="new_password" name="password"
                                            value="{$userinfo.new_password ?? ''}"
                                            placeholder="">
                                 </div>
@@ -257,16 +257,17 @@
 
 
                             <div class="form-group row">
-                                <label class="col-md-3 control-label" for="store">店鋪</label>
+                                <label class="col-md-3 control-label">店鋪</label>
                                 <div class="col-md-7">
-                                    <select class="form-control" id="store" name="store" size="1"
-                                            value="{$userinfo.store ?? ''}">
-                                        <option value="0">銅鑼灣</option>
+                                    <select name="store" id="store_id" class="form-control" multiple="multiple">
+                                        <option value=""></option>
+                                        {volist name="storeArr" id="store"}
+                                        <option value="{$store.id}">{$store.name}</option>
+                                        {/volist}
                                     </select>
                                 </div>
+                                <input type="hidden" name="store_id" id="store" value="{$data.store_id|default=''}">
                             </div>
-
-
 
                         </div>
                     </div>
@@ -280,7 +281,21 @@
 </section>
 
 {/block}
+{block name="js"}
+<script type="text/javascript">
+    let store_id = "";
+    $(document).ready( function (){
+        $("#store_id").select2();
+        // 编辑页面则将$("#store_id").val().split(',');
+    });
 
+    $(document).on("change", "#store_id", function () {
+        store_id = $("#store_id").val().join(",");
+        $("#store").val(store_id);
+    });
+
+</script>
+{/block}
 
 
 

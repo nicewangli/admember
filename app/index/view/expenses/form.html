@@ -1,4 +1,5 @@
 {extend name='public/layer_base' /}
+
 {block name='content'}
 
 <section class="content" xmlns="http://www.w3.org/1999/html">
@@ -6,127 +7,251 @@
 
         <!-- form content -->
 
-        <div>
-            <input type="hidden" id="id" name="id" value="{$item.id|default=''}">
-            <div class="row pt-2">
-                <div class="col-xs-12 col-md-12">
+        <form id="expenseForm">
+            <input type="hidden" name="id" id="id" value="{$data.id|default=''}">
+            <div class="card-body">
+                <div class="row pt-2">
+                    <div class="col-xs-12 col-md-12">
+                        <h5 style="color: #007bff;">支出資料</h5>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 control-label" for="type">類型</label>
-                        <div class="col-md-9">
-                            <input class="form-control" type="text" id="type" name="type"
-                                   value="{$item.type|default=''}"
-                                   placeholder="">
+                        <div class="row">
+                            <div class="form-group row col-md-6">
+                                <label class="col-md-3 control-label" for="code">編號：</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" name="code" id="code" value="{$data.code|default=''}" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row col-md-6">
+                                <label class="col-md-3 control-label" for="store_id">店鋪：</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="hidden" id="store_id" name="store_id" value="{$data.store_id|default=''}" required>
+                                    <input class="form-control" type="text" id="store_name" value="{$data.store_name|default=''}" readonly="">
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="row">
+                            <div class="form-group row col-md-6">
+                                <label class="col-md-3 control-label" for="expense_time">日期：</label>
+                                <div class="col-md-7">
+                                    <input type="datetime" class="form-control filed-date" id="expense_time" name="expense_time" value="{$data.expense_time|default=''}" required>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
-                    <div class="form-group row">
-                        <label class="col-md-3 control-label" for="name">名稱</label>
-                        <div class="col-md-9">
-                            <input class="form-control" type="text" id="name" name="name"
-                                   value="{$item.name|default=''}"
-                                   placeholder="">
+                </div>
+
+                <div class="row pt-2">
+                    <div class="col-xs-12 col-md-12">
+
+                        <table width="100%" id="expense">
+                            <tr bgcolor="#ced4da">
+                                <td width="8%">
+                                    <a title="刪除" onclick="del()" class="btn btn-default btn-sm " href="#">刪除</a>
+                                </td>
+                                <td colspan="5">
+                                    <a title="選擇" onclick="mappings()" class="btn btn-default btn-sm " href="#">選擇</a>
+
+                                    <input type="hidden" class="items_count" value="{:count($data.items)+1}">
+                                </td>
+                            </tr>
+
+                            <tr bgcolor="#e9ecef">
+                                <th width="8%"></th>
+                                <th width="8%">次序</th>
+                                <th width="30%">名稱</th>
+                                <th width="30%">備注</th>
+                                <th width="12%">數量</th>
+                                <th width="12%" class="text-center">金額</th>
+                            </tr>
+
+
+                            {notempty name="data.items"}
+                            {volist name="data.items" id="val" key="index"}
+                            <tr class="border-b expense" id="expense{$val.id}">
+                                <td width="8%" align="center" data-id="{$val.id}">
+                                    <input type="checkbox" class="checkbox" value="{$val.id}">
+                                </td>
+                                <td width="8%">
+                                    <input type="hidden" name="item[{$index}][id]" value="{$val.id}">
+                                    <input type="hidden" name="item[{$index}][expense_id]" value="{$val.expense_id}">
+                                    <input type="hidden" class="mapping" name="item[{$index}][mapping_id]" value="{$val.mapping_id}">
+                                    <input type="number" name="item[{$index}][ordering]" class="form-control ordering" value="{$val.ordering}">
+                                </td>
+                                <td width="30%">
+                                    {$val.mapping_value}
+                                </td>
+                                <td width="30%">
+                                    <input type="text" name="item[{$index}][notes]" class="form-control notes" value="{$val.notes}">
+                                </td>
+
+                                <td width="12%">
+                                    <input type="number" min="1" name="item[{$index}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
+                                </td>
+                                <td width="12%">
+                                    <input type="text" name="item[{$index}][amount]" value="{$val.amount}" class="form-control text-right amount" style="width: 100%;">
+                                </td>
+
+                            </tr>
+                            {/volist}
+                            {/notempty}
+
+                            <tr id="total_amount">
+                                <td colspan="5" class="text-right">總金額:	</td>
+                                <td width="12%" class="text-center">
+                                    <input type="hidden" id="total" name="total" value="{$data.total|default='0.0'}">
+                                    <span id="total_span">{$data.total|default='0.0'}</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-12 col-lg-12">
+                    <div class="row pt-2">
+                        <div class="col-lg-12" align="center">
+                            <button class="btn flat btn-primary btn-sm submit" id="submit">
+                                <i class=" fa fa-file-alt"></i>
+                                Save
+                            </button>
+
+                            <button class="btn btn-default btn-sm btn-close">
+                                Close
+                            </button>
                         </div>
                     </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-3 control-label" for="comment">備註</label>
-                        <div class="col-md-9">
-                            <textarea class="form-control" id="comment" name="comment"
-                                      size="1"
-                                      value=""
-                                      placeholder="">{$item.comment|default=''}</textarea>
-
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <label class="col-md-3 control-label" for="quantity">數量</label>
-                        <div class="col-md-9">
-                            <input class="form-control" type="text" id="quantity" name="quantity"
-                                   value="{$item.quantity|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <label class="col-md-3 control-label" for="amount">金額</label>
-                        <div class="col-md-9">
-                            <input class="form-control" type="text" id="amount" name="amount"
-                                   value="{$item.amount|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
+                </div>
             </div>
-
-        </div>
-
-        <hr>
-        <div class="col-md-12" align="center">
-            <button onclick="submit()" class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm">
-                提交
-            </button>
-            &nbsp;
-            <button class="btn btn-sm btn-default layer-close">算了</button>
-        </div>
-
-    </div>
+        </form>
     </div>
 </section>
 {/block}
 
 {block name="js"}
-
+{js href="__PLUGIN__/jquery-validation/jquery.validate.js" /}
 <script type="text/javascript">
     $(function () {
         $("#document").change(function () {
             let file = this.fields[0];
             $("#url").text(file.name)
-        })
-    })
+        });
 
-
-    function submit() {
-        let document = '';
-        let formData = new FormData();
-        formData.append("type", $("#type").val());
-        formData.append("name", $("#name").val());
-        formData.append("comment", $("#comment").val());
-        formData.append("quantity", $("#quantity").val());
-        formData.append("amount", $("#amount").val());
-        formData.append("id", $("#id").val());
-        if ($("#id").val()) {
-            formData.append("id", $("#id").val());
-        }
-        $.ajax({
-            url: "{$act}",
-            type: "post",
-            dataType: "json",
-            cache: false,
-            data: formData,
-            processData: false,// 不处理数据
-            contentType: false, // 不设置内容类型
-            success: function (res) {
-                let data = JSON.parse(res);
-                if (data.code == 200) {
-                    parent.location.reload();
-
-                    //注意：parent 是 JS 自带的全局对象，可用于操作父页面
-                    let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                    parent.layer.close(index);
-                }
-                window.location = "list";
+        $("#expense_time").daterangepicker({
+            "singleDatePicker": true,
+            "timePicker": true,
+            "timePicker24Hour": true,
+            "timePickerSeconds": true,
+            "startDate": $("#expense_time").val() ? $("#expense_time").val() : moment().format("YYYY-MM-DD HH:mm:ss"),
+            "locale": {
+                "format": "YYYY-MM-DD HH:mm:ss",
             }
+        }).on('apply.daterangepicker', function(ev, picker) {
+            // console.log(picker.startDate.format('YYYY-MM-DD HH:mm:ss'));
+            $("#expense_time").val(picker.startDate.format('YYYY-MM-DD HH:mm:ss'))
+        });
+
+        $("#submit").click( function() {
+
+            let params = $("#expenseForm").serialize();
+            $.ajax({
+                url: "{$act}",
+                data: params,
+                type: "POST",
+                success(res){
+                    if(res.code == 200){
+                        //注意：parent 是 JS 自带的全局对象，可用于操作父页面
+                        let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                        layer.msg(res.msg, {icon: 1});
+                        // parent.tips('success');
+                        parent.location.reload();
+
+                        parent.layer.close(index);
+                    }else{
+                        layer.msg(res.msg, {icon: 2});
+                    }
+                }
+            })
+        });
+
+        $(".btn-close").click(function(){
+            let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+            parent.layer.close(index);
+        });
+
+        $(document).on("input propertychange", ".quantity", function () {
+            total();
+        });
+        $(document).on("input propertychange", ".amount", function () {
+            total();
+        });
+    });
+
+    function total(){
+        let total = 0.0;
+        let quantity, amount;
+        $(".quantity").each(function () {
+
+            quantity = parseFloat($(this).val());
+            amount = parseFloat($(this).parent().siblings().children('.amount').val());
+            // console.log(quantity+', '+amount);
+
+            total += parseFloat(amount * quantity);
+
+        });
+
+        $("#total").val(total.toFixed(1));
+        $("#total_span").text(total.toFixed(1));
+
+    }
+
+
+    function mappings() {
+        let ids = [];
+        $(".mapping").each(function(){
+            ids.push($(this).val());
+        });
+
+        layer.open({
+            type: 2,
+            title: '支出項目',
+            area: ['800px', '500px'],
+            content: '{:url("mappings/mappings?from_panel=expense&type_id=expenditure&ids=")}' + ids
         })
     }
 
-    $('.layer-close').on('click', function () {
-        parent.layer.closeAll();
-    });
+    function del() {
+        let ids = [];
+        $(".checkbox").each(function () {
+            if ($(this).prop("checked")) {
+                if ($(this).val() != '') {
+                    ids.push($(this).val());
+                }else{
+                    $(this).parents('.expense').remove();
+                }
+            }
+        })
 
-
+        if (ids.length > 0) {
+            $.ajax({
+                url: "{:url('expenses/del_item')}",
+                data: {ids: ids},
+                type: "POST",
+                success(res) {
+                    if (res.code == 200) {
+                        layer.msg('Delete Successful', {icon: 1});
+                        $.each(ids, function (index, value) {
+                            $("#expense"+value).remove();
+                        });
+                        total();
+                    } else{
+                        layer.msg('Delete Failed', {icon: 2});
+                    }
+                }
+            })
+        }
+    }
 </script>
 {/block}

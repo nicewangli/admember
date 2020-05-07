@@ -24,7 +24,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
     <!-- Theme style -->
     {css href="__CSS__/adminlte.min.css" /}
-    
+
     <!-- Ionicons -->
     {css href="__PLUGIN__/icon-awesome/css/font-awesome.min.css" / }
     {css href="__CSS__/ionicons.min.css" /}
@@ -34,22 +34,23 @@
     <style type="text/css">
         .form-control{
             padding: .375rem;
-        }   
+        }
 
         #final_total_text{
-            border: 3px solid #ced4da; 
-            height: 70px; 
-            line-height: 70px; 
-            text-align: center; 
-            font-size: 1.25rem; 
+            border: 3px solid #ced4da;
+            height: 70px;
+            line-height: 70px;
+            text-align: center;
+            font-size: 1.25rem;
             font-weight: bold;
-        } 
+        }
     </style>
 </head>
 <body>
     <div class="container-fluid">
         <form id="stagingForm">
             <input type="hidden" name="id" id="id" value="{$data.id|default=''}">
+            <input type="hidden" name="invoice_total" id="invoice_total" value="">
             <div class="card-body">
                 <div class="row pt-2">
                     <div class="col-xs-12 col-md-6">
@@ -58,8 +59,8 @@
                         <div class="form-group row">
                             <label class="col-md-3 control-label" for="invoice_id">編號：</label>
                             <div class="col-md-7">
-                                <select name="invoice_id" id="invoice_id" class="form-control">
-                                    <option value=""></option>
+                                <select name="invoice_id" id="invoice_id" class="form-control" >
+                                    <option value="{$data.invoice_id|default=''}">{$data.invoice_no|default=''}</option>
                                 </select>
 <!--                                <input class="form-control" type="hidden" id="invoice_id" name="invoice_id" value="{$data.invoice_id|default=''}" required>-->
 <!--                                <input class="form-control" type="text" id="invoice_no" value="{$data.invoice_no|default=''}" required>-->
@@ -76,8 +77,16 @@
                         <div class="form-group row">
                             <label class="col-md-3 control-label" for="store_id">店鋪：</label>
                             <div class="col-md-7">
-                                <input class="form-control" type="hidden" id="store_id" name="store_id" value="{$data.store_id|default=''}" required>
-                                <input class="form-control" type="text" id="store_name" name="store_name" value="{$data.store_name|default=''}" readonly="">
+                                <select name="store_id" id="store_id" class="form-control">
+                                    <option value=""></option>
+                                    {volist name="storeArr" id="store"}
+                                    {eq name="store.id" value="$data.store_id|default=''"}
+                                    <option value="{$store.id}" selected>{$store.name}</option>
+                                    {else/ }
+                                    <option value="{$store.id}">{$store.name}</option>
+                                    {/eq}
+                                    {/volist}
+                                </select>
                             </div>
                         </div>
 
@@ -160,20 +169,23 @@
 
                 <div class="row pt-2">
                     <div class="col-xs-12 col-md-8">
-                       
+
                         <table width="100%">
                             <tr bgcolor="#ced4da">
                                 <td width="8%">
                                     <a title="刪除" onclick="del()" class="btn btn-default btn-sm " href="#">刪除</a>
                                 </td>
+                                <td width="8%">
+                                    <a title="舊分期" onclick="old_package_item()" class="btn btn-default btn-sm " href="#" id="old_item">舊分期</a>
+                                </td>
                                 <td colspan="8">
-                                    <a title="服務套票" onclick="service_packages()" class="btn btn-default btn-sm " href="#">服務套票</a>
-                                    
+                                    <a title="服務套票"  onclick="service_packages()" class="btn btn-default btn-sm " href="#" id="package_item">服務套票</a>
+
                                     <input type="hidden" name="total" id="total" value="{$data.total|default='0.0'}">
                                     <input type="hidden" class="items_count" value="{$data.items_count|default='0'}">
                                 </td>
                             </tr>
-                            
+
                             <tr bgcolor="#e9ecef">
                                 <th width="5%"></th>
                                 <th width="5%"></th>
@@ -194,33 +206,33 @@
 
                             {notempty name="items"}
                             {volist name="items" id="val" key="index"}
-                                <tr class="border-b service"> 
+                                <tr class="border-b service">
                                     <td width="5%" align="center" data-id="{$val.id}">
                                         <input type="checkbox" class="checkbox" value="{$index}">
                                         <input type="hidden" class="service_packages" value="{$val.service_package_id}">
-                                    </td> 
-                                    <td width="5%"> 
-                                        <input type="hidden" name="service[{$index}][id]" value="{$val.id}"> 
-                                        <input type="hidden" name="service[{$index}][package_staging_id]" value="{$val.package_staging_id}"> 
-                                        <input type="hidden" name="service[{$index}][service_package_id]" value="{$val.service_package_id}"> 
-                                    </td> 
-                                    <td width="10%">{$val.code}</td> 
-                                    <td width="20%">{$val.name}</td> 
+                                    </td>
+                                    <td width="5%">
+                                        <input type="hidden" name="service[{$index}][id]" value="{$val.id}">
+                                        <input type="hidden" name="service[{$index}][package_staging_id]" value="{$val.package_staging_id}">
+                                        <input type="hidden" name="service[{$index}][service_package_id]" value="{$val.service_package_id}">
+                                    </td>
+                                    <td width="10%">{$val.code}</td>
+                                    <td width="20%">{$val.name}</td>
                                     <td width="10%">
                                         <input type="number" min="1" name="service[{$index}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
-                                    </td> 
+                                    </td>
                                     <td width="12%">
                                         <input type="text" name="service[{$index}][price]" value="{$val.price}" class="form-control text-right price" style="width: 100%;">
-                                    </td> 
+                                    </td>
                                     <td width="12%">
                                         <input type="text" name="service[{$index}][discount]" value="{$val.discount}" class="form-control text-right discount" style="width: 100%;">
-                                    </td> 
+                                    </td>
                                     <td width="12%">
                                         <input type="text" name="service[{$index}][total]" value="{$val.total}" class="form-control text-right total" style="width: 100%;" readonly="">
-                                    </td> 
+                                    </td>
                                     <td width="12%">
-                                        <input type="text" name="service[{$index}][current_payment]" value="{$val.current_payment}" class="form-control text-right current_payment" style="width: 100%;" readonly="">
-                                    </td> 
+                                        <input type="text" name="service[{$index}][current_payment]" value="{$val.current_payment}" class="form-control text-right current_payment" style="width: 100%;">
+                                    </td>
                                 </tr>
                             {/volist}
                             {/notempty}
@@ -277,7 +289,7 @@
                                 <td colspan="2">
                                     <label class="control-label">備注：</label>
                                 </td>
-                                
+
                                 <td colspan="5">
                                     <textarea class="form-control" name="notes" id="notes">{$data.notes|default=''}</textarea>
                                 </td>
@@ -302,7 +314,7 @@
                                 <span>總金額：</span>
                                 <strong><h5 id="h5">${$data.total_amount|default='0.0'}</h5></strong>
                                 <input type="hidden" name="total_amount" id="total_amount" value="{$data.total_amount|default='0.0'}">
-                                
+
                             </div>
 
                             <div class="row g-pa-5">
@@ -367,7 +379,7 @@
             </div>
         </form>
     </div>
-</body>   
+</body>
 <script type="text/javascript">
     let id = $("#id").val();
     if(id.length == 0){
@@ -383,7 +395,8 @@
                     // document.title = '首次分期';
                     parent.layer.title('首次分期', index);
                     parent.$("#staging_title").text('首次分期');
-                    parent.$("#invoice_id").attr('disabled',true);
+                    $('#invoice_id').attr('disabled',true);
+                    $('#old_item').hide();
                     layer.close(layer.index);
                 }
                 ,btn2: function(index, layero){
@@ -391,18 +404,19 @@
                     // document.title = '付款';
                     parent.layer.title('付款', index);
                     parent.$("#staging_title").text('付款');
-                    layer.close(layer.index); 
+                    $('#package_item').hide();
+                    layer.close(layer.index);
                     //return false 开启该代码可禁止点击该按钮关闭
                 }
-                ,cancel: function(){ 
+                ,cancel: function(){
                     //右上角关闭回调
                     // 开启该代码可禁止点击该按钮关闭
-                    // return false; 
+                    // return false;
                 }
             });
-        }); 
+        });
     }
-   
+
 
     function del(){
         let id = 0;
@@ -423,7 +437,7 @@
                 data: {ids: list},
                 type: "POST",
                 success(res){
-                    
+
                     total();
                 }
             })
@@ -479,11 +493,24 @@
         }
     }
 
+    //舊分期
+    function old_package_item() {
+        let invoice_id = $("#invoice_id").val();
+        let member_id = $("#member_id").val();
+        layer.open({
+            type: 2,
+            title: '舊分期',
+            area: ['800px', '500px'],
+            content: '{:url("PackageStagings/old_package_staging?type=old&member_id=")}' + member_id + '&invoice_id=' + invoice_id
+        })
+    }
+
 
     //計算服務套票、產品、產品組合總價
     function total(){
         let amount = 0.0;
         let total = 0.0;
+        let invoice_total = 0.0;
         let quantity, price, discount, current_payment;
         $(".total").each(function () {
 
@@ -494,13 +521,16 @@
 
 
             amount = parseFloat(price * quantity - discount);
+            if(isNaN(current_payment)) {
+                current_payment = 0.0;
+            }
             total += parseFloat(current_payment);
-
+            invoice_total += parseFloat(price * quantity - discount);
             $(this).val(amount.toFixed(1));
         });
 
         $("#total").val(total.toFixed(1));
-
+        $("#invoice_total").val(invoice_total.toFixed(1));
         total_amount();
     }
 
@@ -637,7 +667,7 @@
                         // $("#invoice_no").val(invoice.invoice_no);
                         // $('#invoice_id').empty();
                         $.each(res.rows,function (index,element) {
-                            nodes += '<tr class="border-b service"> <td width="8%" align="center" data-id=""><input type="checkbox" class="checkbox" value="' + index + '"><input type="hidden" class="service_packages" value="' + element.id + '"></td> <td width="5%"> <input type="hidden" name="service[' + index + '][service_package_id]" value="' + element.id + '">  </td> <td width="13%">' + element.code + '</td> <td width="15%">' + element.sp_name + '</td> <td width="10%"><input type="number" min="1" name="service[' + index + '][quantity]" value="'+element.quantity+'" class="form-control text-right quantity" style="width: 100%;"></td> <td width="13%"><input type="text" name="service[' + index + '][price]" value="' + element.price + '" class="form-control text-right price" style="width: 100%;"></td> <td width="10%"><input type="text" name="service[' + index + '][discount]" value="0.0" class="form-control text-right discount" style="width: 100%;"></td> <td width="13%"><input type="text" name="service[' + index + '][total]" value="' + element.total + '" class="form-control text-right total" style="width: 100%;" readonly=""></td><td width="13%"><input type="text" name="service[' + index + '][current_payment]" value="" class="form-control text-right current_payment" style="width: 100%;"></td> </tr>';
+                            nodes += '<tr class="border-b service"> <td width="8%" align="center" data-id=""><input type="checkbox" class="checkbox" value="' + index + '"><input type="hidden" class="service_packages" value="' + element.id + '"></td> <td width="5%"> <input type="hidden" name="service[' + index + '][service_package_id]" value="' + element.sp_id + '">  </td> <td width="13%">' + element.code + '</td> <td width="15%">' + element.sp_name + '</td> <td width="10%"><input type="number" min="1" name="service[' + index + '][quantity]" value="'+element.quantity+'" class="form-control text-right quantity" style="width: 100%;"></td> <td width="13%"><input type="text" name="service[' + index + '][price]" value="' + element.price + '" class="form-control text-right price" style="width: 100%;"></td> <td width="10%"><input type="text" name="service[' + index + '][discount]" value="0.0" class="form-control text-right discount" style="width: 100%;"></td> <td width="13%"><input type="text" name="service[' + index + '][total]" value="' + element.total + '" class="form-control text-right total" style="width: 100%;" readonly=""></td><td width="13%"><input type="text" name="service[' + index + '][current_payment]" value="" class="form-control text-right current_payment" style="width: 100%;"></td> </tr>';
                         });
                         $('#member').before(nodes);
                     }else{

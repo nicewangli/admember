@@ -7,6 +7,7 @@ namespace app\index\controller;
 
 use app\Application;
 use app\model\Activity;
+use app\model\Store;
 use app\validate\ActivityValidate;
 use think\facade\View;
 use think\facade\Request;
@@ -19,7 +20,10 @@ class Bookings extends Application
 
     public function index()
     {
-        return View::fetch();
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
+
+        return View::fetch('index',['storeArr'=>$storeArr]);
     }
 
 

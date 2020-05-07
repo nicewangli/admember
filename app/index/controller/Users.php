@@ -1,6 +1,7 @@
 <?php
 namespace app\index\controller;
 use app\Application;
+use app\model\Store;
 use think\facade\Db;
 use think\facade\View;
 use think\facade\Request;
@@ -10,7 +11,8 @@ class Users extends Application
     public function index($act = null, $uid=0)
     {
 
-
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
         if ($act=='edit') {
             $uid = intval($uid);
             $userinfo = Db::name('users')->where(['uid'=>$uid])->find();
@@ -21,13 +23,13 @@ class Users extends Application
 
             $group = Db::name('teams')->field('id,title')->where(['status'=>1])->select();
             View::assign('group', $group);
-            return View::fetch('add');
+            return View::fetch('add',['storeArr'=>$storeArr]);
         }
 
         if ($act == 'add') {
             $group = Db::name('teams')->field('id,title')->where(['status'=>1])->select();
             View::assign('group', $group);
-            return View::fetch('add');
+            return View::fetch('add',['storeArr'=>$storeArr]);
         }
 
         if ($act == 'update') {
@@ -40,6 +42,7 @@ class Users extends Application
             if (!isset($data['status'])) {
                 $data['status'] = 0;
             }
+            unset($data['store']);
             if (Db::name('users')->where(['uid'=>$uid])->count()==0) {//新增
                 if ($data['username']=='') {
                     return $this->error('用户名不能为空！');
@@ -53,7 +56,7 @@ class Users extends Application
 
                 $data['password'] = password($data['password']);
                 //编号
-                $data['member_no'] = Users::getConfigNo('employee_data','user');
+                $data['member_no'] = Users::getConfigNo('employee_data','users');
                 $r = Db::name('users')->insert($data);
                 if ($r) {
                     addlog('新增用户，用户名：'.$data['username'], $this->user['username']);

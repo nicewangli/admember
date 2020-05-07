@@ -9,6 +9,8 @@ use app\Application;
 use app\model\QuotationItem;
 use app\model\Stockin;
 use app\model\StockinItem;
+use app\model\Store;
+use app\model\Warehouse;
 use app\model\WarehouseProduct;
 use think\Request;
 use think\facade\View;
@@ -120,6 +122,10 @@ class Stockins extends Application
     public function add(Request $request, Stockin $model, StockinValidate $validate, StockinItem $stockinItem,WarehouseProduct $wp)
     {
         $item = [];
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
+        //查询仓库数据，用于页面显示下拉框
+        $warehouse = Warehouse::select();
         if ($request->isPost()) {
             $param = $request->param();
 //            dump($param);die;
@@ -145,9 +151,10 @@ class Stockins extends Application
         }
         View::assign([
             'item' => $item,
+            'warehouse' =>$warehouse,
             'act' => url('add'),
         ]);
-        return view('form');
+        return view('form',['storeArr'=>$storeArr]);
     }
 
 
@@ -155,7 +162,11 @@ class Stockins extends Application
     //修改
     public function edit($id, Request $request, Stockin $model, StockinValidate $validate, StockinItem $stockinItem)
     {
+        //店铺下拉框
+        $storeArr = Store::select()->toArray();
 
+        //查询仓库数据，用于页面显示下拉框
+        $warehouse = Warehouse::select();
        $referer= $request->header('Referer');
         $action= getAction($referer);
         if ($action == 'Stockins'){
@@ -185,7 +196,10 @@ class Stockins extends Application
         View::assign([
             'item' => $item,
             'act' => url('edit'),
-            'service_product' => $service_product
+            'service_product' => $service_product,
+            'storeArr' => $storeArr,
+            'warehouse' =>$warehouse,
+
         ]);
         return view('form',['data'=>$item,'quo_items'=>$quo_items,'service_product'=>$service_product,'fromdatail'=>$fromdatail,'action'=>url('edit?id='.$id),'back'=>$back]);
 

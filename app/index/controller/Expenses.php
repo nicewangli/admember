@@ -5,9 +5,11 @@
 
 namespace app\index\controller;
 
+use app\model\Mapping;
 use think\facade\View;
 use think\Request;
 use app\model\Expense;
+use app\model\ExpenseItem;
 use app\Application;
 
 use app\validate\ExpenseValidate;
@@ -20,28 +22,32 @@ class Expenses extends Application
     {
 
         $param = $request->param();
+        $search = isset($param['search']) ? $param['search'] : '';
         if (isset($param['export_data']) && $param['export_data'] == 1) {
-            $header = ['Regarding', 'Details', 'Booking', 'Contact'];
+            $header = ['Code', 'Expense Time', 'Store', 'Total'];
             $body = [];
-            $data = $model->select();
+            $data = $model->alias('e')->leftJoin('store s', 'e.store_id = s.id')->field('e.*, s.name as store_name')->whereOr([
+                ['e.code', 'like', '%'. $search . '%'],
+                ['s.name', 'like', '%'. $search . '%'],
+
+            ])->select();
+
             foreach ($data as $item) {
                 $record = [];
-                $record['type'] = $item->type;
-                $record['name'] = $item->name;
-                $record['comment'] = $item->comment;
-                $record['quantity'] = $item->quantity;
-                $record['amount'] = $item->amount;
+                $record['code'] = $item->code;
+                $record['expense_time'] = $item->expense_time;
+                $record['store'] = $item->store_name;
+                $record['total'] = $item->total;
 
 
                 $body[] = $record;
             }
             return exportData($header, $body, 'Expense-' . date('Y-m-d-H-i-s'));
         }
-        $search = input('get.search');
 
-        $data = $model::whereOr([
-            ['type', 'like', $search . '%'],
-            ['name', 'like', $search . '%'],
+        $data = $model->alias('e')->leftJoin('store s', 'e.store_id = s.id')->field('e.*, s.name as store_name')->whereOr([
+            ['e.code', 'like', '%'. $search . '%'],
+            ['s.name', 'like', '%'. $search . '%'],
 
         ])->paginate();
         //关键词，排序等赋值
@@ -78,137 +84,104 @@ class Expenses extends Application
 
 
     //添加
-    public function add(Request $request, Expense $Expense)
+    public function add(Request $request, Expense $model, ExpenseValidate $validate, ExpenseItem $expenseItem)
     {
 
         if ($request->isPost()) {
-            $params = input('post.');
-            if ($_FILES) {
-                // 上传文件错误或者文件验证不通过时，都会抛出异常，所以要使用try来捕捉异常
-                try {
-                    // 获取上传的文件，如果有上传错误，会抛出异常
-                    $file = \think\Facade\Request::file('file');
-
-                    // 如果上传的文件为null，手动抛出一个异常，统一处理异常
-                    if (null === $file) {
-                        // 异常代码使用UPLOAD_ERR_NO_FILE常量，方便需要进一步处理异常时使用
-                        throw new \Exception('请上传文件', UPLOAD_ERR_NO_FILE);
-                    }
-
-                    $fileinfo = uploadFile($file, 'Expense');
-
-                    if ($fileinfo) {
-                        $params['file_name'] = $fileinfo['original_name'];
-                        $params['save_name'] = $fileinfo['save_name'];
-                        $params['file_ext'] = $fileinfo['extension'];
-                        $params['file_mime_type'] = $fileinfo['mine'];
-                        $params['file_size'] = $fileinfo['size'];
-                        $params['url'] = $fileinfo['url'];
-                        $params['save_path'] = $fileinfo['save_path'];
-                    }
-
-                } catch (\Exception $e) {
-                    // 如果上传时有异常，会执行这里的代码，可以在这里处理异常
-                    return json([
-                        'code' => 1,
-                        'msg' => $e->getMessage(),
-                    ]);
-                }
+            $param = input('post.');
+            $validate_result = $validate->scene('add')->check($param);
+            if (!$validate_result) {
+                return $this->error($validate->getError());
             }
-            unset($params['file']);
-            //编号
-            $param['code'] = Expenses::getConfigNo('expenditure','expense');
-            $result = $Expense::insertGetId($params);
-            $params['id'] = $result;
-            if ($result) {
-                return json_encode(['code' => 200]);
-            } else {
-                return json_encode(['code' => 0]);
+
+            $param['created_user_id'] = getUserId();
+            $param['created_time'] = time();
+            $result = $model::create($param);
+            $expense_id = $result->id;
+            if (isset($param['item'])) {
+                $expenseItem->saveItem($expense_id, $param['item']);
             }
+
+            return json(['code' => 200]);
         }
+
+        $current_store = getStore();
+        $data['store_id'] = $current_store['id'];
+        $data['store_name'] = $current_store['name'];
+        $data['items'] = [];
+
         View::assign([
             'act' => url('add'),
+            'data' => $data,
         ]);
         return view('form');
 
     }
 
     //修改
-    public function edit($id, Request $request, Expense $model, ExpenseValidate $validate)
+    public function edit($id, Request $request, Expense $model, ExpenseValidate $validate, ExpenseItem $expenseItem, Mapping $mapping)
     {
 
-        $item = $model::find($id);
+        $data = $model->alias('e')->leftJoin('store s', 'e.store_id = s.id')->field('e.*, s.name as store_name')->find($id);
         if ($request->isPost()) {
-            $params = $request->param();
-
-            if ($_FILES) {
-                // 上传文件错误或者文件验证不通过时，都会抛出异常，所以要使用try来捕捉异常
-                try {
-                    // 获取上传的文件，如果有上传错误，会抛出异常
-                    $file = \think\Facade\Request::file('file');
-
-                    // 如果上传的文件为null，手动抛出一个异常，统一处理异常
-                    if (null === $file) {
-                        // 异常代码使用UPLOAD_ERR_NO_FILE常量，方便需要进一步处理异常时使用
-                        throw new \Exception('请上传文件', UPLOAD_ERR_NO_FILE);
-                    }
-
-                    $fileinfo = uploadFile($file, 'Expense');
-
-                    if ($fileinfo) {
-                        $params['file_name'] = $fileinfo['original_name'];
-                        $params['save_name'] = $fileinfo['save_name'];
-                        $params['file_ext'] = $fileinfo['extension'];
-                        $params['file_mime_type'] = $fileinfo['mine'];
-                        $params['file_size'] = $fileinfo['size'];
-                        $params['url'] = $fileinfo['url'];
-                        $params['save_path'] = $fileinfo['save_path'];
-                    }
-
-                } catch (\Exception $e) {
-                    // 如果上传时有异常，会执行这里的代码，可以在这里处理异常
-                    return json([
-                        'code' => 1,
-                        'msg' => $e->getMessage(),
-                    ]);
-                }
+            $param = input('post.');
+            $validate_result = $validate->scene('edit')->check($param);
+            if (!$validate_result) {
+                return $this->error($validate->getError());
             }
 
-            $result = $item->save($params);
+            $param['updated_user_id'] = getUserId();
+            $param['updated_time'] = time();
+            $result = $data->save($param);
+            if (isset($param['item'])) {
+                $expenseItem->saveItem($param['id'], $param['item']);
+            }
             if ($result) {
-                return json_encode(['code' => 200]);
+                return json(['code' => 200]);
             } else {
-                return json_encode(['code' => 0]);
+                return json(['code' => 0]);
             }
 
         }
+        $items = $data->items->toArray();
+
+        foreach ($items as $key => $value) {
+            $items[$key]['mapping_value'] = $mapping->where('id', $value['mapping_id'])->value('val');
+        }
+        //排序
+        $ordering = array_column($items, 'ordering');
+        array_multisort($ordering, $items);
+        $data['items'] = $items;
+
         View::assign([
-            'item' => $item,
+            'data' => $data,
             'act' => url('edit'),
         ]);
         return View::fetch('form');
 
     }
 
-    //下载
-     public function to_download($id,Expense $Expense)
-     {
-        $item =$Expense->where('id',$id)->find();
-        return download($item->save_path,$item->name);
-     }
-
-
-
 
     //删除
-    public function del($id, Expense $model)
+    public function del($id, Expense $model, ExpenseItem $expenseItem)
     {
         $data = $model::find($id);
-        View::assign('data', $data);
-        $data->delete();
-        View::assign('page', $data);
+        $result = $data->delete();
+        if ($result) {
+            $expenseItem->delItems($id);
+        }
         return redirect(url('index'));
     }
 
 
+    //delete item
+    public function del_item(ExpenseItem $expenseItem){
+        $ids = input('ids');
+        $result = $expenseItem->whereIn('id', $ids)->delete();
+        if ($result) {
+            return json(['code' => 200]);
+        }else{
+            return json(['code' => 0]);
+        }
+    }
 }

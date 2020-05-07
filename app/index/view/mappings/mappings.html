@@ -28,15 +28,11 @@
     {js href="__PLUGIN__/bootstrap/js/bootstrap.bundle.min.js" /}
     {js href="__JS__/adminlte.min.js" /}
     {js href="__JS__/init.js" /}
-    {js href="__JS__/application.js" /}
-
-    <!-- 加载 Select2 -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.full.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
 
 </head>
 <body>
     <div class="container-fluid">
+        <input type="hidden" id="ids" value="{$ids}">
         <input type="hidden" id="from_panel" value="{$from_panel}">
         <input type="hidden" id="type_id" value="{$type_id}">
         <div class="card-body">
@@ -141,15 +137,52 @@ $(document).ready( function (){
             alert("请选择一行");
             return;
         }else {
-            let nodes = parent.$("#notes").html();
-            // if (from_panel == 'invoices') {
-                
+            let nodes = '';
+
+            if (from_panel == 'expense') {
+                // let number = parseInt(parent.$(".items_count").val());
+                let number = parseInt(parent.$(".expense").length +1);
+                let ids = $("#ids").val();
+                ids = ids.split(",");
+
+                $.each(rows, function(index, element){
+                    if (ids.indexOf(element.id.toString()) == -1) {
+                        nodes += '<tr class="border-b expense">\n' +
+                            '                                <td width="8%" align="center" data-id="">\n' +
+                            '                                    <input type="checkbox" class="checkbox" value="">\n' +
+                            '                                </td>\n' +
+                            '                                <td width="8%">\n' +
+                            '                                    <input type="hidden" class="mapping" name="item[' + number + '][mapping_id]" value="' + element.id + '">\n' +
+                            '                                    <input type="number" name="item[' + number + '][ordering]" class="form-control ordering" value="' + number + '" style="width: 100%;">\n' +
+                            '                                </td>\n' +
+                            '                                <td width="30%">' + element.name + '</td>\n' +
+                            '                                <td width="30%">\n' +
+                            '                                    <input type="text" name="item[' + number + '][notes]" class="form-control notes" value="" style="width: 100%;">\n' +
+                            '                                </td>\n' +
+                            '\n' +
+                            '                                <td width="12%">\n' +
+                            '                                    <input type="number" min="1" name="item[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;">\n' +
+                            '                                </td>\n' +
+                            '                                <td width="12%">\n' +
+                            '                                    <input type="text" name="item[' + number + '][amount]" value="0.0" class="form-control text-right amount" style="width: 100%;">\n' +
+                            '                                </td>\n' +
+                            '\n' +
+                            '                            </tr>';
+                        number++;
+                    }
+                });
+                parent.$("#expense").find('#total_amount').before(nodes);
+
+            }else{
+                nodes = parent.$("#notes").html();
                 $.each(rows, function(index, element){
                     nodes += element.val + "\n";
-                }) 
+                })
                 parent.$("#notes").html(nodes);
-            // }
-            
+            }
+
+
+
 
             //注意：parent 是 JS 自带的全局对象，可用于操作父页面
             let index = parent.layer.getFrameIndex(window.name); //获取窗口索引

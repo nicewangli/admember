@@ -98,42 +98,63 @@ class PackageStagings extends Application
             if (!$validate_result) {
                 return $this->error($validate->getError());
             }
-            if(!empty($param['invoice_id'])) {
-                $i = $invoice->find($param['invoice_id']);
-                $i->final_total -= $param['final_total'];
-                dump($i->final_total);die;
-                $i->save();
-            }
+
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
             //编号
             $param['ps_no'] = PackageStagings::getConfigNo('package_staging','package_staging');
-            $result = $model::create($param);
-            $package_staging_id = $result->id;
-            if (isset($param['service'])) {
-                $packageStagingItem->saveItem($package_staging_id, $param['service']);
-            }
-            if (isset($param['payment'])) {
-                $packageStagingPayment->savePayment($package_staging_id, $param['payment']);
-            }
-            if (isset($param['seller'])) {
-                $packageStagingSeller->saveSeller($package_staging_id, $param['seller']);
+            try{
+                $model->startTrans();
+                if(!empty($param['invoice_id'])) {//如果存在发票记录，对发票待付款金额做修改
+                    $i = $invoice->find($param['invoice_id']);
+                    $i->final_total = $i->final_total - $param['final_totals'];
+                    $i->save();
+                } else{
+                    //首次付款  生成发票
+                    $param['invoice_no'] = PackageStagings::getConfigNo('invoice','invoice');
+                    $total = $param['total'];
+                    $total_amount = $param['total_amount'];
+                    $param['total'] = $param['invoice_total'];
+                    $param['total_amount'] = $param['invoice_total'];
+                    $param['final_total'] = $param['total_amount'] - $param['final_totals'];
+                    $invoiceResult = $invoice::create($param);
+                    $param['invoice_id'] = $invoiceResult->id;
+                    $param['total'] = $total;
+                    $param['total_amount'] = $total_amount;
+                }
+                $result = $model::create($param);
+                $package_staging_id = $result->id;
+                if (isset($param['service'])) {
+                    $packageStagingItem->saveItem($package_staging_id, $param['service'],$param['invoice_id']);
+                }
+                if (isset($param['payment'])) {
+                    $packageStagingPayment->savePayment($package_staging_id, $param['payment']);
+                }
+                if (isset($param['seller'])) {
+                    $packageStagingSeller->saveSeller($package_staging_id, $param['seller']);
+                }
+                $model->commit();
+                return json(['code' => 200]);
+            } catch (\Exception $e) {
+                $model->rollback();
+                return json(['code' => 0]);
             }
 
-            return json(['code' => 200]);
         }
 
         $store = getStore();
+        $storeArr = getStoreArr();
         $data['store_id'] = $store['id'];
         $data['store_name'] = $store['name'];
 
-        return view('add', ['data' => $data]);
+        return view('add', ['storeArr'=>$storeArr]);
     }
 
     //修改
     public function edit($id, Request $request, PackageStaging $model, PackageStagingValidate $validate,PackageStagingItem $packageStagingItem, PackageStagingPayment $packageStagingPayment, PackageStagingSeller $packageStagingSeller, Member $member, Invoice $invoice)
     {
-        $item=$model->alias('ps')->leftJoin('store s','ps.store_id = s.id')->leftJoin('member m','ps.member_id = m.id')->leftJoin('invoice i','ps.invoice_id = i.id')->field('ps.*, s.name as store_name, m.first_name as member, i.invoice_no')->find($id);
+        $storeArr = getStoreArr();
+        $item=$model->alias('ps')->leftJoin('store s','ps.store_id = s.id')->leftJoin('invoice i','ps.invoice_id = i.id')->field('ps.*, s.name as store_name, i.invoice_no,i.id as invoice_id')->find($id);
 
         $member_info = [];
         if ($item['member_id']) {
@@ -151,10 +172,18 @@ class PackageStagings extends Application
             $param['new_customer'] = isset($param['new_customer']) ? isset($param['new_customer']) : 0;
             $param['updated_user_id'] = getUserId();
             $param['updated_time'] = time();
+            //TODO:修改时发票也要相应修改
 
+            $i = $invoice->find($param['invoice_id']);
+            $total = $param['total'];
+            $total_amount = $param['total_amount'];
+            $i->total = $i->total_amount = $param['invoice_total'];
+            //总款减去支付
+            $i->final_total = $i->total_amount - $param['total_amount'];
+            $i->save();
             $item->save($param);
             if (isset($param['service'])) {
-                $packageStagingItem->saveItem($id,$param['service']);
+                $packageStagingItem->saveItem($id,$param['service'],$param['invoice_id']);
             }
             if (isset($param['payment'])) {
                 $packageStagingPayment->savePayment($id, $param['payment']);
@@ -171,7 +200,7 @@ class PackageStagings extends Application
         $sellers = $packageStagingSeller->findSellers($id);
 
         $item['items_count'] = $packageStagingItem->where('package_staging_id', $id)->count();
-        return view('add',['data' => $item, 'items' => $items, 'payments' => $payments, 'sellers' => $sellers, 'member' => $member_info]);
+        return view('add',['data' => $item, 'items' => $items, 'payments' => $payments, 'sellers' => $sellers, 'member' => $member_info,'storeArr'=>$storeArr]);
 
     }
 
@@ -215,12 +244,31 @@ class PackageStagings extends Application
     {
         $member_id = input('member_id');
         $invoice_id = input('invoice_id');
+        $type = input('type');
         $where = [];
         $where[] = ['ps.invoice_id','=',$invoice_id];
         $where[] = ['ps.member_id','=',$member_id];
-        $item = $packageStagingItem->alias('psi')->leftJoin('package_staging ps','psi.package_staging_id = ps.id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->field('psi.*,ps.ps_no,sp.name as sp_name,sp.code')->where($where)->select()->toArray();
+        $item = $packageStagingItem->alias('psi')->leftJoin('package_staging ps','psi.package_staging_id = ps.id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->leftJoin('invoice i','ps.invoice_id = i.id')->field('psi.*,i.invoice_no,ps.ps_no,sp.name as sp_name,sp.code,sp.id as sp_id');
+        if(empty($type)) {
+            $item = $item->group('psi.service_package_id');
+        }
+
+        $item = $item->where($where)->select()->toArray();
         //根据invoice_id  member_id  package_staging_id,package_staging_item,,service_package_id
         $data = ['rows' => $item];
         return json($data);
+    }
+
+    public function old_package_staging()
+    {
+        $member_id = input('member_id');
+        $invoice_id = input('invoice_id');
+        $type = input('type');
+        View::assign([
+            'member_id' => $member_id,
+            'invoice_id' => $invoice_id,
+            'type' => $type
+        ]);
+        return View::fetch();
     }
 }

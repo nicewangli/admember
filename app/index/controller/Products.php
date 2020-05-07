@@ -224,4 +224,16 @@ class Products extends Application
         $ids = input('ids');
         return View::fetch('products', ['from_panel' => $from_panel, 'ids' => $ids]);
     }
+
+    //查看相應仓库的库存量
+    public function get_quantity()
+    {
+
+    }
+
+    //产品库存显示页面
+    public function warehouse_product_quantity()
+    {
+        $product_id = input('product_id');
+    }
 }

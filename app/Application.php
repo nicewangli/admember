@@ -68,6 +68,8 @@ class Application extends BaseController
 
         $no_need_to_check_action = [
             'refund_packages',
+            'old_package_staging',
+            'get_package',
             'list',
             'lists',
             'panel',
@@ -98,7 +100,8 @@ class Application extends BaseController
             'services',
             'stored_value',
             'reward',
-            'get_package'
+            'get_package',
+            'update'
         ];
 
 

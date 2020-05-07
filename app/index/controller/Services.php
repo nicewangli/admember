@@ -126,7 +126,7 @@ class Services extends Application
             $param['created_time'] = time();
 
             //编号
-            $param['code'] = Services::getConfigNo('service','service');
+            $param['code'] = Services::getConfigNo('serve','service');
             $result = $model::create($param);
 
             if (isset($param['item'])) {

@@ -121,7 +121,7 @@ class UsePackages extends Application
     //修改
     public function edit($id, Request $request, UsePackage $model, UsePackageValidate $validate,UsePackageItem $usePackageItem, Member $member, Invoice $invoice)
     {
-        $item=$model->alias('up')->leftJoin('store s','up.store_id = s.id')->leftJoin('member m','up.member_id = m.id')->leftJoin('invoice i','up.invoice_id = i.id')->field('up.*, s.name as store_name, m.first_name as member, i.invoice_no as invoice')->find($id);
+        $item=$model->alias('up')->leftJoin('store s','up.store_id = s.id')->field('up.*, s.name as store_name')->find($id);
 
         $member_info = [];
         if ($item['member_id']) {
