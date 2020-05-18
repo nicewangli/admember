@@ -60,7 +60,7 @@ class Users extends Application
                 $r = Db::name('users')->insert($data);
                 if ($r) {
                     addlog('新增用户，用户名：'.$data['username'], $this->user['username']);
-                    return $this->success('恭喜，新增用户成功！', url('admin/users/index'));
+                    return $this->success('恭喜，新增用户成功！', url('users/index'));
                 }
             } else {//编辑
                 if ($data['password']=='') {
@@ -71,7 +71,7 @@ class Users extends Application
                 $r = Db::name('users')->where(['uid'=>$uid])->update($data);
                 if ($r) {
                     addlog('修改用户信息，UID：'.$uid, $this->user['username']);
-                    return $this->success('恭喜，修改用户成功！', url('admin/users/index'));
+                    return $this->success('恭喜，修改用户成功！', url('users/index'));
                 }
             }
             return $this->error('参数错误，请重试！');

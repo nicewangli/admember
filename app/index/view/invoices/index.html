@@ -32,13 +32,16 @@
                                 </button>
                             </div>
 -->
-                            <!-- <div class="form-group"> -->
-                            <button class="btn btn-sm btn-success exportData"
-                                    type="submit" onclick="$('#export_data').val(1)"><i
-                                    class="fa fa-file-excel-o"></i>&nbsp;Export
-                            </button>
-                            <!-- </div> -->
-                            <!-- </form> -->
+                            <form class="form-inline searchForm" id="searchForm" action="{:url('invoices/index')}"
+                                  method="get">
+                                <input type="hidden" value="0" id="export_data" name="export_data">
+                                <div class="form-group">
+                                    <button class="btn btn-sm btn-success exportData"
+                                            type="submit" onclick="$('#export_data').val(1)"><i
+                                            class="fa fa-file-excel-o"></i>&nbsp;Export
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div> <!-- card-header -->
@@ -71,7 +74,7 @@
                                         <label class="col-sm-2 control-label "> 購買日期 </label>
                                         <div class="col-xs-12 col-md-4">
                                             <input class="form-control datePicker to-search" id="start_date"
-                                                   name="start_date"  value="{$start_date}">
+                                                   name="start_date" value="{$start_date}">
                                         </div>
                                         &nbsp;&nbsp;<h5>至</h5>&nbsp;&nbsp;
                                         <div class="col-xs-12 col-md-4">
@@ -171,7 +174,7 @@
 
                                     <div class=" float-right ">
 
-                                        <button class="btn  btn-default btn-sm" type="button" id="to-search" >
+                                        <button class="btn  btn-default btn-sm" type="button" id="to-search">
                                             搜尋
                                         </button>
 
@@ -277,7 +280,7 @@
             let search = $("#search").val();
 
             $('#invoices-grid').bootstrapTable('refreshOptions', {
-                queryParams: function(params) {
+                queryParams: function (params) {
                     params.start_date = start_date;
                     params.end_date = end_date;
                     params.search = search;
@@ -479,7 +482,6 @@
             console.log(moment(end_date).format("YYYY-MM-DD"))
             console.log(moment().subtract(1, 'months'))
         })
-
 
 
     })

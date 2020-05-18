@@ -63,12 +63,18 @@ class Application extends BaseController
             'Upload/uploadpic',
             'Upload/uploadpics',
             'Users/skin',
+			'WaLogs/setting',
+            'WaLogs/send_msg',
+			'WaLogs/send_direct',
+			'WaLogs/logout',
         ];
 
 
         $no_need_to_check_action = [
+            'wa_info',
             'refund_packages',
             'old_package_staging',
+            'warehouse_product_quantity',
             'get_package',
             'list',
             'lists',
@@ -101,7 +107,19 @@ class Application extends BaseController
             'stored_value',
             'reward',
             'get_package',
-            'update'
+
+            'get_quantity',
+            'update',
+            'transaction_list',
+            'treatment_list',
+            'expiration_date',
+            'service_list',
+            'beautician_list',
+            'stored_value_list',
+            'reward',
+            'beautician',
+            'service_to_package',
+            'import_data'
         ];
 
 

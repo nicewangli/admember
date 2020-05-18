@@ -11,7 +11,7 @@
                 <!--数据列表顶部-->
                 <div class="card-header ">
                     <div>
-                        <a title="Add" class="btn btn-primary btn-sm " href="{:url('add')}">
+                       <a title="Add" onclick="doc()" class="btn btn-primary btn-sm " href="#">
                             <i class="fa fa-plus"></i> 新增
                         </a>
 
@@ -112,4 +112,42 @@
 {include file='public/content_common' /}
 
 {/block}
+
+{block name="js"}
+<script type="text/javascript" >
+
+    window.operateEvents={
+        "click .edit" : function(e,value,row,index){doc(row.id)},
+        "click .del" : function(e,value,row,index){del(row.id)}
+    }
+
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+            '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+        ].join('&nbsp;&nbsp;');
+    }
+
+    function doc(id){
+        if(id){
+            var url = '{:url("stockouts/edit?id=")}'+id
+        }else{
+            var url = '{:url("stockouts/add")}?supplier_id={}'
+        }
+
+        layer.open({
+            type:2,
+            title:'stockouts Detail',
+          
+            area:['800px','510px'],
+            content: url,
+        });
+
+    }
+	
+
+
+</script>
+{/block}
+
 

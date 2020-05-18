@@ -82,13 +82,17 @@
     <script type="text/javascript">
         window.operateEvents={
             "click .edit" : function(e,value,row,index){services(row.id)},
-            "click .del" : function(e,value,row,index){del(row.id)}
+			   "click .add" : function(e,value,row,index){add(row.id)},
+            "click .del" : function(e,value,row,index){del(row.id)},
+         
         }
 
         function operateFormatter(value,row,index){
             return [
-                '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
-                '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+                '<a class="btn btn-primary btn-xs mr-1 edit" href="#"><i class="fa fa-pencil"></i></a>',
+			    '<a class="btn btn-success btn-xs mr-1 add" href="#" title="Add to Service Package"><i class="fa fa-exchange"></i></a>',
+                '<a class="btn btn-danger btn-xs mr-1 del" href="#"><i class="fa fa-trash"></i></a>',
+     
             ].join('');
         }
      
@@ -131,6 +135,22 @@
                     }
                 })
             }
+        }
+
+        function add(id) {
+            let clientHeight = document.documentElement.clientHeight;
+            let height = 850;
+            if(height > clientHeight){
+                height = clientHeight;
+            }
+
+
+            layer.open({
+                type: 2,
+                title: 'Service Information',
+                area: ['1000px', height + 'px'],
+                content: '{:url("service_packages/service_to_package?id=")}' + id
+            })
         }
 
         $(function(){
@@ -185,7 +205,7 @@
                 }, {
                     field: 'operate',
                     title: '操作',
-                    width: '80px',
+                    width: '120px',
                     clickToSelect: false,
                     events: operateEvents,
                     formatter: operateFormatter

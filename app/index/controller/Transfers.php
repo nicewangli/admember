@@ -75,7 +75,7 @@ class Transfers extends Application
     //添加
     public function add(Request $request, Transfer $model, TransferValidate $validate, TransferItem $transferItem)
     {
-        //查询仓库数据，用于页面显示下拉框
+        //查询仓库数据，用于页面显示下拉框  转仓 需要wp表对于的产品 数量加减，，，还有wp表的
        $warehouse = Warehouse::select();
 
         $item = [];
@@ -87,16 +87,21 @@ class Transfers extends Application
             }
             //编号
             $param['transfer_no'] = Transfers::getConfigNo('turnover','transfer');
-            $result = $model::create($param);
-            $transfer_id = $result->id;
-            $transferItem->saveItem($transfer_id, $param);
-            if ($result) {
+            try{
+                $model->startTrans();
+                $result = $model::create($param);
+                $transfer_id = $result->id;
+                $transferItem->saveItem($transfer_id, $param);
+                $model->commit();
                 return json(['code' => 200,'msg' => ' successfully.']);
-            } else {
-                return json(['code' => 0]);
+            }catch (\Exception $exception) {
+                $model->rollback();
+                return json(['code'=>0]);
             }
+
         }else{
             $item['supplier_id'] = input('get.supplier_id');
+			$item = new Transfer();
         }
         View::assign([
             'item' => $item,
@@ -158,13 +163,11 @@ class Transfers extends Application
     public function del($id, Transfer $model)
     {
 
-        $data = $model::find($id);
-        $res = $data->delete();
-        if ($res) {
-            return json(['code' => 200,'msg' => 'Delete success.']);
-        } else {
-            return json(['code' => 0,'msg' => 'Delete fail']);
-        }
+      $data = $model::find($id);
+        View::assign('data', $data);
+        $data->delete();
+        View::assign('page', $data);
+        return redirect(url('index'));
     }
 
 }

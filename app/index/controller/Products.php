@@ -6,6 +6,8 @@
 namespace app\index\controller;
 
 use app\Application;
+use app\model\Warehouse;
+use app\model\WarehouseProduct;
 use think\Request;
 use app\model\Product;
 use app\model\Mapping;
@@ -226,14 +228,22 @@ class Products extends Application
     }
 
     //查看相應仓库的库存量
-    public function get_quantity()
+    public function get_quantity(WarehouseProduct $model,Product $product,Warehouse $warehouse)
     {
-
+        //产品id
+        $product_id = input('product_id');
+        $item = $model->alias('wp')->leftJoin('product p','p.id = wp.product_id')->leftJoin('warehouse w','w.id = wp.warehouse_id')->field('wp.quantity,p.name as product_name,w.name as w_name')->where('wp.product_id','=',$product_id)->select()->toArray();
+        $data = ['rows'=>$item];
+        return json($data);
     }
 
     //产品库存显示页面
     public function warehouse_product_quantity()
     {
-        $product_id = input('product_id');
+        $product_id = input('id');
+        View::assign([
+            'product_id' => $product_id,
+        ]);
+        return View::fetch();
     }
 }

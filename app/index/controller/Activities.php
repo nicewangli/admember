@@ -202,6 +202,20 @@ class Activities extends Application
         return View::fetch('form');
 
     }
+	
+	
+	
+	    //删除
+    public function del($id, Activity $model)
+    {
+        $data = $model::find($id);
+        $res = $data->delete();
+        if ($res) {
+            return json(['code' => 200,'msg' => 'Delete success.']);
+        } else {
+            return json(['code' => 0,'msg' => 'Delete fail']);
+        }
+    }
 
 
     public function typeFilter(){

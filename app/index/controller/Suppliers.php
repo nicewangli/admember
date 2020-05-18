@@ -98,7 +98,7 @@ class Suppliers extends Application
                 return $this->error($validate->getError());
             }
             //编号
-            $param['member_no'] = Suppliers::getConfigNo('supplier_information','supplier');
+            $param['member_no'] = Suppliers::getConfigNo('supplier_information','suppliers');
             $result = $model::create($param);
             return $this->redirect(url("index"));
         }
@@ -107,11 +107,20 @@ class Suppliers extends Application
 
 
     //详情
-    public function detail($id)
+   public function detail($id,Request $request, Supplier $model, SupplierValidate $validate)
     {
+
         $item = Supplier::find($id);
         $grid_url = url('supplier_contacts/lists', ['supplier_id' => $id,]);
 
+        if ($request::isPost()) {
+            $param  = input('post.');
+            $validate_result = $validate->scene('edit')->check($param);
+            if (!$validate_result) {
+                return $this->error($validate->getError());
+            }
+            $item->save($param);
+        }
         return view('detail', ['item' => $item,'supplier_id'=> $id,'grid_url' =>$grid_url,]);
     }
 

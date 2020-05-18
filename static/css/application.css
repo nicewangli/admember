@@ -102,20 +102,20 @@
 
 #v-pills-tab{
   padding: 10px;
-  border: 1px solid red;
+  border: 1px solid #117a8b;
   border-radius: .25rem;
 }
 
 #v-pills-tab .nav-link{
-  border: 1px solid red;
+  border: 1px solid #117a8b;
   border-radius: .25rem;
-  color: red;
+  color: #117a8b;
   margin-bottom: 10px;
 }
 
 #v-pills-tab .nav-link.active, #v-pills-tab .show>.nav-link{
   color: #fff;
-  background-color: red;
+  background-color: #117a8b;
 }
 
 .form-group{

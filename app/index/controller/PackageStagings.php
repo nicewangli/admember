@@ -6,6 +6,7 @@
 namespace app\index\controller;
 
 use app\Application;
+use app\model\InvoiceItem;
 use app\model\ServicePackage;
 use think\facade\View;
 use think\Request;
@@ -24,6 +25,27 @@ class PackageStagings extends Application
     //列表
     public function index(Request $request, PackageStaging $model)
     {
+        //
+        $params = $request->param();
+            if(isset($params['export_data'])) {
+                $header = ['Invoice_NO','PS_NO','Member','Store','本次还款','Create_Time'];  //设置导出的Excel表头
+                $body = [];     //Excel表内容数组
+                $data = $model->alias('ps')->leftJoin('invoice i','i.id = ps.invoice_id')->leftJoin('store s','s.id = ps.store_id')->leftJoin('member m','m.id = ps.member_id')->field('ps.*,m.name as member_name,i.invoice_no,s.name as store_name')->select();
+//                $data = $model->select();   //数据,需要连表查询
+                foreach ($data as $item) {
+                    $record = [];
+                    //表头对应数据表字段
+                    $record['PS_NO'] = $item->ps_no;
+                    $record['Invoice_NO'] = $item->invoice_no;
+                    $record['Member'] = $item->member_name;
+                    $record['Store'] = $item->store_name;
+                    $record['Total'] = $item->total;
+                    $record['create_time'] = $item->staging_time;
+                    $body[] = $record;
+                }
+                return exportData($header, $body, 'PS-' . date('Y-m-d-H-i-s'));
+            }
+
         return View::fetch();
     }
 
@@ -43,7 +65,7 @@ class PackageStagings extends Application
             if(isset($filter['staging_date'])){
                 $where[] = ['staging_date', '=', $filter['staging_date']];
             }
-            
+
             if(isset($filter['store'])){
                 $store_id = $store::where('name', $filter['store'])->value('id');
                 $where[] = ['store_id', '=', $store_id];
@@ -53,7 +75,7 @@ class PackageStagings extends Application
                 $where[] = ['member_id', '=', $member_id];
             }
         }
-        
+
         if (isset($param['limit'])) {
             $limit = $param['limit'];
             $offset = $param['offset'];
@@ -87,11 +109,11 @@ class PackageStagings extends Application
 
 
     //添加
-    public function add(Request $request, PackageStaging $model, PackageStagingValidate $validate,PackageStagingItem $packageStagingItem, PackageStagingPayment $packageStagingPayment, PackageStagingSeller $packageStagingSeller,Invoice $invoice)
+    public function add(Request $request, PackageStaging $model, PackageStagingValidate $validate,PackageStagingItem $packageStagingItem, PackageStagingPayment $packageStagingPayment, PackageStagingSeller $packageStagingSeller,Invoice $invoice,InvoiceItem $invoiceItem)
     {
 //        $member_id = input('member_id',2);
 //        $invoiceArr = $invoice->where('member_id','=',$member_id)->select()->toArray();
-
+        $store = getStore();
         if ($request->isPost()) {
             $param = input('post.');
             $validate_result = $validate->scene('add')->check($param);
@@ -101,13 +123,14 @@ class PackageStagings extends Application
 
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
+            $param['store_id'] = $store['id'];
             //编号
             $param['ps_no'] = PackageStagings::getConfigNo('package_staging','package_staging');
             try{
                 $model->startTrans();
                 if(!empty($param['invoice_id'])) {//如果存在发票记录，对发票待付款金额做修改
                     $i = $invoice->find($param['invoice_id']);
-                    $i->final_total = $i->final_total - $param['final_totals'];
+                    $i->final_total = $i->final_total - $param['final_total'];
                     $i->save();
                 } else{
                     //首次付款  生成发票
@@ -116,11 +139,22 @@ class PackageStagings extends Application
                     $total_amount = $param['total_amount'];
                     $param['total'] = $param['invoice_total'];
                     $param['total_amount'] = $param['invoice_total'];
-                    $param['final_total'] = $param['total_amount'] - $param['final_totals'];
+                    $param['final_total'] = $param['total_amount'] - $param['final_total'];
                     $invoiceResult = $invoice::create($param);
                     $param['invoice_id'] = $invoiceResult->id;
                     $param['total'] = $total;
                     $param['total_amount'] = $total_amount;
+                    if (isset($param['service'])) {
+                        //TODO: add invoice_item
+                        $invoiceItemData = $param['service'];
+                        foreach ($invoiceItemData as &$value) {
+                            $value['service_type'] = 1;//类型为服务套票
+                            $value['service_id'] = $value['service_package_id']; //invoice_item对应的字段名为service_id
+                            unset($value['service_package_id']);
+                            unset($value['current_payment']);
+                        }
+                        $invoiceItem->saveItem($invoiceResult->id, $invoiceItemData);
+                    }
                 }
                 $result = $model::create($param);
                 $package_staging_id = $result->id;
@@ -136,13 +170,13 @@ class PackageStagings extends Application
                 $model->commit();
                 return json(['code' => 200]);
             } catch (\Exception $e) {
+                return $e->getMessage();die;
                 $model->rollback();
                 return json(['code' => 0]);
             }
 
         }
 
-        $store = getStore();
         $storeArr = getStoreArr();
         $data['store_id'] = $store['id'];
         $data['store_name'] = $store['name'];
@@ -179,7 +213,7 @@ class PackageStagings extends Application
             $total_amount = $param['total_amount'];
             $i->total = $i->total_amount = $param['invoice_total'];
             //总款减去支付
-            $i->final_total = $i->total_amount - $param['total_amount'];
+            $i->final_total = floatval($i->total_amount) - floatval($param['total_amount']);
             $i->save();
             $item->save($param);
             if (isset($param['service'])) {
@@ -191,7 +225,7 @@ class PackageStagings extends Application
             if (isset($param['seller'])) {
                 $packageStagingSeller->saveSeller($id, $param['seller']);
             }
-            
+
             return json(['code' => 200]);
         }
 
@@ -200,7 +234,7 @@ class PackageStagings extends Application
         $sellers = $packageStagingSeller->findSellers($id);
 
         $item['items_count'] = $packageStagingItem->where('package_staging_id', $id)->count();
-        return view('add',['data' => $item, 'items' => $items, 'payments' => $payments, 'sellers' => $sellers, 'member' => $member_info,'storeArr'=>$storeArr]);
+        return view('add',['data' => $item, 'items' => $items, 'payments' => $payments, 'sellers' => $sellers, 'member' => $member_info,'storeArr'=>$storeArr,'type'=>'edit']);
 
     }
 
@@ -213,13 +247,13 @@ class PackageStagings extends Application
         } else {
             $result = $model->whereIn('id', $ids)->delete();
         }
-        
+
         foreach ($ids as $value) {
             $packageStagingItem->delItems($value);
             $packageStagingPayment->delPayments($value);
             $packageStagingSeller->delSellers($value);
         }
-        
+
         return json(['code' => 200]);
     }
 

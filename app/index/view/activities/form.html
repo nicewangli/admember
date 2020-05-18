@@ -127,22 +127,22 @@ Activities.php{extend name='public/popup' /}
 {block name="js"}
 <script type="text/javascript">
 
-    $(function () {
+      $(function () {
 
         $("#activity-submit").click(function(){    // 提交按钮触发事件
-            var tourl = $("#activity-form").attr("action");    // 获取 表单的 提交地址
-            // 序列化 表单数据
-            $.post(tourl,$("#activity-form").serialize(),function(data){
-                layer.msg(data['msg']);
-                if(data['code'] == 200){
-                    var action = data['action']
-                    parent.layer.closeAll();
-                    if(action == 'add') {
-                        parent.calendar.addEvent(data.event);
-                    }else if(action == "update"){
-                        parent.calendar.getEventById(data.event.id).remove()
-                        parent.calendar.addEvent(data.event);
-                    }else{
+            var formAction = $("#activity-form").attr("action");    // 获取 表单的 提交地址
+            var formData= $("#activity-form").serializeFiles();
+            $.ajax({
+                url         : formAction,
+                data        : formData,
+                cache       : false,
+                contentType : false,
+                processData : false,
+                type        : 'POST',
+                success     : function(data, textStatus, jqXHR){
+                    layer.msg(data['msg']);
+                    if (data['code'] == 200) {
+                        layer_close()
                         parent.$('#activity-grid').bootstrapTable('refresh')
                     }
                 }

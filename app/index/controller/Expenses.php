@@ -102,7 +102,11 @@ class Expenses extends Application
                 $expenseItem->saveItem($expense_id, $param['item']);
             }
 
-            return json(['code' => 200]);
+             if ($result) {
+                return json(['code' => 200,'msg' => ' successfully.']);
+            } else {
+                return json(['code' => 0]);
+            }
         }
 
         $current_store = getStore();

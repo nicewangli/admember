@@ -290,3 +290,30 @@ $.fn.serializeFiles = function() {
 
     return formData;
 };
+
+function wh_end_time(start_time){
+    let st_strs = start_time.split(":")
+    let time = Number(st_strs[0])
+    let hour = st_strs[1]
+    if(hour == "30"){
+        st_strs[0] = time + 1
+        st_strs[1] = "00"
+    }else{
+        st_strs[1] = "30"
+    }
+    return st_strs.join(":")
+}
+
+
+function wh_start_time(start_time){
+    let st_strs = start_time.split(":")
+    let time = Number(st_strs[0])
+    let hour = st_strs[1]
+    if(hour == "00"){
+        st_strs[0] = time - 1
+        st_strs[1] = "30"
+    }else{
+        st_strs[1] = "00"
+    }
+    return st_strs.join(":")
+}

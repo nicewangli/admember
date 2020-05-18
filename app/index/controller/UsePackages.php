@@ -104,7 +104,7 @@ class UsePackages extends Application
             $use_package_id = $result->id;
 
             if (isset($param['service'])) {
-                $usePackageItem->saveItem($use_package_id, $param['invoice_id'], $param['member_id'], $param['service']);
+                $usePackageItem->saveItem($use_package_id, $param['member_id'], $param['service']);
             }
             
 
@@ -141,7 +141,7 @@ class UsePackages extends Application
 
             $item->save($param);
             if (isset($param['service'])) {
-                $usePackageItem->saveItem($id, $param['invoice_id'], $param['member_id'], $param['service']);
+                $usePackageItem->saveItem($id, $param['member_id'], $param['service']);
             }
             
             return json(['code' => 200]);
@@ -159,19 +159,18 @@ class UsePackages extends Application
     public function del($id, UsePackage $model, UsePackageItem $usePackageItem)
     {
         $ids = explode(',', $id);
-        if ($model->softDelete) {
-            $result = $model->whereIn('id', $ids)->useSoftDelete('delete_time', time())->delete();
-        } else {
-            $result = $model->whereIn('id', $ids)->delete();
-        }
+
         foreach ($ids as $key => $value) {
+            $find = $model::find($value);
+            $find->delete();
+
             $data = $model->field('invoice_id, member_id')->find($value);
-            
-            $result = $usePackageItem->delItems($value);
+
+            $usePackageItem->delItems($value);
 
             // $usePackageItem->total_deduction($value, $data['invoice_id'], $data['member_id']);
         }
-        
+
         return json(['code' => 200]);
     }
 

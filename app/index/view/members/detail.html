@@ -2,7 +2,8 @@
 {block name='content'}
 
 <section class="content">
-
+    <input type="hidden" id="user_tel" value="{$user_tel}">
+    <input type="hidden" id="phone_mobile" value="{$item.phone_mobile}">
    <div class="card">
             <div class="card-body" style="padding-bottom: 8px">
                 <div class="row">
@@ -14,6 +15,7 @@
                                     <img src="__IMAGE__/contact.png" alt="" class="img-rounded pt-2">
                                 </div>
                                 <div class="col-7">
+                                    <input type="hidden" id="member_id" value="{$item.id}">
                                     <h2 class="lead"><b>{$item.first_name}</b></h2>
                                     <ul class="ml-6 mb-0 fa-ul text-muted">
                                         <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span>
@@ -92,6 +94,9 @@
                     </div>
 
                     <div class="col-md-4" align="right">
+                        <button type="button" class="btn btn-default" onclick="wa_info()" item-toggle="modal" item-target="#modal-sm">
+                            WhatsApp
+                        </button>
                         <button type="button" class="btn btn-default" item-toggle="modal" item-target="#modal-sm">
                             跟随
                         </button>
@@ -206,4 +211,20 @@
     </div>
 </section>
 
+{/block}
+{block name="js"}
+    <script>
+        function wa_info(){
+            let phone = $("#phone_mobile").val();
+            let senderId = $("#user_tel").val();
+            let url = '{:url("wa_logs/wa_info?phone=")}'+phone+'&sender_jid='+senderId;
+            layer.open({
+                type: 2,
+                title: false,
+                area: ['800px', '500px'],
+                content: url,
+                closeBtn:0,
+            })
+        }
+    </script>
 {/block}

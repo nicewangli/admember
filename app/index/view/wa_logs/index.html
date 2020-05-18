@@ -3,79 +3,368 @@
 
 <!--数据列表页面-->
 <section class="content">
+    <div class="card card-outline card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Whatsapp</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="{:url('setting')}" class="btn btn-primary btn-block mb-3">Setting</a>
+                    <input type="hidden" id="get-nav-tab" value="{$type|default='nav-all-tab'}">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Folders</h3>
 
-    <!--顶部搜索筛选-->
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <!--数据列表顶部-->
-                <div class="card-body table-responsive table-sm">
-                    <table class="table table-hover table-bordered datatable"  data-toggle="table"  width="100%">
-                        <thead>
-                        <tr>
-                            <th>
-                                <input id="dataCheckAll" type="checkbox" onclick="checkAll(this)" class="checkbox"
-                                       placeholder="All/Cancel">
-                            </th>
-                            <th>Uid</th>
-                            <th>From</th>
-                            <th>Sender</th>
-                            <th>Remote</th>
-                            <th>Content</th>
-                            <th>Msg</th>
-                            <th>Read</th>
-                            <th>Comment</th>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                        class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="nav nav-pills flex-column">
+                                <li class="nav-item active">
+                                    <a href="{:url('index',['from_me'=>0])}" class="nav-link">
+                                        <i class="fas fa-inbox"></i> Inbox
+                                        <span class="badge bg-primary float-right">12</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{:url('index',['from_me'=>1])}" class="nav-link">
+                                        <i class="far fa-envelope"></i> Sent
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Member</h3>
+                            <h3 class="card-title" style="margin-left: 60%">
+                                <a href="{:url('index')}">All Member</a>
+                            </h3>
 
-                            <th>Action</th>
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                        class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-0">
+                            <ul class="nav nav-pills flex-column">
+                                {volist name="members" id="value"}
+                                <li class="nav-item">
+                                    <a href="{:url('index',['phone'=>$value.phone_mobile])}" class="nav-link">
+                                        <i class="far fa-circle text-danger"></i>
+                                        {$value.first_name} （{$value.phone_mobile}）
+                                    </a>
+                                </li>
+                                {/volist}
+                            </ul>
+                        </div>
+                        <div class="card-footer p-0">
+                            <div class="mailbox-controls">
+                                <!-- Check all button -->
+                                <!--                                <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="far fa-square"></i>-->
+                                <!--                                </button>-->
+                                <!-- <div class="btn-group">
+                                   <button type="button" class="btn btn-default btn-sm"><i class="far fa-trash-alt"></i></button>
+                                   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-reply"></i></button>
+                                   <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i></button>
+                                 </div>-->
+                                <!-- /.btn-group -->
+                                <!--                                <button type="button" class="btn btn-default btn-sm readed"><i class="fa fa-envelope-open"></i></button>-->
+                                <div class="float-right">
+                                    {$members|raw}
+                                    <!--                                    1-50/200-->
+                                    <!--                                    <div class="btn-group">-->
+                                    <!--                                        <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-left"></i></button>-->
+                                    <!--                                        <button type="button" class="btn btn-default btn-sm"><i class="fas fa-chevron-right"></i></button>-->
+                                    <!--                                    </div>-->
+                                    <!-- /.btn-group -->
+                                </div>
+                                <!-- /.float-right -->
+                            </div>
+                        </div>
 
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {foreach name="data" id="item"}
-                        <tr>
-                            <td>
-                                <input type="checkbox" onclick="checkThis(this)" name="data-checkbox"
-                                       data-id="{$item.id}" class="checkbox data-list-check" value="{$item.id}"
-                                       placeholder="Select/Cancel">
-                            </td>
-                            <td>{$item.uid}</td>
-                            <td>{$item.from_me}</td>
-                            <td>{$item.sender_jid}</td>
-                            <td>{$item.remote_jid}</td>
-                            <td>{$item.content}</td>
-                            <td>{$item.msg_type}</td>
-                            <td>{$item.is_read}</td>
-                            <td>{$item.comment}</td>
-
-
-                            <td class="td-do">
-                                <a href="{:url('edit',['id'=>$item.id])}"
-                                   class="btn btn-primary btn-xs" title="Edit">
-                                    <i class="fa fa-pencil"></i>
-                                </a>
-
-<!--                                <a class="btn btn-danger btn-xs AjaxButton" href="{:url('del',['id'=>$item.id])}" title="Delete"-->
-<!--                                   data-id="{$item.id}" data-confirm-title="Confirm Delete"-->
-<!--                                   data-confirm-content='Are you sure to delete?' data-url="{:url('del')}">-->
-<!--                                    <i class="fa fa-trash"></i>-->
-<!--                                </a>-->
-                            </td>
-                        </tr>
-                        {/foreach}
-                        </tbody>
-                    </table>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
                 </div>
+                <!-- /.col -->
+                <div class="col-md-4">
+                    <div class="card m-0">
+                        <!--<div class="card-header">
+                          <h3 class="card-title">Inbox</h3>
 
-                <!-- 数据列表底部 -->
-                <div class="card-footer">
-                    {$page|raw}
+                          <div class="card-tools">
+                            <div class="input-group input-group-sm">
+                              <input type="text" class="form-control" placeholder="Search Mail">
+                              <div class="input-group-append">
+                                <div class="btn btn-primary">
+                                  <i class="fas fa-search"></i>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          &lt;!&ndash; /.card-tools &ndash;&gt;
+                        </div>-->
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <nav>
+                                <div class="nav nav-tabs justify-content-end" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active" id="nav-all-tab"
+                                       href="{:url('index',['type'=>'nav-all-tab','phone'=>$phone])}">All</a>
+                                    <a class="nav-item nav-link" id="nav-delivered-tab"
+                                       href="{:url('index',['type'=>'nav-delivered-tab','phone'=>$phone])}">Delivered</a>
+                                    <a class="nav-item nav-link" id="nav-read-tab"
+                                       href="{:url('index',['type'=>'nav-read-tab','phone'=>$phone])}">Read</a>
+                                    <a class="nav-item nav-link" id="nav-sent-tab"
+                                       href="{:url('index',['type'=>'nav-sent-tab','phone'=>$phone])}">Sent</a>
 
+                                </div>
+                            </nav>
+                            <div class="tab-content mt-1" id="nav-tabContent">
+                                <div class="tab-pane fade show active" id="nav-all" role="tabpanel"
+                                     aria-labelledby="nav-all-tab">
+                                    <div class="table-responsive mailbox-messages">
+                                        <ul style="margin-right: 10px;padding-left:12px" class="center-msg">
+                                            {volist name="waLog" id="waLogData"}
+                                            <li>
+                                                <div>
+                                                    {if condition="$waLogData.from_me eq 0"}
+
+                                                    {notempty name="$waLogData.first_name"}
+                                                 <a href="{:url('members/detail',['id'=>$waLogData.member_id])}">
+                                                    {$waLogData.first_name}
+                                                 </a>
+                                                    {else}
+                                                    {$waLogData.remote_jid}
+                                                    {/notempty}
+                                                     -> {$waLogData.username}
+                                                    {else /}
+                                                    {$waLogData.username} ->
+                                                    {notempty name="$waLogData.first_name"}
+                                                    <a href="{:url('members/detail',['id'=>$waLogData.member_id])}">
+                                                        {$waLogData.first_name}
+                                                    </a>
+                                                    {else}
+                                                    {$waLogData.remote_jid}
+                                                    {/notempty}
+                                                    {/if}
+                                                    <small class="text-muted float-right">
+                                                            {$waLogData.created_time}
+                                                    </small>
+                                                </div>
+                                                <div>
+                                                    <a href="{:url('index',['phone'=>$waLogData.remote_jid])}">
+                                                        {$waLogData.content}
+<!--                                                        <i class="fas fa-paperclip"></i>-->
+                                                    </a>
+                                                </div>
+                                            </li>
+                                            {/volist}
+                                        </ul>
+                                    </div>
+                                    <div class="float-right">
+                                        {$waLog|raw}
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.mail-box-messages -->
+                        </div>
+                    </div>
+                    <!-- /.card -->
                 </div>
+                <!-- /.col -->
+                <div class="col-md-4">
+                    <!-- DIRECT CHAT PRIMARY -->
+                    <div class="card card-prirary cardutline direct-chat direct-chat-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                {notempty name="member"}
+                                {$member.first_name}
+                                {/notempty}
+                            </h3>
 
+                            <div class="card-tools">
+                                <span data-toggle="tooltip" title="3 New Messages" class="badge bg-primary">3</span>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                        class="fas fa-minus"></i>
+                                </button>
+<!--                                <button type="button" class="btn btn-tool" data-toggle="tooltip" title="Contacts"-->
+<!--                                        data-widget="chat-pane-toggle">-->
+<!--                                    <i class="fas fa-comments"></i></button>-->
+                                <button type="button" class="btn btn-tool" data-card-widget="remove"><i
+                                        class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <!-- Conversations are loaded here -->
+                            <div class="direct-chat-messages">
+
+                                <!-- Message. Default to the left -->
+                                {volist name="waLogInfo" id="waLogData"}
+                                {if condition="$waLogData.from_me eq 0"}
+                                <div class="direct-chat-msg">
+                                    <div class="direct-chat-infos clearfix">
+                                        <span class="direct-chat-name float-left">{$waLogData.member_name}</span>
+                                        <span class="direct-chat-timestamp float-right">
+                                                            {$waLogData.created_time}
+                                        </span>
+                                    </div>
+                                    <!-- /.direct-chat-infos -->
+                                    <img class="direct-chat-img" src="/static/images/tx1.jpg" alt="Message User Image">
+                                    <!-- /.direct-chat-img -->
+                                    <div class="direct-chat-text">
+                                        {$waLogData.content}
+                                    </div>
+                                    <!-- /.direct-chat-text -->
+                                </div>
+                                {else /}
+                                <!-- /.direct-chat-msg -->
+
+                                <!-- Message to the right -->
+                                <div class="direct-chat-msg right">
+                                    <div class="direct-chat-infos clearfix">
+                                        <span class="direct-chat-name float-right">{$waLogData.username}</span>
+                                        <span class="direct-chat-timestamp float-left">
+                                                            {$waLogData.created_time}
+                                        </span>
+                                    </div>
+                                    <!-- /.direct-chat-infos -->
+                                    <img class="direct-chat-img" src="/static/images/avatar2.png" alt="Message User Image">
+                                    <!-- /.direct-chat-img -->
+                                    <div class="direct-chat-text">
+                                        {$waLogData.content}
+                                    </div>
+                                    <!-- /.direct-chat-text -->
+                                </div>
+                                {/if}
+                                {/volist}
+                                <input type="hidden" id="addPan">
+                                <!-- /.direct-chat-msg -->
+                            </div>
+                            <!--/.direct-chat-messages-->
+
+                            <!-- Contacts are loaded here -->
+                            <div class="direct-chat-contacts">
+                                <ul class="contacts-list">
+                                    <li>
+                                        <a href="#">
+
+                                            <img class="contacts-list-img" src="/static/images/avatar3.png">
+
+                                            <div class="contacts-list-info">
+                              <span class="contacts-list-name">
+                                Count Dracula
+                                <small class="contacts-list-date float-right">2/28/2015</small>
+                              </span>
+                                                <span class="contacts-list-msg">How have you been? I was...</span>
+                                            </div>
+                                            <!-- /.contacts-list-info -->
+                                        </a>
+                                    </li>
+                                    <!-- End Contact Item -->
+                                </ul>
+                                <!-- /.contatcts-list -->
+                            </div>
+                            <!-- /.direct-chat-pane -->
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            <form id="wa_info" onkeydown="if(event.keyCode==13)return false;">
+                                <div class="input-group">
+                                    <input type="hidden" id="sender_jid" name="sender_jid" value="{$user_tel}">
+                                    <input type="hidden" id="remote_jid" name="remote_jid" value="{$phone}">
+                                    <input type="text" name="content" id="mes_content" placeholder="Type Message ..."
+                                           class="form-control" readonly="readonly">
+                                    <span class="input-group-append">
+                                        <button type="button" id="msg_button" class="btn btn-sm btn-primary submit" disabled="disabled">Send</button>
+<!--                          <input type="button" id="msg_button" class="btn btn-sm btn-primary submit" value="send" readonly="readonly">-->
+                        </span>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.card-footer-->
+                    </div>
+                    <!--/.direct-chat -->
+                </div>
             </div>
+            <!-- /.row -->
         </div>
     </div>
 </section>
-
 {/block}
 
+{block name="js"}
+<script>
+    $(document).ready(function () {
+        //
+        let phone = $("#remote_jid").val();
+        if(phone!=='') {
+            $("#mes_content").removeAttr('readonly');
+            $("#msg_button").attr('disabled',false);
+        }
+        let navId = $("#get-nav-tab").val();
+        $("#" + navId).siblings().attr("class", 'nav-item nav-link');
+        $("#" + navId).attr("class", 'nav-item nav-link active');
+    });
+    // function test() {
+    //     $("#nav-delivered").attr('class','tab-pane fade show active');
+    //     $("#nav-all").attr('class','tab-pane fade');
+    // }
+    //
+    // function test1() {
+    //
+    // }
+    function wa_info(phone,senderId){
+        let url = '{:url("wa_logs/wa_info?phone=")}'+phone+'&sender_jid='+senderId;
+        layer.open({
+            type: 2,
+            title: false,
+            area: ['800px', '500px'],
+            content: url,
+            closeBtn:0,
+        })
+    }
+    $(".submit").click(function () {
+        let node = '';
+        let url = '{:url("wa_logs/send_msg")}';
+        let params = $("#wa_info").serialize();
+        $.ajax({
+            url:url,
+            data:params,
+            type:"POST",
+            success(res) {
+                if(res.code === 200) {
+                    node += '<div class="direct-chat-msg right">\n' +
+                        '                                    <div class="direct-chat-infos clearfix">\n' +
+                        '                                        <span class="direct-chat-name float-right">'+res.name+'</span>\n' +
+                        '                                        <span class="direct-chat-timestamp float-left">\n' +res.time+
+                        '                                                            ' +
+                        '                                        </span>\n' +
+                        '                                    </div>\n' +
+                        '                                    <!-- /.direct-chat-infos -->\n' +
+                        '                                    <img class="direct-chat-img" src="/static/images/avatar2.png" alt="Message User Image">\n' +
+                        '                                    <!-- /.direct-chat-img -->\n' +
+                        '                                    <div class="direct-chat-text">\n' +res.content+
+                        '                                        \n' +
+                        '                                    </div>\n' +
+                        '                                    <!-- /.direct-chat-text -->\n' +
+                        '                                </div>';
+                    $("#addPan").before(node);
+                }
+            }
+        });
+    });
+
+
+</script>
+
+{/block}

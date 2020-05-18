@@ -32,6 +32,21 @@
 
 <script>
 
+    function doc(id){
+        if(id){
+            var url = '{:url("contacts/edit?id=")}'+id
+        }else{
+            var url = '{:url("contacts/add")}'
+        }
+
+        layer.open({
+            type:2,
+            title:'Contacts Detail',
+            area:['400px','400px'],
+            content: url,
+        });
+    }
+
     function showFm(value, row) {
         var show_url = "{:url('detail')}?id=" + row.id
         var html = '<a href=' + show_url + '>' + value + '</a>'

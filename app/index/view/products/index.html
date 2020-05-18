@@ -14,16 +14,27 @@
     <script type="text/javascript">
         window.operateEvents={
             "click .edit" : function(e,value,row,index){products(row.id)},
+            "click .quantity" : function(e,value,row,index){quantity(row.id)},
             "click .del" : function(e,value,row,index){del(row.id)}
         }
 
         function operateFormatter(value,row,index){
             return [
-                '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
-                '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+                '<a class="btn btn-primary btn-xs mr-1 edit" href="#"><i class="fa fa-pencil"></i></a>',
+                '<a class="btn btn-success btn-xs mr-1 quantity" href="#" title="仓储数量"><i class="fa fa-info-circle"></i></a>',
+                '<a class="btn btn-danger btn-xs mr-1 del" href="#"><i class="fa fa-trash"></i></a>',
             ].join('');
         }
-     
+
+        function quantity(id) {
+            let url = '{:url("products/warehouse_product_quantity?id=")}' + id;
+            layer.open({
+                type:2,
+                title:'仓储数量',
+                area: ['800px', '500px'],
+                content:url,
+            })
+        }
         function products(id){
             let clientHeight = document.documentElement.clientHeight;
             let height = 900;
@@ -128,7 +139,7 @@
                 }, {
                     field: 'operate',
                     title: '操作',
-                    width: '80px',
+                    width: '120px',
                     clickToSelect: false,
                     events: operateEvents,
                     formatter: operateFormatter

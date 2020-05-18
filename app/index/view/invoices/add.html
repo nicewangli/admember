@@ -55,7 +55,7 @@
             <div class="card-body">
                 <div class="row pt-2">
                     <div class="col-xs-12 col-md-6">
-                        <h5 style="color: #007bff;">發票資料</h5>
+                        <h5 class="text-primary">發票資料</h5>
 
                         <div class="form-group row">
                             <label class="col-md-3 control-label" for="invoice_no">編號：</label>
@@ -106,7 +106,7 @@
                     </div>
 
                     <div class="col-xs-12 col-md-6">
-                        <h5 style="color: #007bff;">會員資料</h5>
+                        <h5 class="text-primary">會員資料</h5>
 
                         <div class="form-group row">
                             <div class="col-md-3">
@@ -200,13 +200,15 @@
                                         <input type="hidden" name="service[{$val.index}][id]" value="{$val.id}"> 
                                         <input type="hidden" name="service[{$val.index}][invoice_id]" value="{$val.invoice_id}"> 
                                         <input type="hidden" name="service[{$val.index}][service_id]" value="{$val.service_id}"> 
-                                        <input type="hidden" name="service[{$val.index}][service_type]" value="{$val.service_type}"> 
-                                    </td> 
+                                        <input type="hidden" name="service[{$val.index}][service_type]" value="{$val.service_type}">
+                                        <input type="hidden" class="package_value" name="service[{$val.index}][package_value]" value="{$val.package_value}">
+                                    </td>
                                     <td width="13%">{$val.code}</td> 
                                     <td width="28%">{$val.name}</td> 
                                     <td width="10%">
                                         <input type="number" min="1" name="service[{$val.index}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
-                                    </td> 
+                                        <input type="hidden" name="service[{$val.index}][package_original_value]" class="package_original_value" value="{$val.package_original_value}">
+                                    </td>
                                     <td width="13%">
                                         <input type="text" name="service[{$val.index}][price]" value="{$val.price}" class="form-control text-right price" style="width: 100%;">
                                     </td> 

@@ -42,8 +42,8 @@
                             <label class="col-md-3 control-label" for="status">狀態：</label>
                             <div class="col-md-7">
                                 <select class="form-control" id="status" name="status" value="{$data.status|default=''}">
-                                    <option value="可用" {notempty name="data"}{eq name="$data.status" value="可用"}selected="selected"{/eq}{/notempty}>可用</option>
-                                    <option value="停用" {notempty name="data"}{eq name="$data.status" value="停用"}selected="selected"{/eq}{/notempty}>停用</option>
+                                    <option value="發售中" {notempty name="data"}{eq name="$data.status" value="發售中"}selected="selected"{/eq}{/notempty}>發售中</option>
+                                    <option value="停售" {notempty name="data"}{eq name="$data.status" value="停售"}selected="selected"{/eq}{/notempty}>停售</option>
                                 </select>
                             </div>
                         </div>

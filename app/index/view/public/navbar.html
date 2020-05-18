@@ -1,5 +1,5 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
-    <div class="container">
+    <div class="container-fluid">
         <a href="../../index.html" class="navbar-brand">
             <img src="__IMAGE__/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                  style="opacity: .8">
@@ -12,6 +12,16 @@
         <div class="collapse navbar-collapse order-3" id="navbarCollapse">
             <!-- Left navbar links -->
             {volist name="permission" id="v"}
+            {empty name="v.children"}
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="{:url($v['url'])}">
+                        {$v.title}
+                    </a>
+                </li>
+            </ul>
+            {/empty}
+            {notempty name="v.children"}
             <ul class="navbar-nav">
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">{$v.title}</a>
@@ -24,6 +34,7 @@
                     </ul>
                 </li>
             </ul>
+            {/notempty}
             {/volist}
         </div>
 
@@ -39,7 +50,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="../../dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                        <img src="__IMAGE__/avatar.png" size="128x128" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Brad Diesel
@@ -55,7 +66,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="../../dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                        <img src="__IMAGE__/avatar2.png" size="128x128" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     John Pierce
@@ -71,7 +82,7 @@
                     <a href="#" class="dropdown-item">
                         <!-- Message Start -->
                         <div class="media">
-                            <img src="../../dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                        <img src="__IMAGE__/avatar3.png" size="128x128" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                             <div class="media-body">
                                 <h3 class="dropdown-item-title">
                                     Nora Silvester
@@ -118,13 +129,13 @@
                 <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button"><i
                         class="fas fa-th-large"></i></a>
             </li>
-            <li class="dropdown user user-menu">
+            <li class="dropdown user user-menu pt-2">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                     <img src="{$admin.user.avatar|default='__IMAGE__/avatar5.png'}" class="user-image"
                          alt="User Avatar">
                     <span class="hidden-xs">{$user.username|default=''}</span>
                 </a>
-                <ul class="dropdown-menu">
+                <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <li class="user-header">
                         <img src="{$admin.user.avatar|default='__IMAGE__/avatar5.png'}" class="img-circle"
                              alt="User Avatar">

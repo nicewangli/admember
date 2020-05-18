@@ -148,6 +148,8 @@ class Stockins extends Application
             }
         }else{
             $item['supplier_id'] = input('get.supplier_id');
+			            $item = new stockin();
+
         }
         View::assign([
             'item' => $item,
@@ -209,9 +211,15 @@ class Stockins extends Application
 
     //删除
     public function del($id, Stockin $model)
+   
     {
 
-        $data = $model::find($id);
+        // $data = $model::find($id);
+        // View::assign('data', $data);
+        // $data->delete();
+        // View::assign('page', $data);
+        // return redirect(url('index'));
+		     $data = $model::find($id);
         $res = $data->delete();
         if ($res) {
             return json(['code' => 200,'msg' => 'Delete success.']);
@@ -219,6 +227,7 @@ class Stockins extends Application
             return json(['code' => 0,'msg' => 'Delete fail']);
         }
     }
+    
 
 
 }

@@ -28,17 +28,22 @@ class Invoices extends Application
 
         $invoice = $model->select();
         if (isset($param['export_data']) && $param['export_data'] == 1) {
-            $header = ['Invoice No'];
+            $header = ['Invoice No','Store','Member','总金额','待支付','操作人','create_time'];
             $body = [];
-            $data = $model->select();
+            $data = $model->alias('i')->leftJoin('member m','i.member_id = m.id')->leftJoin('store s','s.id = i.store_id')->leftJoin('users u','u.uid  = i.created_user_id')->field('i.*,m.first_name as member_name,s.name as store_name,u.username as user_name')->select();
+//那个平日嬉闹、脸上常挂着轻浮笑容的陈红中            $data = $model->select();
             foreach ($data as $item) {
                 $record = [];
                 $record['invoice_no'] = $item->invoice_no;
-
-
+                $record['store_name'] = $item->store_name;
+                $record['member_name'] = $item->member_name;
+                $record['amount'] = $item->total_amount;
+                $record['unpaid'] = $item->final_total;
+                $record['user_name'] = $item->user_name;
+                $record['create_time'] = $item->create_time;
                 $body[] = $record;
             }
-            return exportData($header, $body, 'Stockin-' . date('Y-m-d-H-i-s'));
+            return exportData($header, $body, 'Invoice-' . date('Y-m-d-H-i-s'));
         }
         $search = input('get.search');
 
@@ -260,5 +265,14 @@ class Invoices extends Application
         $invoice_no = input('invoice_no');
         $invoice = $model->where('invoice_no', $invoice_no)->find();
         return json(['invoice' => $invoice]);
+    }
+
+    public function expiration_date(InvoiceItem $invoiceItem){
+        $param = input('post.');
+        $find = $invoiceItem::find($param['id']);
+        if ($find) {
+            $find::update($param);
+            return json(['code' => 200]);
+        }
     }
 }

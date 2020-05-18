@@ -15,7 +15,7 @@
     {js href="__PLUGIN__/bootstrap/js/bootstrap.bundle.min.js" /}
     {js href="__JS__/adminlte.min.js" /}
     {js href="__JS__/init.js" /}
-    {js href="__JS__/application.js" /}
+<!--    {js href="__JS__/application.js" /}-->
 
     <!-- 加载 Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.full.min.js"></script>
@@ -118,7 +118,7 @@
                     <div class="col-xs-12 col-md-6">
                         
                         <div class="form-group row ">
-                            <label class="col-md-3 control-label" for="optional_service">自選服務：</label>
+                            <label class="col-md-3 control-label">自選服務：</label>
                             <div class="col-md-8">
                                 <input type="radio" class="optional_service" name="optional_service" value="1" {notempty name="data"}{eq name="$data.optional_service" value="1"}checked="checked"{/eq}{/notempty}>是
                                 <input type="radio" class="optional_service" name="optional_service" value="0" {notempty name="data"}{eq name="$data.optional_service" value="0"}checked="checked"{/eq}{/notempty}>否
@@ -149,7 +149,7 @@
                         </div>
 
                         <div class="form-group row ">
-                            <label class="col-md-3 control-label" for="service_type">可用服務：</label>
+                            <label class="col-md-3 control-label">可用服務：</label>
                             <div class="col-md-8">
                                 <div style="display: flex; flex-direction: column;">
                                     <div>
@@ -185,10 +185,10 @@
                                         <tr>
                                             <input type="hidden" name="item[{$key}][service_id]" value="{$cp.id}">
                                             <td width="5%"><input type="checkbox" name=""></td>
-                                            <td width="15%"><input type="number" name="item[{$key}][ordering]" value="{$cp.ordering}"style="width: 100%;"></td>
+                                            <td width="15%"><input class="form-control form-control-sm" type="number" name="item[{$key}][ordering]" value="{$cp.ordering}"style="width: 100%;"></td>
                                             <td>{$cp.service_code}</td>
                                             <td>{$cp.service_name}</td>
-                                            <td><input type="number" name="item[{$key}][deduct_val]" value="{$cp.deduct_val}"style="width: 100%;"></td>
+                                            <td><input class="form-control form-control-sm" type="number" name="item[{$key}][deduct_val]" value="{$cp.deduct_val}"style="width: 100%;"></td>
                                         </tr>
                                     {/volist}
                                     {/notempty}

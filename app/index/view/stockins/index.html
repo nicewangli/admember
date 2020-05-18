@@ -142,6 +142,26 @@
         });
 
     }
+	
+	    function del(id) {
+        // const that = $(this)
+        if (confirm('Are you sure to delete?') == false) {
+            return false;
+        } else {
+            $.ajax({
+                url: "{:url('stockins/del')}",
+                data: {
+                    id: id,
+                },
+                type: "POST",
+                success(res) {
+                    if (res.code == 200) {
+                        $('#stockins-grid').bootstrapTable('refresh');
+                    }
+                }
+            })
+        }
+    }
 
 </script>
 {/block}

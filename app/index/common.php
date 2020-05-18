@@ -143,6 +143,20 @@ function getUser(){
     return $userInfo;
 }
 
+
+function getStores(){
+//    $user_id = getUserId();
+//    $store_id = User::where('uid', $user_id)->value('store');
+    $stores = Db::name('store')->field("id,name")->select();
+
+    return $stores;
+}
+
+function getRooms(){
+    $stores = Db::name("room")->field("id,name")->select();
+    return $stores;
+}
+
 /**
  * 获取当前用户对应店铺的仓库
  * @return mixed
@@ -156,6 +170,7 @@ function getWarehouse()
     $store = Store::find($user->store_id);
     return $store->warehouse_id;
 }
+
 
 
 //function getConfigNo($app,$type='',$dbName){
@@ -172,3 +187,35 @@ function getWarehouse()
 //    }
 //    return $no;
 //}
+
+//Whatsapp Handler
+function check_health($uid){
+    $number = "";
+    //return number if session[:user_whatsapp].blank?
+    $url = "http://127.0.0.1:8088/health?uid=".$uid;
+    $response = \Httpful\Request::get($url)
+        ->send();
+    return $response->body;
+}
+
+function wa_sendMessage($to_phone,$content,$sender) {
+    if(!empty($to_phone) && !empty($content) && !empty($sender)){
+		$to_phone = wa_phone_format($to_phone);
+        $url = "http://127.0.0.1:8088/send";
+        $response = \Httpful\Request::post($url)
+            ->sendsType(\Httpful\Mime::FORM)
+            ->body(['msg_type' => 'text', 'phone' => $to_phone, 'content' => $content,'uid' => $sender])
+            ->send();
+        return $response->body;
+    }
+}
+
+
+function wa_phone_format($to_phone){
+	    $si = substr($to_phone,0,3);
+        $suffixs = ["852","853","861"];
+        if(!in_array($si, $suffixs)){
+            $to_phone = "852".$to_phone;
+        }
+		return $to_phone;
+}

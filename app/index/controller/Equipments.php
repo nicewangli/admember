@@ -237,9 +237,9 @@ class Equipments extends Application
 
             $result = $item->save($params);
             if ($result) {
-                return json_encode(['code' => 200]);
+         return json(['code' => 200,'msg' => ' successfully.']);
             } else {
-                return json_encode(['code' => 0]);
+                return json(['code' => 0]);
             }
 
         }

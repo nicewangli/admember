@@ -11,20 +11,20 @@ class TransferItem extends Model
         //记录转仓 产品仓库实现替换
         $updateProduct = [];
         $product = new Product();
-        $this->where('transfer_id', $id)->delete();
 
         $data = $param['item'];
-        if(!empty($data)) {
-            foreach ($data as $key => $value){
-                $data[$key]['transfer_id'] = $id;
-                $updateProduct[] = [
-                    'id' => $data[$key]['product_id'],
-                    'warehouse'=>$param['to_wh_id'],
-                ];
-            }
-            $product->saveAll($updateProduct);
-            $this->insertAll($data);
+
+        foreach ($data as $key => $value) {
+            $data[$key]['transfer_id'] = $id;
+            $updateProduct[] = [
+                'id' => $data[$key]['product_id'],
+                'warehouse' => $param['to_wh_id'],
+            ];
         }
+        $this->where('transfer_id', $id)->delete();
+        $this->insertAll($data);
+        $product->saveAll($updateProduct);
+
 
     }
 

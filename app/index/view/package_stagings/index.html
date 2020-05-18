@@ -43,11 +43,18 @@
                                 </div>
  -->
                                 <!-- <div class="form-group"> -->
-                                    <button class="btn btn-sm btn-success exportData"
+                            <form class="form-inline searchForm" id="searchForm" action="{:url('package_stagings/index')}"
+                                  method="get">
+                                <input type="hidden" value="0" id="export_data" name="export_data">
+                                <div class="form-group">
+                                <button class="btn btn-sm btn-success exportData"
                                             type="submit" onclick="$('#export_data').val(1)"><i
                                             class="fa fa-file-excel-o"></i>&nbsp;Export
                                     </button>
-                                <!-- </div> -->
+                                </div>
+                            </form>
+
+                            <!-- </div> -->
                             <!-- </form> -->
                         </div>
 

@@ -1,257 +1,608 @@
-
-        <div class="form-group row">
-            <div class="col-11">
-                <a class="btn flat btn-sm btn-default BackButton" href="{:url('index')}">
-                    <i class="fa fa-arrow-left"></i>
-                    Back
-                </a>
+{extend name='public/popup' /}
+{block name='content'}
+<section class="content p-3">
+    <form id="bookingsForm">
+        {if $act == 'edit'}
+        <input type="hidden" id="user_tel" value="{$user_tel}">
+        <div class="row pt-2">
+            <div class="info-box flex-column align-items-center mr-auto">
+                <span class="info-box-icon bg-success h-100">
+                    <i class="fa fa-plus"></i>
+                </span>
+                <label><input type="radio" name="status" value="1" {if $item.status == 1}checked{/if}>新預約</label>
             </div>
 
-            <div class="col-auto">
-                <button type="submit"class=" far fa-file-alt  btn flat btn-info itemFormSubmit  btn-sm  ">
-                    Save
-                </button>
+            <div class="info-box flex-column align-items-center mr-auto">
+                    <span class="info-box-icon bg-warning h-100">
+                        <i class="fa fa-phone"></i>
+                    </span>
+                <label><input type="radio" name="status" value="2"  {if $item.status == 2}checked{/if}>已通知</label>
+            </div>
+
+            <div class="info-box flex-column align-items-center mr-auto">
+                    <span class="info-box-icon bg-orange h-100">
+                        <i class="fa fa-phone" style="color: white;"></i>
+                    </span>
+                <label><input type="radio" name="status" value="3"  {if $item.status == 3}checked{/if}>新客已通知</label>
+            </div>
+
+            <div class="info-box flex-column align-items-center mr-auto">
+                    <span class="info-box-icon bg-danger h-100">
+                        <i class="fa fa-phone" style="color: white;"></i>
+                    </span>
+                <label><input type="radio" name="status" value="4"  {if $item.status == 4}checked{/if}>未能聯絡</label>
+            </div>
+
+            <div class="info-box flex-column align-items-center mr-auto">
+                    <span class="info-box-icon bg-info h-100">
+                        <i class="fa fa-check-square-o"></i>
+                    </span>
+                <label><input type="radio" name="status" value="5"  {if $item.status == 5}checked{/if}>已到</label>
+            </div>
+
+            <div class="info-box flex-column align-items-center mr-auto">
+                <span class="info-box-icon bg-gray h-100">
+                    <i class="fa fa-window-close-o"></i>
+                </span>
+                <label><input type="radio" name="status" value="6"  {if $item.status == 6}checked{/if}>缺席</label>
+            </div>
+
+            <div class="info-box flex-column align-items-center mr-auto">
+                <span class="info-box-icon bg-fuchsia h-100">
+                    <i class="fa fa-strikethrough"></i>
+                </span>
+                <label><input type="radio" name="status" value="9"  {if $item.status == 9}checked{/if}>已扣除套票</label>
+            </div>
+
+        </div>
+        {/if}
+        <div class="col-xs-12 col-md-12 col-lg-12">
+            <div class="row pt-4">
+                <div class="col-lg-12" align="center">
+                    {if $act == 'edit'}
+                    <button class="btn flat btn-info btn-sm " id="booking-submit">
+                        儲存
+                    </button>
+                    <a class="btn btn-default  btn-sm" href="#" data-id="{$item.id}" id="delete">
+                        删除
+                    </a>
+                    <a class="btn  btn-default btn-sm" href="#">
+                        void
+                    </a>
+                    <a class="btn  btn-default btn-sm" href="#" onclick="wa_info()">
+                        WhatsApps
+                    </a>
+                    <a class="btn btn-default  btn-sm btn-close" href="#">
+                        关闭
+                    </a>
+                    {else /}
+                    <button class="btn flat btn-info btn-sm" id="booking-submit">
+                        儲存
+                    </button>
+                    &nbsp;&nbsp;
+                    <a class="btn btn-default btn-sm btn-close" href="#">
+                        取消
+                    </a>
+                    {/if}
+                </div>
             </div>
         </div>
 
-            <div class="form-group row">
-                <label class="col-md-1 control-label"  for="name">Company</label>
-                <div class="col-md-10 float-right">
-                    <input class="form-control" type="text" id="name" name="name"
-                           value="{$item.name|default=''}">
-                </div>
-            </div>
+        <input type="hidden" name="id" id="id" value="{$item.id|default=''}">
+        <div class="row pt-2">
+            <div class="col-xs-12 col-md-6">
+                <div class="col-md-8"><label class="text-primary">預約資料</label></div>
 
-
-            <div class="row p-t-15">
-
-
-                <div class="col-xs-12 col-md-6">
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label"
-                               for="chi_name">Name(Chi)</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="chi_name"
-                                   name="chi_name"
-                                   value="{$item.chi_name|default=''}"
-                                   placeholder="">
-                        </div>
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="code">編號：</label>
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="code" name="code"
+                               value="{$item.code|default='Auto Assigned'}" readonly>
                     </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label"
-                               for="division">Division</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="division"
-                                   name="division"
-                                   value="{$item.division|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="billing_address_street">Address</label>
-                        <div class="col-md-8">
-                            <textarea class="form-control" id="billing_address_street" name="billing_address_street"
-                                      size="1"
-                                      placeholder="{$item.billing_address_street|default=''}"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label"
-                               for="billing_address_street_cn">Address(Chi)</label>
-                        <div class="col-md-8">
-                            <textarea class="form-control" id="billing_address_street_cn"
-                                      placeholder="{$item.billing_address_street_cn|default=''}"></textarea>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="billing_address_country">Country</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text"
-                                   id="billing_address_country"
-                                   name="billing_address_country"
-                                   value="{$item.billing_address_country|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="billing_address_city">City</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text"
-                                   id="billing_address_city"
-                                   name="billing_address_city"
-                                   value="{$item.billing_address_city|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="billing_address_state">City/State</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text"
-                                   id="billing_address_state"
-                                   name="billing_address_state"
-                                   value="{$item.billing_address_state|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="nature_of_business">Nature</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text"
-                                   id="nature_of_business"
-                                   name="nature_of_business"
-                                   value="{$item.nature_of_business|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="co_size">Co.Size</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text"
-                                   id="co_size"
-                                   name="co_size"
-                                   value="{$item.co_size|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-
                 </div>
 
-
-                <div class="col-xs-12 col-md-6">
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="website">Website</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="website"
-                                   name="website"
-                                   value="{$item.website|default=''}"
-                                   placeholder="">
-                        </div>
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="booking_date">日期：</label>
+                    <div class="col-md-9">
+                        <input type="text" class="form-control datePicker" id="booking_date" name="booking_date"
+                               value="{$item.booking_date|default=''}" required>
                     </div>
-
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label"
-                               for="industry">Industry</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="industry"
-                                   name="industry"
-                                   value="{$item.industry|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="phone_fax">Fax</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="phone_fax"
-                                   name="phone_fax"
-                                   value="{$item.phone_fax|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label"
-                               for="phone_office">Phone</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="phone_office"
-                                   name="phone_office"
-                                   value="{$item.phone_office|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="email1">E-mail</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="email1" id="email1"
-                                   name="email1"
-                                   value="{$item.email1|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label" for="opt">Newsletter</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="opt"
-                                   name="opt"
-                                   value="{$item.opt|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label"
-                               for="billing_address_postalcode">Postal Code</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text"
-                                   id="billing_address_postalcode"
-                                   name="billing_address_postalcode"
-                                   value="{$item.billing_address_postalcode|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label"
-                               for="category">category</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="category"
-                                   name="category"
-                                   value="{$item.category|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label"
-                               for="rating">Rating</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="rating"
-                                   name="rating"
-                                   value="{$item.rating|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label"
-                               for="source">Source</label>
-                        <div class="col-md-8">
-                            <input class="form-control" type="text" id="source"
-                                   name="source"
-                                   value="{$item.source|default=''}"
-                                   placeholder="">
-                        </div>
-                    </div>
-
                 </div>
 
+                <div class="form-group row">
+                    <div class="col-md-2">房間:</div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <select class="form-control select2" name="store_id" id="store_id">
+                                    {foreach name=":getStores()" id='val'}
+                                    <option value="{$val.id}" {if isset($item) &&
+                                            $item.store_id==$val.id}selected{/if}>
+                                        {$val.name}
+                                    </option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-control form-control-sm" name="room_id" id="room_id">
+                                    <option value=""></option>
+                                    {foreach name=":getRooms()" id='val'}
+                                    <option value="{$val.id}" {if isset($item) &&
+                                            $item.room_id==$val.id}selected{/if}>
+                                        {$val.name}
+                                    </option>
+                                    {/foreach}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="form-group row">
+                    <div class="col-md-2">顧問:</div>
+                    <div class="col-md-9">
+
+                        <select class="form-control select2" type="text" id="consultant_id" name="consultant_id">
+                            <option value="">&nbsp;</option>
+                            {foreach name=":getUsers()" id='user'}
+                            <option value="{$user.uid}" {if isset($item) &&
+                                    $item.consultant_id==$user.uid}selected{/if}>
+                                {$user.name}
+                            </option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
 
             </div>
 
-        <div class="form-group row">
-            <label class="col-md-1 control-label" for="notes">Notes</label>
-            <div class="col-md-10 float-right">
-                          <textarea class="form-control" id="notes"   name="notes" size="1"
-                                    placeholder="">{$item.notes|default=''}</textarea>
+            <div class="col-xs-12 col-md-6">
+                <div class="col-md-8"><label class="text-primary">會員資料</label></div>
+
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="member_id">會員：</label>
+                    <div class="col-md-9 row justify-content-between align-items-center">
+                        <div class="col-md-8 member_no {if $item.is_member == 0}hidden{/if}">
+                            <input class="form-control" type="hidden" id="member_id" name="member_id"
+                                   value="{$item.member_id|default=''}" required>
+                            <input class="form-control" type="text" id="member_no" name="member_no"
+                                   value="{$item.member_no|default=''}"  {if isset($item) && $item.is_member}required{/if}>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="checkbox" id="is_member_checkbox" {if isset($item) && $item.is_member == 0}checked{/if}>非會員
+                            <input type="hidden" id="is_member" name="is_member" value="{$item.is_member|default=1}">
+                        </div>
+
+                        <div class="col-md-5 new_member {if isset($item) && $item.is_member == 1}hidden{/if}">
+                            <a class="btn btn-default" onclick="new_member()" href="#">新增會員</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="name">名稱：</label>
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="name" name="name" value="{$item.name|default=''}"
+                               required>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="phone">電話：</label>
+                    <div class="col-md-9">
+                        <input class="form-control" type="text" id="phone" name="phone"
+                               value="{$item.phone|default=''}">
+                    </div>
+                </div>
+
             </div>
         </div>
+
+        <div class="row pt-2">
+            <div class="col-xs-12 col-md-12">
+                <div><label class="text-primary">服務資料</label></div>
+                <input type="hidden" class="items_count" value="{$items_count|default=0}">
+                <input type="hidden" id="booking_init_time" value="{$booking_init_time|default=''}">
+                <table width="100%" id="bookings">
+                    <tr bgcolor="#ced4da">
+                        <td width="8%">
+                            <a title="刪除" onclick="del()" class="btn btn-default btn-xs " href="#">刪除</a>
+                        </td>
+                        <td colspan="8">
+                            <a title="選擇" onclick="service_packages()" class="btn btn-default btn-xs " href="#">選擇</a>&nbsp;&nbsp;&nbsp;
+                            <a title="空白" onclick="addBlank()" class="btn btn-default btn-xs " href="#">空白</a>
+                        </td>
+                    </tr>
+
+                    <tr bgcolor="#e9ecef">
+                        <th width="5%"></th>
+                        <th width="35%">時間</th>
+                        <th width="10%">編號</th>
+                        <th width="20%">名稱</th>
+                        <th width="10%">數量</th>
+                        <th width="10%">美容師1</th>
+                        <th width="10%">美容師2</th>
+                    </tr>
+
+
+                    {notempty name="booking_items"}
+                    {volist name="booking_items" id="val" key="idx"}
+                    <?php $index = $idx - 1 ;?>
+                    <tr class="border-b service">
+                        <td align="center" data-id="{$val.id}">
+                            <input type="hidden" name="service[{$index}][id]" value="{$val.id}">
+                            <input type="checkbox" class="checkbox" value="{$index}">
+                        </td>
+                        <td class="d-flex align-items-center justify-content-between">
+                            <select class="form-control time_picker start_time" id="service_start_time_{$index}"
+                                    name="service[{$index}][start_time]" style="width: 100%;">
+                                {foreach name="workingHours" id='wh'}
+                                <option value="{$wh.id}" {if isset($val) &&
+                                        $val.start_time==$wh.id}selected{/if}>
+                                    {$wh.text}
+                                </option>
+                                {/foreach}
+                            </select>&nbsp;至&nbsp;
+                            <select class="form-control time_picker end_time" id="service_end_time_{$index}"
+                                    name="service[{$index}][end_time]" style=" width: 100%;">
+                                {foreach name="workingHours" id='wh'}
+                                <option value="{$wh.id}" {if isset($val) &&
+                                        $val.end_time==$wh.id}selected{/if}>
+                                    {$wh.text}
+                                </option>
+                                {/foreach}
+                            </select>
+                        </td>
+                        <td>
+                            <p>{$val.servicePackage.code}</p>
+                            <p>{$val.service.code}</p>
+                        </td>
+                        <td>
+                            <p>{$val.servicePackage.name}</p>
+                            <p>{$val.service.name}</p>
+                        </td>
+                        <td>
+                            <input type="number" min="1" name="service[{$index}][quantity]" value="{$val.quantity}"
+                                   class="form-control text-right quantity" style="width: 100%;">
+                        </td>
+                        <td>
+
+                            <select class="form-control beautician beautician1}" id="service_beautician1_{$index}"
+                                    name="service[{$index}][beautician1]" style="display: none; width: 100%;">
+                                <option value="{$val.beautician1|default=''}">{$val.bt1.first_name|default=''}</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select class="form-control beautician beautician2" id="service_beautician2_{$index}"
+                                    name="service[{$index}][beautician2]" style="display: none; width: 100%;">
+                                <option value="{$val.beautician2|default=''}">{$val.bt2.first_name|default=''}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    {/volist}
+                    {/notempty}
+                </table>
+            </div>
+        </div>
+
+        <div class="row pt-3">
+            <div class="col-xs-12 col-md-6">
+                <!--<div class="form-group row">-->
+                <!--<div class="col-md-12">-->
+                <!--<div>-->
+                <!--<label class="text-primary">儀器資料</label>&nbsp;&nbsp;-->
+                <!--<a title="選擇" onclick="package_services()" class="btn btn-primary btn-xs " href="#">選擇</a>-->
+                <!--</div>-->
+
+                <!--<table id="equiment_services" class="table table-hover table-striped table-sm datatable" width="100%">-->
+                <!--<thead>-->
+                <!--<th width="5%"><input type="checkbox" name=""></th>-->
+                <!--<th>名稱</th>-->
+                <!--</thead>-->
+                <!--<tbody>-->
+                <!--</tbody>-->
+                <!--</table>-->
+                <!--</div>-->
+                <!--</div>-->
+
+                <div class="form-group row">
+                    <label class="col-md-2 control-label" for="notes">備注：</label>
+                    <div class="col-md-10">
+                        <div style="width: 100%; display: flex; align-items: flex-end;">
+                            <textarea class="form-control g-mr-5" name="notes" id="notes" style="width: 80%;">{$item.notes|default=''}</textarea>
+                            <a title="選擇備注" onclick="notes()" class="btn btn-primary btn-xs" href="#">選擇</a>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xs-12 col-md-6">
+                <div class="form-group row" id="booking-result">
+
+                </div>
+            </div>
+        </div>
+
+    </form>
+</section>
+{/block}
+
+{block name="js"}
+{js href="__JS__/application.js" /}
+<script type="text/javascript">
+    var working_hourse = {:json_encode($workingHours) } ;
+
+    function del() {
+        let id = 0;
+        let list = [];
+        var start_time = $("#booking_init_time").val();
+        $(".checkbox:checked").each(function () {
+            id = $(this).parent('td').attr('data-id');
+            if (id) {
+                list.push(id);
+            }
+            $(this).parents('tr').remove();
+            start_time = wh_start_time(start_time);
+        })
+        $("#booking_init_time").val(start_time);
+
+        if (list.length > 0) {
+            if (confirm('Are you sure to delete?') === false) return false;
+
+            $.ajax({
+                url: "{:url('del_item')}",
+                data: {ids: list},
+                type: "POST",
+                success(res) {
+                    layer.msg(res.msg);
+                }
+            })
+        }
+    }
+
+    function new_member(){
+        let url = "{:url('members/add?from=booking')}";
+
+        let name = $("#name").val();
+        let phone = $("#phone").val();
+
+        layer.open({
+            type: 2,
+            title: 'New Member',
+            maxmin: true,
+            area: ['90%', '80%'],
+            content: url + '&name=' + name + '&phone=' +phone
+        })
+    }
+
+    function notes() {
+        layer.open({
+            type: 2,
+            title: '備注',
+            area: ['800px', '500px'],
+            content: '{:url("mappings/mappings?from_panel=bookings&type_id=notes")}'
+        })
+    }
+
+
+    function service_packages() {
+        let height = document.documentElement.clientHeight;
+        let width = document.documentElement.clientWidth;
+
+        let member_id = $("#member_id").val();
+        if (member_id) {
+
+            layer.open({
+                type: 2,
+                title: '服務套票',
+                maxmin: true,
+                area: [width + 'px', height + 'px'],
+                content: '{:url("service_packages/services?from_panel=bookings&member_id=")}' + member_id
+            })
+        }
+
+    }
+
+    function loadBeautician() {
+        $.ajax({
+            url: "{:url('users/option')}",
+            success(res) {
+                if (res.code == 200) {
+                    $(".beautician").select2({
+                        theme: 'bootstrap4',
+                        placeholder: "请选择",
+                        data: res.results,
+                    })
+                }
+            }
+        })
+    }
+
+
+    function initBeautician(nums = []) {
+        $.ajax({
+            url: "{:url('users/option')}",
+            success(res) {
+                if (res.code == 200) {
+                    var data = res.results
+                    nums.forEach(function (num) {
+                        $("#service_beautician1_" + num).select2({
+                            theme: 'bootstrap4',
+                            placeholder: "请选择",
+                            data: data
+                        })
+                        $("#service_beautician1_" + num).val("{$resourceId}").trigger('change');
+                        data.unshift({"id": "", "text": ""})
+                        $("#service_beautician2_" + num).select2({
+                            theme: 'bootstrap4',
+                            placeholder: "请选择",
+                            data: data
+                        })
+                    })
+                }
+            }
+        })
+    }
+
+    function initWorkingHourse() {
+        $(".time_picker").select2({
+            theme: 'bootstrap4',
+            data: working_hourse
+        })
+    }
+
+    function addBlank() {
+        let start_time = $("#booking_init_time").val();
+        let end_time = wh_end_time(start_time)
+        let number = Number($(".items_count").val());
+        let row = '<tr class="border-b service"> <td align="center" data-id=""><input type="checkbox" class="checkbox" value="' + number + '"></td> <td class="d-flex align-items-center justify-content-between"><select class="form-control time_picker start_time" id="service_start_time_' + number + '" name="service[' + number + '][start_time]" style="display: none; width: 100%;"></select>&nbsp;至&nbsp;<select class="form-control time_picker end_time" id="service_end_time_' + number + '" name="service[' + number + '][end_time]" style="display: none; width: 100%;"></select> </td><td>&nbsp;</td> <td>&nbsp;</td><td><input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;"></td> <td><select class="form-control beautician beautician1" id="service_beautician1_' + number + '"  name="service[' + number + '][beautician1]" style="display: none; width: 100%;" required></select></td> <td><select class="form-control beautician beautician2" id="service_beautician2_' + number + '"    name="service[' + number + '][beautician2]" style="display: none; width: 100%;"></select></td>  </tr>';
+        $("#bookings").append(row);
+        initBeautician([number]);
+        initWorkingHourse();
+        $('#service_start_time_' + number).val(start_time).trigger('change');
+        $('#service_end_time_' + number).val(end_time).trigger('change');
+        $("#booking_init_time").val(end_time);
+        number = number + 1;
+        $(".items_count").val(number);
+    }
+
+    function wa_info(){
+        let phone = $("#phone").val();
+        let senderId = $("#user_tel").val();
+        let url = '{:url("wa_logs/wa_info?phone=")}'+phone+'&sender_jid='+senderId;
+        layer.open({
+            type: 2,
+            title: false,
+            area: ['800px', '500px'],
+            content: url,
+            closeBtn:0,
+        })
+    }
+    $(document).ready(function () {
+        loadBeautician();
+        $(document).on("input propertychange", "#invoice_no", function () {
+            let invoice_no = $(this).val();
+            $.ajax({
+                url: "{:url('invoices/find_invoice')}",
+                data: {invoice_no: invoice_no},
+                success(res) {
+                    if (res.invoice) {
+                        let invoice = res.invoice;
+                        $("#invoice_id").val(invoice.id);
+                        $("#invoice_no").val(invoice.invoice_no);
+                    }
+                }
+            })
+        });
+
+        $(document).on("input propertychange", "#member_no", function () {
+            let member_no = $(this).val();
+
+            $.ajax({
+                url: "{:url('members/find_member')}",
+                data: {member_no: member_no},
+                success(res) {
+                    if (res.member) {
+                        let member = res.member;
+                        $("#member_id").val(member.id);
+                        $("#member_no").val(member.member_no);
+                        $("#name").val(member.first_name);
+                        $("#phone").val(member.phone_mobile);
+
+                        if (member.no_service) {
+                            layer.tips('這個會員沒有任何可使用的套票', '#member_no', {
+                                tips: 3
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+        $(document).on('change', '#is_member_checkbox', function () {
+            // alert($(this).prop('checked'));
+            if ($(this).prop('checked')) {
+                $(this).parent().siblings('.member_no').addClass('hidden');
+                $(this).parent().siblings('.new_member').removeClass('hidden');
+                $("#name").val('').removeAttr("readOnly").attr("required", "true");
+                $("#phone").val('').removeAttr("readOnly").attr("required", "true");
+                $("#member_id").val(0).removeAttr("required");
+                $("#member_no").val('').removeAttr("required");
+                $("#is_member").val(0);
+
+            }else{
+                $(this).parent().siblings('.member_no').removeClass('hidden');
+                $(this).parent().siblings('.new_member').addClass('hidden');
+                $("#name").val('').removeAttr("required").attr("readOnly", "true");
+                $("#phone").val('').removeAttr("required").attr("readOnly", "true");
+                $("#member_id").attr("required", "true");
+                $("#member_no").attr("required", "true");
+                $("#is_member").val(1);
+            }
+        })
+
+        $("#booking-submit").click(function (e) {
+
+            if ($("#bookingsForm")[0].checkValidity()) {
+                e.preventDefault();
+                let url = '{:url("bookings/add")}';
+                let id = $("#id").val();
+                if (id) {
+                    url = '{:url("bookings/edit?id=")}' + id
+                }
+                let params = $("#bookingsForm").serialize();
+                $.ajax({
+                    url: url,
+                    data: params,
+                    type: "POST",
+                    success(res) {
+                        layer.msg(res.msg);
+                        if (res.code == 200) {
+                            if (id) {
+                                parent.calendar.refetchEvents(res.events);
+                            } else {
+                                parent.calendar.addEventSource(res.events)
+                            }
+                            let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            parent.layer.close(index);
+                        }
+                    }
+                })
+
+            }
+
+        });
+
+        $(".btn-close").click(function () {
+            let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+            parent.layer.close(index);
+        });
+
+        $("#delete").click(function () {
+            let id = $(this).attr('data-id');
+
+            if (confirm('Are you sure to delete?') === false) return false;
+
+            $.ajax({
+                url: "{:url('del')}",
+                data: {id: id},
+                type: "POST",
+                success(res) {
+                    layer.msg(res.msg);
+
+                    if (res.code == 200) {
+                        parent.calendar.getEventById("{$eventId}").remove();
+
+                        let index = parent.layer.getFrameIndex(window.name);
+                        parent.layer.close(index);
+
+                    }
+                }
+            })
+        })
+
+    })
+</script>
+{/block}

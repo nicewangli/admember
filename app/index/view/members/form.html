@@ -21,13 +21,13 @@
     <div class="form-group row pt-2" style="align-items: baseline;">
         <div class="col-xs-12 col-md-4">
             <div class="form-group row">
-                <label class="col-md-3 control-label" for="member_no">狀態</label>
+                <label class="col-md-3 control-label" for="status">狀態</label>
                 <div class="col-md-7">
-                    <select class="form-control select2" type="text" id="member_no" name="member_no">
+                    <select class="form-control select2" type="text" id="status" name="status">
                         <option value="">&nbsp;</option>
-                        {foreach name=":getOptions('member_no')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.member_no==$opt.val}selected{/if}>
+                        {foreach name=":getOptions('status')" id='opt'}
+                        <option value="{$opt.id}" {if isset($item) &&
+                                $item.status==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
@@ -37,10 +37,10 @@
 
 
             <div class="form-group row">
-                <label class="col-md-3 control-label" for="account_id">編號</label>
+                <label class="col-md-3 control-label" for="member_no">編號</label>
                 <div class="col-md-7">
-                    <input class="form-control" type="text" id="account_id" name="account_id"
-                           value="{$item.account_id|default=''}"
+                    <input class="form-control" type="text" id="member_no" name="member_no"
+                           value="{$item.member_no|default=''}"
                            placeholder="A0029">
                 </div>
             </div>
@@ -62,8 +62,8 @@
                     <select class="form-control select2" type="text" id="opt" name="opt">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('opt')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.opt==$opt.val}selected{/if}>
+                        <option value="{$opt.id}" {if isset($item) &&
+                                $item.opt==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
@@ -78,8 +78,8 @@
                     <select class="form-control select2" type="text" id="categors" name="categors">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('categors')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.categors==$opt.val}selected{/if}>
+                        <option value="{$opt.id}" {if isset($item) &&
+                                $item.categors==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
@@ -113,13 +113,15 @@
                 <div class="col-md-7">
                     <select class="form-control" id="salutation" name="salutation" size="1"
                             value="{$item.salutation|default=''}">
-                        <option value="0">Mr.</option>
-                        <option value="1">Ms.</option>
-                        <option value="2">Mrs.</option>
-                        <option value="3">Miss</option>
-                        <option value="4">Dr.</option>
-                        <option value="5">Prof.</option>
-                        <option value="6">Capt.</option>
+                        <option value="0" {if $item.salutation == 0}selected{/if}>男</option>
+                        <option value="1" {if $item.salutation == 1}selected{/if}>女</option>
+<!--                        <option value="0">Mr.</option>-->
+<!--                        <option value="1">Ms.</option>-->
+<!--                        <option value="2">Mrs.</option>-->
+<!--                        <option value="3">Miss</option>-->
+<!--                        <option value="4">Dr.</option>-->
+<!--                        <option value="5">Prof.</option>-->
+<!--                        <option value="6">Capt.</option>-->
                     </select>
                 </div>
             </div>
@@ -176,15 +178,6 @@
                 </div>
             </div>
 
-            <div class="form-group row">
-                <label class="col-md-3 control-label" for="expiry_date">地址</label>
-                <div class="col-md-7">
-                            <textarea class="form-control" id="expiry_date" name="expiry_date"
-                                      size="1"
-                                      value=""
-                                      placeholder="{$item.expiry_date|default=''}"></textarea>
-                </div>
-            </div>
 
             <div class="form-group row">
                 <label class="col-md-3 control-label" for="region">地區</label>
@@ -192,12 +185,23 @@
                     <select class="form-control select2" type="text" id="region" name="region">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('region')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.region==$opt.val}selected{/if}>
+                        <option value="{$opt.id}" {if isset($item) &&
+                                $item.region==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
                     </select>
+                </div>
+            </div>
+			
+			
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="expiry_date">地址</label>
+                <div class="col-md-7">
+                            <textarea class="form-control" id="expiry_date" name="expiry_date"
+                                      size="1"
+                                      value=""
+                                      placeholder="{$item.expiry_date|default=''}">{$item.expiry_date|default=''}</textarea>
                 </div>
             </div>
 
@@ -209,7 +213,7 @@
                             <textarea class="form-control" id="remark" name="remark"
                                       size="1"
                                       value=""
-                                      placeholder="{$item.remark|default=''}"></textarea>
+                                      placeholder="{$item.remark|default=''}">{$item.remark|default=''}</textarea>
                 </div>
             </div>
 
@@ -219,7 +223,7 @@
                             <textarea class="form-control" id="reservation_remarks" name="reservation_remarks"
                                       size="1"
                                       value=""
-                                      placeholder="{$item.reservation_remarks|default=''}"></textarea>
+                                      placeholder="{$item.reservation_remarks|default=''}">{$item.reservation_remarks|default=''}</textarea>
                 </div>
             </div>
 
@@ -257,7 +261,8 @@
                     <select name="store_id" id="store_id" class="form-control">
                         <option value=""></option>
                         {volist name="storeArr" id="store"}
-                        <option value="{$store.id}">{$store.name}</option>
+                        <option value="{$store.id}" {if isset($item) &&
+                                $item.store_id==$store.id}selected{/if}>{$store.name}</option>
                         {/volist}
                     </select>
                 </div>
@@ -272,8 +277,8 @@
                     <select class="form-control select2" type="text" id="register_date" name="register_date">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('register_date')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.register_date==$opt.val}selected{/if}>
+                        <option value="{$opt.id}" {if isset($item) &&
+                                $item.register_date==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
@@ -287,8 +292,8 @@
                     <select class="form-control select2" type="text" id="source" name="source">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('source')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.source==$opt.val}selected{/if}>
+                        <option value="{$opt.id}" {if isset($item) &&
+                                $item.source==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
@@ -302,7 +307,7 @@
                             <textarea class="form-control" id="source_notes" name="source_notes"
                                       size="1"
                                       value=""
-                                      placeholder="{$item.source_notes|default=''}"></textarea>
+                                      placeholder="{$item.source_notes|default=''}">{$item.source_notes|default=''}</textarea>
                 </div>
             </div>
 
@@ -345,7 +350,7 @@
                             <textarea class="form-control" id="signature" name="signature"
                                       size="1"
                                       value=""
-                                      placeholder="{$item.signature|default=''}"></textarea>
+                                      placeholder="{$item.signature|default=''}">{$item.signature|default=''}</textarea>
                 </div>
             </div>
 

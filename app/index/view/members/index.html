@@ -87,7 +87,7 @@
                         <input type="hidden" value="0" id="export_data" name="export_data">
                         <div class="btn-group">
                             <button type="button " class="btn  btn-success btn-sm"> <i class="fa fa-whatsapp"></i> Whatsapp</button>
-                            <button type="button" class="btn btn-success btn-sm dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                            <button type="button" class="btn btn-success btn-sm dropdown-toggle " data-toggle="dropdown">
                                 <span class="sr-only">切換下啦</span>
                                 <div class="dropdown-menu" role="menu">
                                     <a class="dropdown-item" href="#">郵箱</a>
@@ -102,22 +102,20 @@
 
                         <div class="btn-group">
                             <button type="button " class="btn  btn-default btn-sm">更多</button>
-                            <button type="button" class="btn btn-default btn-sm dropdown-toggle dropdown-hover dropdown-icon" data-toggle="dropdown">
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                                 <span class="sr-only">切換下啦</span>
-                                <div class="dropdown-menu" role="menu">
-                                    <a class="dropdown-item" href="#">更換</a>
-                                    <a class="dropdown-item" href="#">发现重复的</a>
-                                    <a class="dropdown-item" href="#">所有權限轉移</a>
+									<div class="dropdown-menu" role="menu">
+                                    <a class="dropdown-item" href="#">查抓重複</a>
                                     <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item exportData"  onclick="$('#export_data').val(1)">出口</a>
-                                    <a class="dropdown-item" href="#">進口</a>
+                                    <a class="dropdown-item exportData"  onclick="$('#export_data').val(1)">匯出</a>
+                                    <a class="dropdown-item importData" href="#">導入</a>
                                     <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="#">刪除</a>
-
                                 </div>
                             </button>
                         </div>
 
+                        <input type="file" id="file" class="hidden">
 
                     </div>
                     <table id="contacts-grid" class="table-striped ">
@@ -127,7 +125,7 @@
                             <th data-field="member_no" data-sortable="true" data-filter-control="input" data-width="120">編號</th>
                             <th data-field="first_name" data-sortable="true" data-filter-control="input" data-formatter="showFm">名稱(英文)</th>
                             <th data-field="last_name" data-sortable="true" data-filter-control="input">名稱(中文)</th>
-                            <th data-field="title" data-sortable="true" data-filter-control="input">分類</th>
+                            <th data-field="opt" data-sortable="true" data-filter-control="input">分類</th>
                             <th data-field="phone_mobile" data-sortable="true" data-filter-control="input">手提電話</th>
                             <th data-field="department" data-sortable="true" data-visible="false" data-filter-control="input">住宅電話</th>
                             <th data-field="salutation" data-sortable="true" data-visible="false" data-filter-control="input">性別</th>
@@ -204,6 +202,36 @@
         });
 
 
+        $(".importData").click(function () {
+            $("#file").click()
+        })
+
+        $(document).on('change', '#file', function () {
+            let formData = new FormData();
+            formData.append('file', $(this)[0].files[0]);
+            // console.log($(this)[0].files[0])
+            $.ajax({
+                url: "{:url('import_data')}",
+                dataType: 'json',
+                type: 'POST',
+                async: false,
+                data: formData,
+                processData : false, // 使数据不做处理
+                contentType : false, // 不要设置Content-Type请求头
+                success: function(res){
+                    if (res.code == 200) {
+                        if (res.usersExits != '') {
+                            layer.msg('Excel中以下會員編號已存在:'+res.usersExits);
+                        }else{
+                            layer.msg('success');
+                        }
+                        $("#contacts-grid").bootstrapTable('refresh');
+                    }else {
+                        layer.msg(res.msg);
+                    }
+                }
+            })
+        })
     })
 
 </script>

@@ -304,62 +304,40 @@
 
 
 
-
-                                    <div class="form-group row">
-                                        <label class="col-md-1 control-label" for="owner_user_id">安全管理員</label>
-                                        <div class="col-md-2">
-                                            <select class="form-control" id="owner_user_id" name="owner_user_id" size="1">
-                                                <option value="0">ken kuo</option>
-                                                <option value="1">Admin Adaptive</option>
-                                                <option value="2">Leo Wong</option>
-                                                <option value="3">Luke Tam</option>
-                                                <option value="4">Ron Kaluta</option>
-                                                <option value="5">Rooky lu</option>
-                                                <option value="6">Sandy Ng</option>
-                                                <option value="7">Syatem User</option>
-                                                <option value="8">Tiffany Cheng</option>
-                                            </select>
-                                        </div>
-
-                                        <label class="col-md-1 control-label" for="assigned_user_id"></label>
-                                        <div class="col-md-2">
-                                            <select class="form-control" id="assigned_user_id" name="assigned_user_id" size="1">
-                                                <option value="0">Ken Kuo</option>
-                                                <option value="1">Admin Adaptive</option>
-                                                <option value="2">Ken Kuo</option>
-                                                <option value="3">Leo wong</option>
-                                                <option value="4">Luke Tam</option>
-                                                <option value="5">Ron Kaluta</option>
-                                                <option value="6">Rooky lu</option>
-                                                <option value="7">Sandy Ng</option>
-                                                <option value="8">System User</option>
-                                                <option value="9">Tiffany Cheng</option>
-                                            </select>
-                                        </div>
-
-                                        <label class="col-md-1 control-label" for="visible_for">可見性</label>
-                                        <div class="col-md-2">
-                                            <select class="form-control" id="visible_for" name="visible_for" size="1">
-                                                <option value="0">授權團隊</option>
-                                                <option value="1">全部</option>
-                                                <option value="2">自己的團隊</option>
-                                                <option value="3">自己</option>
-                                            </select>
-                                        </div>
-
-                                        <label class="col-md-1 control-label" for="team_id">分配給團隊</label>
-                                        <div class="col-md-2">
-                                            <select class="form-control" id="team_id" name="team_id" size="1">
-                                                <option value="0">管理員</option>
-                                                <option value="1">行銷</option>
-                                                <option value="2">會員</option>
-                                                <option value="3">銷售額</option>
-                                                <option value="4">培訓</option>
-                                                <option value="5">審判</option>
+        <hr>
+                    <div class="form-group row">
+                        <label class="col-md-1 control-label" for="assigned_user_id">負責人</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2" type="text" id="assigned_user_id"
+                                    name="assigned_user_id">
+                                <option value="">&nbsp;</option>
+                                {foreach name=":getUsers('account','assigned_user_id')" id='use'}
+                                <option value="{$use.uid}" {if isset($item) &&
+                                        $item.assigned_user_id==$use.uid}selected{/if}>
+                                    {$use.name}
+                                </option>
+                                {/foreach}
+                            </select>
+                        </div>
+                        <div class="col-md-1"></div>
+                        <label class="col-md-1 control-label" for="visible_for">權限</label>
+                        <div class="col-md-4">
+                            <select class="form-control select2" type="text" id="visible_for" name="visible_for">
+                                <option value="">&nbsp;</option>
+                                {foreach name=":getOptions('visible','visible_for')" id='opt'}
+                                <option value="{$opt.val}" {if isset($item) &&
+                                        $item.visible_for==$opt.val}selected{/if}>
+                                    {$opt.name}
+                                </option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
 
 
-                                            </select>
-                                        </div>
+                            
+
+                                
                                     </div>
                                 </div>
                             </div>
@@ -402,6 +380,8 @@
             layer.msg(data['msg']);
             if (data['code'] == 200) {
                 parent.layer.closeAll();
+				  parent.location.reload();
+            parent.$('#transfers-grid').bootstrapTable('refresh')
                 // parent.$('#stockin-grid').bootstrapTable('refresh')
             }
         });
@@ -444,18 +424,38 @@
         amount();
     }
 
+    $(document).on("change", ".amount", function () {
+        total_discount();
+    })
+
+    function total_discount() {
+        let total_discount = total;
+
+        $(".amount").each(function () {
+            // total_discount += parseFloat($(this).val());
+            //
+            // $("#total_discount").val(total_discount.toFixed(2));
+        });
+        // amount();
+    }
+
 
 
     $(document).on("change", "#deduction", function () {
         amount();
     });
+    $(document).on("change", "#total_discount", function () {
+        amount();
+    })
     $(document).on("input propertychange", ".quantity", function () {
         amount();
     });
     $(document).on("input propertychange", ".product_price", function () {
         amount();
     });
-
+  $(document).on("input propertychange", ".to_price", function () {
+        amount();
+    });
 
 
 
@@ -473,38 +473,54 @@
             $("#final_total").val(final_total.toFixed(2));
         }
     */
-    function amount(){
-        let amount = 0.0;
-        let total = 0.0;
-        let quantity, product_price;
+      function amount() {
+        let total = parseFloat($("#total").val());
+        let deduction = $("#deduction").val();
+        // let total_discount = $("#total_discount").val();
+        // let total_discount = parseFloat($("#total_discount").val());
+
+        if (deduction == '') {
+            deduction = 0
+        }
+
+        // if (total_discount == '') {
+        //     total_discount = 0
+        // }
+
+        // console.log(total)
+        // console.log(deduction)
+
+
+        let total_discount = total - total * $("#total_discount").val()/ 100;
+        // console.log($("#total_discount").val())
+
+        // let final_total = total -parseFloat(deduction) ;
+        let final_total = total_discount - parseFloat(deduction);
+        $("#final_total").val(final_total.toFixed(1));
+
+        let amount = 0.0 / 100;
+        // let total = 0.0;
+        let quantity, product_price, client_price;
+
         $(".amount").each(function () {
 
             quantity = parseFloat($(this).parent().siblings().children('.quantity').val());
             product_price = parseFloat($(this).parent().siblings().children('.product_price').val());
+            client_price = parseFloat($(this).parent().siblings().children('.to_price').val());
             // total_discount = parseFloat($(this).parent().siblings().children('.amount').val());
-            // console.log(quantity,product_price)
-            amount = parseFloat(product_price * quantity);
-            total += parseFloat(amount);
-
+            if (isNaN(client_price)) {
+                amount = parseFloat(product_price * quantity);
+            } else {
+                amount = parseFloat(client_price * quantity);
+            }
+            // total += parseFloat(amount);
+            // total_discount /=parseFloat(amount);
             $(this).val(amount.toFixed(1));
         });
 
         $("#total").val(total.toFixed(1));
 
-        final_total();
     }
-
-    function final_total(){
-        let total_amount = 0.0;
-        let final_total = 0.0;
-
-        $("#final_total").val(final_total.toFixed(1));
-        $("#total_amount").val(total_amount.toFixed(1));
-        $("#h5").text('$'+total_amount.toFixed(1));
-
-        payment_amount();
-    }
-
 
 
 

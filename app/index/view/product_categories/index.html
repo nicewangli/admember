@@ -83,12 +83,6 @@
                     checkbox: true,
                     clickToSelect: true
                 }, {
-                    field: 'id',
-                    title: 'ID',
-                    width: "120px",
-                    sortable: true,                              //是否允许列可以排序
-                    filterControl: 'input'
-                }, {
                     field: 'parent',
                     title: 'Parent',
                     searchable: true,
@@ -97,6 +91,12 @@
                     field: 'name',
                     title: 'Name',
                     searchable: true,
+                    filterControl: 'input'
+                }, {
+                    field: 'ordering',
+                    title: 'Order',
+                    clickToSelect: true,                         //是否在单击行时选择复选框或radiobox
+                    sortable: true,                              //是否允许列可以排序
                     filterControl: 'input'
                 }, {
                     field: 'status',
