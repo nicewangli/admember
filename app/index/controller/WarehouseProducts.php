@@ -84,4 +84,9 @@ class WarehouseProducts extends Application
 
         }
     }
+
+    public function warehouse_products()
+    {
+
+    }
 }

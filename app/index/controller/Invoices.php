@@ -15,6 +15,8 @@ use app\model\InvoiceItem;
 use app\model\InvoicePayment;
 use app\model\InvoiceSeller;
 use app\validate\InvoiceValidate;
+use app\model\Booking;
+use app\model\BookingItem;
 
 class Invoices extends Application
 {
@@ -274,5 +276,32 @@ class Invoices extends Application
             $find::update($param);
             return json(['code' => 200]);
         }
+    }
+
+
+    //booking to invoice
+    public function booking_to_invoice(Booking $booking, BookingItem $item_booking, Member $member)
+    {
+        $booking_id = input('booking_id', 0);
+        $from = input('from', '');
+        $data = $booking->alias('b')->leftJoin('store s', 'b.store_id = s.id')->field('b.member_id, b.store_id, s.name as store_name, b.is_member')->find($booking_id);
+
+        $data['new_customer'] = $data['is_member'] == 1 ? 0 : 1;
+        $member_info = $member->findMember(['id' => $data['member_id']]);
+
+        $inv_items['service_packages'] = $item_booking->alias('ib')->leftJoin('service_package sp', 'ib.service_package_id = sp.id')->field('sp.id as service_id, sp.code, sp.name, sp.price, ib.quantity, "0.0" as discount, sp.price * ib.quantity as total, sp.package_value * ib.quantity as package_value, sp.package_value as package_original_value, sp.package_unit, "1" as service_type')->where(['ib.booking_id' => $booking_id])->select();
+
+        $total = 0.0;
+        foreach ($inv_items['service_packages'] as $key => $value) {
+            $total += $value['total'];
+            $inv_items['service_packages'][$key]['index'] = $key;
+        }
+
+        $data['final_total'] = $total;
+        $data['total_amount'] = $total;
+        $data['total'] = $total;
+        $data['items_count'] = count($inv_items['service_packages']);
+
+        return view('add',['data' => $data, 'inv_items' => $inv_items, 'member' => $member_info, 'from' => $from]);
     }
 }

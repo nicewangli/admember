@@ -73,11 +73,11 @@
                                        data-id="{$item.id}" class="checkbox data-list-check" value="{$item.id}"
                                        placeholder="Select/Cancel">
                             </td>
-                            <td>{$item.salesorder_no}</td>
-                            <td>{$item.store}</td>
-                            <td>{$item.created_at}</td>
-                            <td>{$item.payment_term}</td>
-                            <td>{$item.abstract}</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
 
                             <td class="td-do">
                                 <a href="{:url('edit',['id'=>$item.id])}"
@@ -129,10 +129,11 @@
     }
 
     function doc(id){
+        let url;
         if(id){
-            var url = '{:url("stockouts/edit?id=")}'+id
+             url = '{:url("stockouts/edit?id=")}'+id
         }else{
-            var url = '{:url("stockouts/add")}?supplier_id={}'
+             url = '{:url("stockouts/add")}'
         }
 
         layer.open({

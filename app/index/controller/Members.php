@@ -18,6 +18,7 @@ use app\model\Store;
 use think\facade\View;
 use think\facade\Request;
 use app\model\Member;
+use app\model\Booking;
 
 use app\validate\MemberValidate;
 
@@ -44,7 +45,7 @@ class Members extends Application
           if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
 
-            $query_fields = ['first_name','last_name','phone_mobile','phone_work','email1'];
+              $query_fields = ['first_name','last_name','phone_mobile','member_no','opt'];
             foreach ($query_fields as $field){
                 if(isset($filter[$field])) {
                     $where[] = [$field, 'like', $filter[$field] . '%'];
@@ -121,7 +122,6 @@ class Members extends Application
         $from = input('from', '');
         $item['first_name'] = input('name', '');
         $item['phone_mobile'] = input('phone', '');
-
         //店铺下拉框
         $storeArr = Store::select()->toArray();
         if ($request::isPost()) {
@@ -203,7 +203,7 @@ class Members extends Application
     }
 
 
-    public function find_member(Member $model, Invoice $invoice)
+    public function find_member(Member $model, Invoice $invoice, Booking $booking)
     {
         $member_no = input('member_no');
         $where = [];
@@ -214,13 +214,15 @@ class Members extends Application
         if ($member) {
             $invoices = $invoice->findInvoice($member->id);
 
+            $notes = $booking->booking_notes($member->id);
+
             $member['no_service'] = true;
             $service = $model->findService($member['id'], 1);
             if (!empty($service)) {
                 $member['no_service'] = false;
             }
         }
-        return json(['member' => $member, 'invoices' => $invoices]);
+        return json(['member' => $member, 'invoices' => $invoices, 'notes' => $notes]);
     }
 
 

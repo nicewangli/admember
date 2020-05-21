@@ -14,7 +14,7 @@ class InvoiceItem extends Model
     public function saveItem($id, $data)
     {
         foreach ($data as $key => $value){
-            if (isset($value['id'])) {
+            if (isset($value['id']) && $value['id']) {
                 $this->update($data[$key]);
             }else{
                 $data[$key]['invoice_id'] = $id;

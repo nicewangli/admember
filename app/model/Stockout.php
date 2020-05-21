@@ -9,9 +9,4 @@ namespace app\model;
 class Stockout extends Model
 {
 
-
-
-    
-
-    
 }

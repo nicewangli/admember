@@ -95,7 +95,7 @@ class Users extends Application
             }
         }
 
-        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->field('u.uid,u.first_name,u.last_name,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,g.title')->order('u.uid desc')->paginate(10);
+        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->field('u.uid,u.first_name,u.last_name,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.uid desc')->paginate(10);
         View::assign('list', $list);
         return View::fetch();
     }

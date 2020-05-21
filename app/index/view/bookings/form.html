@@ -75,6 +75,11 @@
                     <a class="btn btn-default  btn-sm btn-close" href="#">
                         关闭
                     </a>
+                    {if $item.status == 5}
+                        <a class="btn btn-default  btn-sm new_invoice" href="#" data-id="{$item.id}">
+                            新增發票
+                        </a>
+                    {/if}
                     {else /}
                     <button class="btn flat btn-info btn-sm" id="booking-submit">
                         儲存
@@ -104,7 +109,7 @@
                 <div class="form-group row">
                     <label class="col-md-2 control-label" for="booking_date">日期：</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control datePicker" id="booking_date" name="booking_date"
+                        <input type="text" class="form-control datePicker to-search" id="booking_date" name="booking_date"
                                value="{$item.booking_date|default=''}" required>
                     </div>
                 </div>
@@ -183,7 +188,7 @@
                     <label class="col-md-2 control-label" for="name">名稱：</label>
                     <div class="col-md-9">
                         <input class="form-control" type="text" id="name" name="name" value="{$item.name|default=''}"
-                               required>
+                               {if $item.is_member == 1} readonly {/if}>
                     </div>
                 </div>
 
@@ -191,10 +196,16 @@
                     <label class="col-md-2 control-label" for="phone">電話：</label>
                     <div class="col-md-9">
                         <input class="form-control" type="text" id="phone" name="phone"
-                               value="{$item.phone|default=''}">
+                               value="{$item.phone|default=''}"
+                               {if $item.is_member == 1} readonly {/if}>
                     </div>
                 </div>
 
+                {if $item.team_id == 2}
+                <div class="form-group row">
+                    <label class="text-danger">Form Telesales</label>
+                </div>
+                {/if}
             </div>
         </div>
 
@@ -319,11 +330,65 @@
             </div>
 
             <div class="col-xs-12 col-md-6">
-                <div class="form-group row" id="booking-result">
+                <div class="{if $item.team_id != 2}hidden{/if}" id="telesales">
+                    <div><label class="text-primary">Telesales</label></div>
 
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label">組別：</label>
+                        <div class="col-md-9">
+                            <label>{$item.team_title|default=''}</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" >員工：</label>
+                        <div class="col-md-9">
+                            <label>{$item.created_user_name|default=''}</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row bg-secondary disabled color-palette">
+                        <label class="col-md-3 control-label">建立：</label>
+                        <div class="col-md-9">
+                            <label>{$item.created_user_name|default=''} / {$item.create_time|default=''}</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="{if $act == 'add'}hidden{/if}" id="booking-notes">
+                    <div><label class="text-primary">注意事項</label></div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label">缺席率：</label>
+                        <div class="col-md-9">
+                            <label id="absence">預約 {$notes.booking|default=0} 次, {$notes.absence|default=0} 次缺席 ({$notes.percent|default=0.0}%)</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" >生日：</label>
+                        <div class="col-md-9">
+                            <label id="birthday">{$notes.birthday|default=''}</label>
+                        </div>
+                    </div>
+
+                    {if !empty($notes.reservation_remarks)}
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label">預約備註：</label>
+                        <div class="col-md-9">
+                            <label id="remarks">{$notes.reservation_remarks|default=''}</label>
+                        </div>
+                    </div>
+                    {/if}
                 </div>
             </div>
         </div>
+
+        {if $act == 'edit'}
+        <div class="row pt-3">
+            <div class="col-xs-12 col-md-12 bg-secondary disabled color-palette text-center">最後更新：{$item.updated_user_name|default=''} / {$item.update_time|default=''}</div>
+        </div>
+        {/if}
 
     </form>
 </section>
@@ -516,6 +581,14 @@
                                 tips: 3
                             });
                         }
+
+                        let bookingNotes = $("#booking-notes");
+                        bookingNotes.removeClass('hidden');
+                        bookingNotes.find("#absence").text("預約 " + notes.booking + " 次,  " + notes.absence + " 次缺席 (" + notes.percent + "%)").find("#birthday").text(notes.birthday);
+                        bookingNotes.find("#birthday").text(notes.birthday);
+                        if (notes.reservation_remarks != '') {
+                            bookingNotes.find("#remarks").text(notes.reservation_remarks);
+                        }
                     }
                 }
             })
@@ -600,6 +673,18 @@
 
                     }
                 }
+            })
+        });
+
+        $(".new_invoice").click(function () {
+            let id = $(this).attr('data-id');
+            // alert(id)
+            layer.open({
+                type: 2,
+                title: '新增發票',
+                maxmin: true,
+                area: ['90%', '80%'],
+                content: "{:url('index/invoices/booking_to_invoice?booking_id=')}" + id + '&from=booking'
             })
         })
 

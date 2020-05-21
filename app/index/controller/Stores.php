@@ -28,7 +28,19 @@ class Stores extends Application
         $offset = $param['offset'];
         $sort = isset($param['sort']) ?  $param['sort'] :  'name';
         $order = $param['order'];
-        $items = Store::limit($offset, $limit)->order($sort.' '.$order)->select();
+		        $where = [];
+        if(isset($param['filter'])){
+            $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
+
+            $query_fields = ['name','phone','email','chi_name','billing_address_street_cn'];
+            foreach ($query_fields as $field){
+                if(isset($filter[$field])) {
+                    $where[] = [$field, 'like', $filter[$field] . '%'];
+                }
+            }
+
+        }
+        $items = Store::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
         $total = Store::count();
         $data = [
             'rows' => $items,

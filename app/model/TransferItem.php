@@ -25,7 +25,6 @@ class TransferItem extends Model
         $this->insertAll($data);
         $product->saveAll($updateProduct);
 
-
     }
 
     public function findItems($id)

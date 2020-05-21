@@ -30,6 +30,18 @@ class Suppliers extends Application
         if(isset($param['account_id'])){
             $where['account_id'] = $param['account_id'];
         }
+		      if(isset($param['filter'])){
+            $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
+
+            $query_fields = ['first_name','last_name','phone_mobile','member_no','opt'];
+            foreach ($query_fields as $field){
+                if(isset($filter[$field])) {
+                    $where[] = [$field, 'like', $filter[$field] . '%'];
+                }
+            }
+
+        }
+		
         $items = Supplier::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
         $total = Supplier::count();
         $data = [

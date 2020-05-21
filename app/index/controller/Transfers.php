@@ -19,12 +19,14 @@ class Transfers extends Application
     public function index(Request $request, Transfer $model)
     {
         $search = input('get.search');
-        $data = $model->alias('t')->leftJoin('warehouse w','t.from_wh_id = w.id')->leftJoin('warehouse sw','t.to_wh_id = sw.id')
-            ->field('t.*,w.name as from_wh_name,sw.name as to_wh_name')
-//            ->whereOr([
-//                ['description', 'like', $search . '%'],
-//            ])
+        $data = $model->whereOr([
+                ['id', 'like', $search . '%'],
+            ])
             ->paginate();
+
+//        ->alias('t')->leftJoin('warehouse w','t.from_wh_id = w.id')->leftJoin('warehouse sw','t.to_wh_id = sw.id')
+//        ->field('t.*,w.name as from_wh_name,sw.name as to_wh_name')
+//
 //        dump($data);die;
         //关键词，排序等赋值
         View::assign([
@@ -144,9 +146,7 @@ class Transfers extends Application
             }
         }
         $quo_items=$transferItem->findItems($id);
-//        dump($quo_items);die;
         $service_product = $transferItem->options($id);
-//        dump($service_product);die;
         View::assign([
             'item' => $item,
             'act' => url('edit'),
@@ -154,8 +154,6 @@ class Transfers extends Application
             'warehouse' => $warehouse,
         ]);
         return view('form',['data'=>$item,'quo_items'=>$quo_items,'service_product'=>$service_product,'fromdatail'=>$fromdatail,'action'=>url('edit?id='.$id),'back'=>$back]);
-
-
 
     }
 

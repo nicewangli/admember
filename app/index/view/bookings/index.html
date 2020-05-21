@@ -20,7 +20,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body table-responsive">
-                    <form role="form">
+                    <form role="form" id="booking_form">
+                        <input type="hidden" name="oblation">
                         <div class="row">
                             <!-- Left -->
                             <div class="col-md-5"  valign="top">
@@ -46,7 +47,7 @@
                                                 <select class="form-control select2" type="text" id="consultant" name="consultant">
                                                     <option value="">&nbsp;</option>
                                                     {foreach name=":getUsers()" id='user'}
-                                                    <option value="{$search.uid|default=''}" {if isset($search) &&
+                                                    <option value="{$user.uid|default=''}" {if isset($search) &&
                                                             $search.consultant==$user.uid}selected{/if}>
                                                         {$user.name}
                                                     </option>
@@ -75,34 +76,84 @@
                                             <div class="col-md-5">
                                                 <input class="form-control form-control-sm datePicker" type="text"
                                                        id="date_start" name="date_start"
-                                                       value="{$item.date_start|default=''}"
+                                                       value="{$item.date_start|default=$date_start}"
                                                        placeholder="">
                                             </div>
                                             <div class="col-md-2  d-flex  justify-content-center"> 至 </div>
                                             <div class="col-md-5">
                                                 <input class="form-control form-control-sm datePicker" type="text"
                                                        id="date_end" name="date_end"
-                                                       value="{$item.date_end|default=''}"
+                                                       value="{$item.date_end|default=$date_end}"
                                                        placeholder="">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <div class="col-xs-12 col-md-1">
+                                    </div>
+                                    <div class="col-xs-12 col-md-2">
+                                    </div>
 
+                                    <div class="col-xs-12 col-md-2">
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn btn-default btn-sm click-search" id="services_pre_month">
+                                                <a class="fa fa-chevron-left" aria-hidden="true"></a>
+                                            </label>
+                                            <button type="submit" id="services_current_month"> 月</button>
+                                            <label class="btn btn-default btn-sm click-search" id="services_next_month">
+                                                <a class="fa fa-chevron-right"
+                                                   aria-hidden="true"> </a>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-2">
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn btn-default btn-sm click-search" id="services_pre_day">
+                                                <a class="fa fa-chevron-left" aria-hidden="true"></a>
+                                            </label>
+
+                                            <button type="submit" id="services_current_day">日</button>
+
+                                            <label class="btn btn-default btn-sm click-search" id="services_next_day">
+                                                <a class="fa fa-chevron-right"
+                                                   aria-hidden="true"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-3">
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn btn-default  btn-sm click-search" id="services_pre_week">
+                                                <a class="fa fa-chevron-left" aria-hidden="true"></a>
+                                            </label>
+
+                                            <button type="submit" id="services_current_week">星期</button>
+
+                                            <label class="btn btn-default btn-sm click-search" id="services_next_week">
+                                                <a class="fa fa-chevron-right"
+                                                   aria-hidden="true"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                             <!-- Right -->
                             <div class="col-md-6" valign="top">
                                 <div class="form-group row">
                                     <div class="col-md-2">會員 / 非會員:</div>
                                     <div class="col-md-5">
-                                        <input type="text" class="form-control form-control-sm">
+                                        <input type="text" id="member" name="member" value="" class="form-control form-control-sm">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-md-2"></div>
                                     <div class="col-md-5">
-                                        <select class="form-control form-control-sm" size="4" multiple></select>
+                                        <select id="booking_item" name="booking_item_id" class="form-control form-control-sm" size="4" multiple>
+                                        </select>
                                     </div>
                                 </div>
 
@@ -114,7 +165,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
-                                <button class="btn btn-sm col-md-1 ml-2 btn-outline-primary">列表</button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-outline-primary" id="all_booking">列表</button>
                                 <button class="btn btn-sm col-md-1 ml-2 btn-success">新預約</button>
                                 <button class="btn btn-sm col-md-1 ml-2 btn-warning" style="color: white;">已通知</button>
                                 <button class="btn btn-sm col-md-1 ml-2" style="background-color: #fd7e14!important; color: white;">新客已通知</button>
@@ -152,6 +203,16 @@
 {js href="__PLUGIN__/fullcalendar/premium/resource-timegrid/main.min.js"}
 
 <script>
+    // $("#all_booking").click(function () {
+    //     let url = '{:url("all_info")}';
+    //     // alert(id)
+    //     layer.open({
+    //         type: 2,
+    //         title: '預約列表',
+    //         area: ['90%', '80%'],
+    //         content: url
+    //     })
+    // });
     var calendar;
     $(function () {
         var calendarEl = document.getElementById('calendar');
@@ -216,8 +277,172 @@
 
 
     });
+    $("#all_booking").click(function () {
+        calendar.removeAllEvents();
+        calendar.addEventSource("{:url('beautician')}");
+    });
+    $("#room_id").change(function () {
+        form_change();
+    });
+
+    $("#store_id").change(function () {
+        form_change();
+    });
+    $("#consultant").change(function () {
+        form_change();
+    });
+    $("#date_start").change(function () {
+        form_change();
+    });
+    $("#date_end").change(function () {
+        form_change();
+    });
+    $("#member").blur(function () {
+        let member = $("#member").val();
+        $.ajax({
+           url:'{:url("get_booking_item")}',
+           type:"POST",
+           data:{member:member},
+           success(res) {
+               let nodes = '<option value=""></option>';
+               $('#booking_item').empty();
+               $.each(res.booking,function (index,element) {
+                   console.log(element);
+                   nodes += '<option value="'+element.id+'" onclick="show_booking('+element.id+','+element.beautician1+','+element.bi_id+')">'+element.first_name+'</option>';
+               });
+               $('#booking_item').append(nodes);
+           }
+        });
+    });
+    function form_change() {
+        //TODO:给个祭品  <input type="hidden" name="oblation">
+        let params = $("#booking_form").serialize();
+        let url = "{:url('lists')}?params="+params;
+        calendar.removeAllEvents();
+        calendar.addEventSource(url);
+    }
+
+    function show_booking(id,beautician1,bi_id)
+    {
+        let url = "{:url('bookings/edit')}?id="+id +"&resourceId="+beautician1+"&eventId="+bi_id;
+        bookingWin(url);
+    }
+    $("#services_current_month").click(function () {
+        let date = $("#date_start").val();
+        let start_date = moment(date).startOf("month");
+        let end_date = moment(date).endOf("month");
+
+        document.getElementById('date_start').value = moment(start_date).format("YYYY-MM-DD");
+        document.getElementById('date_end').value = moment(end_date).format("YYYY-MM-DD");
+        form_change();
+
+    });
 
 
+    $("#services_pre_month").click(function () {
+        let date = $("#date_start").val();
+        date = moment(date, "YYYY-MM-DD").subtract(1, 'M');
+        let start_date = moment(date).startOf("month");
+        let end_date = moment(date).endOf("month");
 
+        document.getElementById('date_start').value = moment(start_date).format("YYYY-MM-DD");
+        document.getElementById('date_end').value = moment(end_date).format("YYYY-MM-DD");
+
+        form_change();
+
+    });
+
+
+    $("#services_next_month").click(function () {
+        let date = $("#date_start").val();
+        date = moment(date, "YYYY-MM-DD").add(1, 'M');
+        let start_date = moment(date).startOf("month");
+        let end_date = moment(date).endOf("month");
+
+        document.getElementById('date_start').value = moment(start_date).format("YYYY-MM-DD");
+        document.getElementById('date_end').value = moment(end_date).format("YYYY-MM-DD");
+
+        form_change();
+
+    });
+
+
+    $("#services_current_day").click(function () {
+        let date = $("#date_start").val();
+        let start_date = moment(date).startOf("day");
+        let end_date = moment(date).endOf("day");
+
+        document.getElementById('date_start').value = moment(start_date).format("YYYY-MM-DD");
+        document.getElementById('date_end').value = moment(end_date).format("YYYY-MM-DD");
+
+        form_change();
+
+    });
+
+
+    $("#services_pre_day").click(function () {
+        let date = $("#date_start").val();
+        date = moment(date, "YYYY-MM-DD").subtract(1, 'd');
+        let start_date = moment(date).startOf("day");
+        let end_date = moment(date).endOf("day");
+
+        document.getElementById('date_start').value = moment(start_date).format("YYYY-MM-DD");
+        document.getElementById('date_end').value = moment(end_date).format("YYYY-MM-DD");
+
+        form_change();
+
+    });
+
+
+    $("#services_next_day").click(function () {
+        let date = $("#date_start").val();
+        date = moment(date, "YYYY-MM-DD").add(1, 'd');
+        let start_date = moment(date).startOf("day");
+        let end_date = moment(date).endOf("day");
+
+        document.getElementById('date_start').value = moment(start_date).format("YYYY-MM-DD");
+        document.getElementById('date_end').value = moment(end_date).format("YYYY-MM-DD");
+
+        form_change();
+    });
+
+
+    $("#services_current_week").click(function () {
+        let date = $("#date_start").val();
+        let start_date = moment(date).startOf("week");
+        let end_date = moment(date).endOf("week");
+
+        document.getElementById('date_start').value = moment(start_date).format("YYYY-MM-DD");
+        document.getElementById('date_end').value = moment(end_date).format("YYYY-MM-DD");
+
+        form_change();
+
+    });
+
+
+    $("#services_pre_week").click(function () {
+        let date = $("#date_start").val();
+        let start_date = moment(date).subtract(1, 'w');
+        let end_date = moment(date).subtract(1, 'd');
+
+        document.getElementById('date_start').value = moment(start_date).format("YYYY-MM-DD");
+        document.getElementById('date_end').value = moment(end_date).format("YYYY-MM-DD");
+
+        form_change();
+
+    });
+
+
+    $("#services_next_week").click(function () {
+        let date = $("#date_end").val();
+        let start_date = moment(date, "YYYY-MM-DD").add(1, 'd');
+        let end_date = moment(date, "YYYY-MM-DD").add(1, 'w');
+
+        document.getElementById('date_start').value = moment(start_date).format("YYYY-MM-DD");
+        document.getElementById('date_end').value = moment(end_date).format("YYYY-MM-DD");
+        form_change();
+
+
+    });
 </script>
 {/block}

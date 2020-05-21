@@ -71,6 +71,8 @@ class Application extends BaseController
 
 
         $no_need_to_check_action = [
+            'get_booking_item',
+            'all_info',
             'wa_info',
             'refund_packages',
             'old_package_staging',
@@ -119,7 +121,9 @@ class Application extends BaseController
             'reward',
             'beautician',
             'service_to_package',
-            'import_data'
+            'import_data',
+            'booking_to_invoice'
+
         ];
 
 

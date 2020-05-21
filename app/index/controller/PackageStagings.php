@@ -30,7 +30,7 @@ class PackageStagings extends Application
             if(isset($params['export_data'])) {
                 $header = ['Invoice_NO','PS_NO','Member','Store','本次还款','Create_Time'];  //设置导出的Excel表头
                 $body = [];     //Excel表内容数组
-                $data = $model->alias('ps')->leftJoin('invoice i','i.id = ps.invoice_id')->leftJoin('store s','s.id = ps.store_id')->leftJoin('member m','m.id = ps.member_id')->field('ps.*,m.name as member_name,i.invoice_no,s.name as store_name')->select();
+                $data = $model->alias('ps')->leftJoin('invoice i','i.id = ps.invoice_id')->leftJoin('store s','s.id = ps.store_id')->leftJoin('member m','m.id = ps.member_id')->field('ps.*,m.first_name as member_name,i.invoice_no,s.name as store_name')->select();
 //                $data = $model->select();   //数据,需要连表查询
                 foreach ($data as $item) {
                     $record = [];
@@ -58,6 +58,13 @@ class PackageStagings extends Application
 
         if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
+			          $query_fields = ['staging_time','store','member_id','total_amount'];
+            foreach ($query_fields as $field){
+                if(isset($filter[$field])) {
+                    $where[] = [$field, 'like', '%'.$filter[$field] . '%'];
+                }
+            }
+			
             if(isset($filter['invoice'])){
                 $invoice_id = $invoice::where('invoice_no', $filter['invoice'])->value('id');
                 $where[] = ['invoice_id', '=', $invoice_id];

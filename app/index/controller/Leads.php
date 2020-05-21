@@ -38,7 +38,7 @@ class Leads extends Application
         if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
 
-            $query_fields = ['first_name','last_name','phone_mobile','phone_work','email1'];
+                $query_fields = ['member_no','first_name','last_name','phone_mobile','title'];
             foreach ($query_fields as $field){
                 if(isset($filter[$field])) {
                     $where[] = [$field, 'like', $filter[$field] . '%'];

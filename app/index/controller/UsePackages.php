@@ -36,6 +36,14 @@ class UsePackages extends Application
 
         if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
+			
+			         $query_fields = ['code','use_time','store','member'];
+            foreach ($query_fields as $field){
+                if(isset($filter[$field])) {
+                    $where[] = [$field, 'like', $filter[$field] . '%'];
+                }
+            }
+
 
             if(isset($filter['invoice'])){
                 $invoice_id = $invoice::where('invoice_no', $filter['invoice'])->value('id');

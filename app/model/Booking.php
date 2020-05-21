@@ -4,6 +4,7 @@
 */
 
 namespace app\model;
+use app\model\Member;
 
 
 class Booking extends Model
@@ -30,6 +31,52 @@ class Booking extends Model
 
     public static  function event_colors(){
         return [1 => '#28a745',2 => '#ffc107', 3 => '#fd7e14', 4 => '#dc3545', 5 => '#17a2b8',6 => '#6c757d',9 => '#e83e8c'];
+    }
+
+    public static function status_colors()
+    {
+        $statusArr = Booking::event_status();
+        $colorsArr = Booking::event_colors();
+        $scArr = [];
+        foreach ($statusArr as $sk=>$sv) {
+            foreach ($colorsArr as $ck=>$cv) {
+                if($sv == $ck) {
+                    $scArr[$sk] = $cv;
+                }
+            }
+        }
+        return $scArr;
+    }
+
+    public function getCreatedUserNameAttr($value, $data)
+    {
+        return User::where('uid', $data['created_user_id'])->value('first_name');
+    }
+
+    public function getUpdatedUserNameAttr($value, $data)
+    {
+        return User::where('uid', $data['updated_user_id'])->value('first_name');
+    }
+
+    public function getTeamTitleAttr($value, $data)
+    {
+        return Team::where('id', $data['team_id'])->value('title');
+    }
+
+    public function booking_notes($member_id)
+    {
+        $booking = $this->where(['member_id' => $member_id])->count();
+        $absence = $this->where(['member_id' => $member_id, 'status' => 6])->count();
+        $birthday = Member::where('id', $member_id)->value('date_of_birth');
+
+        $notes = [];
+        $notes['booking'] = $booking;
+        $notes['absence'] = $absence;
+        $notes['percent'] = number_format($absence / $booking * 100, 1);
+        $notes['birthday'] = date('n月j日', strtotime($birthday));
+        $notes['reservation_remarks'] = Member::where('id', $member_id)->value('reservation_remarks');
+
+        return $notes;
     }
 
 }

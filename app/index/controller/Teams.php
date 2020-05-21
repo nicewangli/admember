@@ -11,6 +11,10 @@ class Teams extends Application
     {
         if ($act=='add') {
             $auth = Db::name('permissions')->field('id,pid,title')->order('o asc')->select();
+
+            $group = Db::name('teams')->where(['id'=>$id])->find();
+            $group['auth'] = explode(',', $group['auth']);
+            View::assign('group', $group);
             $auth = $this->getPermission($auth);
             View::assign('auth', $auth);
             View::assign('teams', ['auth'=>[]]);
@@ -54,7 +58,7 @@ class Teams extends Application
                 $r = Db::name('teams')->where(['id'=>$id])->update($data);
                 if ($r) {
                     addlog('修改用户组，ID：'.$id, $this->user['username']);
-                    return $this->success('恭喜，用户组修改成功！', url('admin/teams/index'));
+                    return $this->success('恭喜，用户组修改成功！', url('index/teams/index'));
                 } else {
                     return $this->error('本次修改无数据变化！');
                 }
@@ -62,7 +66,7 @@ class Teams extends Application
                 $r = Db::name('teams')->insert($data);
                 if ($r) {
                     addlog('新增用户组，名称：'.$data['title'], $this->user['username']);
-                    return $this->success('恭喜，新增用户组成功！', url('admin/teams/index'));
+                    return $this->success('恭喜，新增用户组成功！', url('index/teams/index'));
                 } else {
                     return $this->error('系统错误，请稍后重试！');
                 }
@@ -79,14 +83,14 @@ class Teams extends Application
                 $r = Db::name('teams')->delete($ids['ids']);
                 if ($r) {
                     addlog('删除用户组，ID：'.implode(',', $ids['ids']), $this->user['username']);
-                    return $this->success('恭喜，用户组删除成功！', url('admin/teams/index'));
+                    return $this->success('恭喜，用户组删除成功！', url('index/teams/index'));
                 }
             }
 
             return $this->error('请选择需要删除的用户组！');
         }
 
-        $list = Db::name('teams')->field('id,title,status')->select();
+        $list = Db::name('teams')->field('id,title,status,number')->select();
         View::assign('list', $list);
         return View::fetch();
     }

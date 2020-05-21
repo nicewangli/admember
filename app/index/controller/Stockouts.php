@@ -77,7 +77,8 @@ Add standard terms'];
         $search = input('get.search');
 
         $data = $model::whereOr([
-            ['salesorder_no', 'like', $search . '%'],
+//            ['salesorder_no', 'like', $search . '%'],
+//            ['payment_term', 'like', $search . '%'],
 
         ])->paginate();
         //关键词，排序等赋值
