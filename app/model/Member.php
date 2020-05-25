@@ -33,4 +33,10 @@ class Member extends Model
         $service = Db::name('invoice')->alias('i')->leftJoin('invoice_item it', 'i.id = it.invoice_id')->where($where)->select()->toArray();
         return $service;
     }
+
+    public function getSalutationAttr($value)
+    {
+        $salutation = [0=>'男',1=>'女',2=>'保密'];
+        return $salutation[$value];
+    }
 }

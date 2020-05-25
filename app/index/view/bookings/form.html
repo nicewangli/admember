@@ -571,6 +571,7 @@
                 success(res) {
                     if (res.member) {
                         let member = res.member;
+                        let notes = res.notes;
                         $("#member_id").val(member.id);
                         $("#member_no").val(member.member_no);
                         $("#name").val(member.first_name);

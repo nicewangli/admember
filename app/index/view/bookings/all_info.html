@@ -51,7 +51,7 @@
                                 <div class="form-group row">
                                     <div class="col-md-1">店舖:</div>
                                     <div class="col-md-8">
-                                        <select class="form-control select2" name="store_id" id="store_id">
+                                        <select class="form-control select2 form_value" name="store_id" id="store_id">
                                             {foreach name=":getStores()" id='val'}
                                             <option value="{$val.id}" {if isset($search) &&
                                                     $search.store_id==$val.id}selected{/if}>
@@ -64,12 +64,14 @@
                                 <div class="form-group row">
                                     <label class="col-sm-1 col-md-1 control-label "> 日期 </label>
                                     <div class="col-xs-12 col-md-4">
-                                        <input class="form-control datePicker to-search" id="services_start_date"
+                                        <input class="form-control datePicker to-search form_value"
+                                               id="services_start_date"
                                                name="start_date" value="{$start_date}" type="date">
                                     </div>
                                     &nbsp;&nbsp;<h5>至</h5>&nbsp;&nbsp;
                                     <div class="col-xs-12 col-md-4">
-                                        <input class="form-control datePicker to-search" id="services_end_date"
+                                        <input class="form-control datePicker to-search form_value"
+                                               id="services_end_date"
                                                name="end_date"
                                                value="{$end_date}" type="date">
                                     </div>
@@ -139,11 +141,12 @@
                                     <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <select class="form-control select2" type="text" id="consultant"
+                                                <select class="form-control select2 form_value" type="text"
+                                                        id="consultant"
                                                         name="consultant">
                                                     <option value="">&nbsp;</option>
                                                     {foreach name=":getUsers()" id='user'}
-                                                    <option value="{$search.uid|default=''}" {if isset($search) &&
+                                                    <option value="{$user.uid|default=''}" {if isset($search) &&
                                                             $search.consultant==$user.uid}selected{/if}>
                                                         {$user.name}
                                                     </option>
@@ -158,7 +161,7 @@
                                     <div class="col-md-6">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <select class="form-control form-control-sm" name="room_id"
+                                                <select class="form-control form-control-sm form_value" name="room_id"
                                                         id="room_id">
                                                     <option value=""></option>
                                                     {foreach name=":getRooms()" id='val'}
@@ -179,26 +182,29 @@
                                 <div class="form-group row">
 
                                     <div class="card-body">
-                                        <input type="radio" style="float: left;margin-top: 5%" name="status" value="" class="sc"/>所有
+                                        <input type="radio" style="float: left;margin-top: 5%" name="status" value="all_booking"
+                                               class="sc"/>所有
                                         <div class="row">
 
                                             <div class="col-xs-12 col-md-12">
 
                                                 {foreach name="scArr" id="color" key="status"}
-                                                <input type="radio" style="float: left;margin-top: 5%" name="status" value="{$status}" class="sc"/>
-                                                <div class="form-control sColor" data-value="{$color}" style="width: 60%;margin-left: 10%">{$status}
+                                                <input type="radio" style="float: left;margin-top: 5%" name="status"
+                                                       value="{$status}" class="sc"/>
+                                                <div class="form-control sColor" data-value="{$color}"
+                                                     style="width: 60%;margin-left: 10%">{$status}
                                                 </div>
                                                 {/foreach}
                                             </div>
                                         </div>
                                     </div>
 
-<!--                                    {foreach name="scArr" id="color" key="status"}-->
-<!--                                    <input type="radio" style="float:right;"  name="status" value="{$status}" class="sc"/>-->
-<!--                                    <div class="form-control sColor"  data-value="{$color}">-->
-<!--                                        {$status}-->
-<!--                                    </div>-->
-<!--                                    {/foreach}-->
+                                    <!--                                    {foreach name="scArr" id="color" key="status"}-->
+                                    <!--                                    <input type="radio" style="float:right;"  name="status" value="{$status}" class="sc"/>-->
+                                    <!--                                    <div class="form-control sColor"  data-value="{$color}">-->
+                                    <!--                                        {$status}-->
+                                    <!--                                    </div>-->
+                                    <!--                                    {/foreach}-->
                                 </div>
                             </div>
                         </div>
@@ -208,7 +214,7 @@
                                     <button class="btn flat btn-info btn-sm" id="booking-submit">
                                         搜索
                                     </button>
-                                    <a class="btn btn-default btn-sm btn-close" href="#">
+                                    <a id="btn-default" class="btn btn-default btn-sm btn-close" href="#">
                                         取消
                                     </a>
                                 </div>
@@ -261,7 +267,6 @@
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
 
             $('#service_packages-grid').bootstrapTable('refresh');
-            $('#users-grid').bootstrapTable('refresh');
         });
 
 
@@ -287,7 +292,6 @@
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
 
             $('#service_packages-grid').bootstrapTable('refresh');
-            $('#users-grid').bootstrapTable('refresh');
         });
 
 
@@ -301,7 +305,6 @@
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
 
             $('#service_packages-grid').bootstrapTable('refresh');
-            $('#users-grid').bootstrapTable('refresh');
         });
 
 
@@ -314,8 +317,7 @@
             document.getElementById('services_start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
 
-            $('#services-grid').bootstrapTable('refresh');
-            $('#users-grid').bootstrapTable('refresh');
+            $('#service_packages-grid').bootstrapTable('refresh');
         });
 
 
@@ -328,7 +330,6 @@
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
 
             $('#service_packages-grid').bootstrapTable('refresh');
-            $('#users-grid').bootstrapTable('refresh');
         });
 
 
@@ -342,7 +343,6 @@
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
 
             $('#service_packages-grid').bootstrapTable('refresh');
-            $('#users-grid').bootstrapTable('refresh');
         });
 
 
@@ -368,7 +368,6 @@
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
 
             $('#service_packages-grid').bootstrapTable('refresh');
-            $('#users-grid').bootstrapTable('refresh');
         });
 
 
@@ -381,7 +380,6 @@
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
 
             $('#service_packages-grid').bootstrapTable('refresh');
-            $('#users-grid').bootstrapTable('refresh');
         });
 
 
@@ -394,8 +392,8 @@
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
 
             $('#service_packages-grid').bootstrapTable('refresh');
-            $('#users-grid').bootstrapTable('refresh');
         });
+
         function status(value, row, index) {
             return [];
         }
@@ -403,23 +401,11 @@
         $('#service_packages-grid').bootstrapTable({
             url: '/index/bookings/list',            //请求后台的URL（*）
             method: 'get',                                   //请求方式（*）
-            queryParams: function (params) {
-                return {
-                    offset: params.offset,  //页码
-                    limit: params.limit,   //页面大小
-                    search: params.search, //搜索
-                    order: params.order, //排序
-                    ordername: params.sort, //排序
-                    filter: params.filter,
-                    start_date: $("#services_start_date").val(),
-                    end_date: $("#services_end_date").val(),
-                    type: type,
-                };
-            },
+            queryParams: queryParams,
             contentType: 'text/html',
             // toolbar: "#service_packages-toolbar",                    //工具按钮用哪个容器
-            pagination: false,                                //是否显示分页（*）
-            sidePagination: 'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            pagination: true,                                //是否显示分页（*）
+            sidePagination: 'client',                         //分页方式：client客户端分页，server服务端分页（*）
             buttonsClass: "btn-sm btn btn-sm btn-default",
             striped: true,                                   //是否显示行间隔色
             cookie: true,
@@ -489,44 +475,36 @@
             parent.layer.close(index);
         });
         $('.sc').click(function () {
+            $('#service_packages-grid').bootstrapTable('refresh');
+        });
+
+        function queryParams(params) {
             let radioVal = $('input:radio[name=status]:checked').val();
-            console.log(radioVal);
-            $('#service_packages-grid').bootstrapTable('refreshOptions', {
-                queryParams: function (params) {
-                    params.status = radioVal;
-                    return params;
-                }
-            });
-
-        })
-        $("#store_id").change(function () {
-            let store_id = $("#store_id").val();
-            $('#service_packages-grid').bootstrapTable('refreshOptions', {
-                queryParams: function (params) {
-                    params.store_id = store_id;
-                    return params;
-                }
-            });
-        })
-        $("#consultant").change(function () {
-            let consultant = $("#consultant").val();
-            $('#service_packages-grid').bootstrapTable('refreshOptions', {
-                queryParams: function (params) {
-                    params.consultant = consultant;
-                    return params;
-                }
-            });
-        })
-        $("#room_id").change(function () {
             let room_id = $("#room_id").val();
-            $('#service_packages-grid').bootstrapTable('refreshOptions', {
-                queryParams: function (params) {
-                    params.room_id = room_id;
-                    return params;
-                }
-            });
-        })
+            let consultant = $("#consultant").val();
+            let store_id = $("#store_id").val();
+            let start_time = $("#services_start_date").val();
+            let end_time = $("#services_end_date").val();
+            return {
+                offset: params.offset,  //页码
+                limit: params.limit,   //页面大小
+                search: params.search, //搜索
+                order: params.order, //排序
+                ordername: params.sort, //排序
+                filter: params.filter,
+                type: type,
+                status: radioVal,
+                room_id: room_id,
+                consultant: consultant,
+                store_id: store_id,
+                start_date: start_time,
+                end_date: end_time,
+            }
+        }
 
+        $(".form_value").change(function () {
+            $('#service_packages-grid').bootstrapTable('refresh');
+        })
     })
 </script>
 </html>

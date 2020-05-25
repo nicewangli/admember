@@ -72,9 +72,18 @@ class Combinations extends Application
         $total = $model::where($where)->count();
 
         foreach ($items as $key => $value) {
-            if($value['category_id']){
-                $items[$key]['category'] = $category::where('id', $value['category_id'])->value('name');
+			if($value['category_id']){
+				$cate = $category::find($value['category_id']);
+				$cate_name = "";
+				if($cate['pid'] != 0){
+					$parent_cate = $category::find($cate['pid']);
+					$cate_name = $parent_cate['name']." -> ".$cate['name'];
+				}else{
+					$cate_name = $cate['name'];
+				}
+                $items[$key]['category'] = $cate_name;
             }
+        
             if($value['brand']){
                 $items[$key]['brand_name'] = $mapping::where('id', $value['brand'])->value('val');
             }

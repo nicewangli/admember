@@ -5,6 +5,7 @@ use app\model\Store;
 use think\facade\Db;
 use think\facade\View;
 use think\facade\Request;
+use app\model\User;
 
 class Users extends Application
 {
@@ -44,15 +45,13 @@ class Users extends Application
             }
             unset($data['store']);
             if (Db::name('users')->where(['uid'=>$uid])->count()==0) {//新增
-                if ($data['username']=='') {
+			 if ($data['username']=='') {
                     return $this->error('用户名不能为空！');
                 }
-                if ($data['password']=='') {
-                    return $this->error('用户密码不能为空！');
-                }
-                if (Db::name('users')->where(['username'=>$data['username']])->count()>0) {
+             if (Db::name('users')->where(['username'=>$data['username']])->count()>0) {
                     return $this->error('用户名已被占用，请重试！');
                 }
+
 
                 $data['password'] = password($data['password']);
                 //编号
@@ -60,7 +59,7 @@ class Users extends Application
                 $r = Db::name('users')->insert($data);
                 if ($r) {
                     addlog('新增用户，用户名：'.$data['username'], $this->user['username']);
-                    return $this->success('恭喜，新增用户成功！', url('users/index'));
+                    return $this->success('新增用戶成功！', url('users/index'));
                 }
             } else {//编辑
                 if ($data['password']=='') {
@@ -71,7 +70,7 @@ class Users extends Application
                 $r = Db::name('users')->where(['uid'=>$uid])->update($data);
                 if ($r) {
                     addlog('修改用户信息，UID：'.$uid, $this->user['username']);
-                    return $this->success('恭喜，修改用户成功！', url('users/index'));
+                    return $this->success('修改用戶成功！', url('users/index'));
                 }
             }
             return $this->error('参数错误，请重试！');
@@ -83,19 +82,21 @@ class Users extends Application
             }
             $uids = input('post.');
             if (empty($uids)) {
-                return $this->error('请选择要删除的用户！');
+                return $this->error('請選擇要刪除的用戶！');
             }
             $uids = $uids['uids'];
             $r = Db::name('users')->delete($uids);
             if ($r) {
                 addlog('删除用户，UID：'.implode(',', $uids), $this->user['username']);
-                return $this->error('用户删除成功！', url('admin/user/index'));
+                return $this->error('用戶刪除成功！', url('admin/user/index'));
             } else {
-                return $this->error('请选择要删除的用户！');
+                return $this->error('請選擇要刪除的用戶！');
             }
         }
 
-        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->field('u.uid,u.first_name,u.last_name,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.uid desc')->paginate(10);
+        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->field('u.uid,u.,u.member_no,u.first_name,u.for_short,u.last_name,u.category,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.for_short asc')->paginate(10);
+//        $list = User::order('for_short asc')->paginate(10);
+
         View::assign('list', $list);
         return View::fetch();
     }
@@ -125,7 +126,7 @@ class Users extends Application
     public function lists()
     {
         $param = input('get.');
-        $sort = isset($param['sort']) ?  $param['sort'] :  'uid';
+        $sort = isset($param['sort']) ?  $param['sort'] :  'for_short';
         $order = isset($param['order']) ?  $param['order'] :  'desc';
         $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
         $where = [];
@@ -147,10 +148,10 @@ class Users extends Application
             $limit = $param['limit'];
             $offset = $param['offset'];
 
-            $items = Db::name('users')->field('uid, username')->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+            $items = Db::name('users')->field('uid, for_short')->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
 
         }else{
-            $items = Db::name('users')->field('uid, username')->where($where)->order($sort.' '.$order)->select()->toArray();
+            $items = Db::name('users')->field('uid, for_short')->where($where)->order($sort.' '.$order)->select()->toArray();
         }
 
         $total = Db::name('users')->where($where)->count();
@@ -174,7 +175,7 @@ class Users extends Application
 
     public function option()
     {
-        $result = Db::name('users')->field('uid as id, username as text')->select()->toArray();
+        $result = Db::name('users')->field('uid as id, for_short as text')->order('for_short asc')->select()->toArray();
 
         return json(['code' => 200, 'results' => $result]);
     }

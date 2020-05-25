@@ -28,14 +28,16 @@ class Booking extends Model
     public static  function event_status(){
         return ['new' => 1,'confirmed' => 2, 'new_confirmed' => 3,'unreachable' => 4,'present' => 5,'absent' => 6,'charged' => 9,'closed' => -1,'deleted' => 0];
     }
-
+    public static function event_status_zn(){
+        return ['新預約' => 1,'已通知' => 2, '新客已通知' => 3,'未能聯絡' => 4,'已到' => 5,'缺席' => 6,'已扣除套票' => 9,'closed' => -1,'deleted' => 0];
+    }
     public static  function event_colors(){
         return [1 => '#28a745',2 => '#ffc107', 3 => '#fd7e14', 4 => '#dc3545', 5 => '#17a2b8',6 => '#6c757d',9 => '#e83e8c'];
     }
 
     public static function status_colors()
     {
-        $statusArr = Booking::event_status();
+        $statusArr = Booking::event_status_zn();
         $colorsArr = Booking::event_colors();
         $scArr = [];
         foreach ($statusArr as $sk=>$sv) {
@@ -70,9 +72,9 @@ class Booking extends Model
         $birthday = Member::where('id', $member_id)->value('date_of_birth');
 
         $notes = [];
-        $notes['booking'] = $booking;
-        $notes['absence'] = $absence;
-        $notes['percent'] = number_format($absence / $booking * 100, 1);
+        $notes['booking'] = intval($booking);
+        $notes['absence'] = intval($absence);
+        $notes['percent'] = $booking == 0 ? 0 : number_format($absence / $booking * 100, 1);
         $notes['birthday'] = date('n月j日', strtotime($birthday));
         $notes['reservation_remarks'] = Member::where('id', $member_id)->value('reservation_remarks');
 

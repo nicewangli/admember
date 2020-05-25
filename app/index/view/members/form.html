@@ -56,16 +56,14 @@
             </div>
 
 
-
-
             <div class="form-group row">
                 <label class="col-md-3 control-label" for="opt">分類</label>
                 <div class="col-md-7">
                     <select class="form-control select2" type="text" id="opt" name="opt">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('opt')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.opt==$opt.val}selected{/if}>
+                        <option value="{$opt.id}" {if isset($item) &&
+                                $item.opt==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
@@ -80,8 +78,8 @@
                     <select class="form-control select2" type="text" id="categors" name="categors">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('categors')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.categors==$opt.val}selected{/if}>
+                        <option value="{$opt.id}" {if isset($item) &&
+                                $item.categors==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
@@ -115,8 +113,8 @@
                 <div class="col-md-7">
                     <select class="form-control" id="salutation" name="salutation" size="1"
                             value="{$item.salutation|default=''}">
-                        <option value="男" {if isset($item)&&$item.salutation == 0}selected{/if}>男</option>
-                        <option value="女" {if isset($item)&&$item.salutation == 1}selected{/if}>女</option>
+                        <option value="0" {if isset($item)&&$item.salutation == 0}selected{/if}>男</option>
+                        <option value="1" {if isset($item)&&$item.salutation == 1}selected{/if}>女</option>
 <!--                        <option value="0">Mr.</option>-->
 <!--                        <option value="1">Ms.</option>-->
 <!--                        <option value="2">Mrs.</option>-->
@@ -189,8 +187,8 @@
                     <select class="form-control select2" type="text" id="region" name="region">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('region')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.region==$opt.val}selected{/if}>
+                        <option value="{$opt.id}" {if isset($item) &&
+                                $item.region==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
@@ -232,17 +230,15 @@
                                       placeholder="{$item.reservation_remarks|default=''}">{$item.reservation_remarks|default=''}</textarea>
                 </div>
             </div>
-
 			
-            <div class="form-group row">
+				   <div class="form-group row">
                 <label class="col-md-3 control-label" for="wa_acc">whatsapp 號碼</label>
                 <div class="col-md-7">
                     <select class="form-control select2" type="text" id="wa_acc" name="wa_acc">
                         <option value="">&nbsp;</option>
-                        {foreach name=":getOptions('wa_acc')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
-                                $item.wa_acc==$opt.val}selected{/if}>
-                            {$opt.name}
+                        {foreach name=":getWaAcc()" id='opt'}
+                        <option value="{$opt.mobile}" {if $opt.mobile==$item.wa_acc}selected{/if}>
+                            {$opt.mobile}
                         </option>
                         {/foreach}
                     </select>
@@ -314,7 +310,7 @@
                     <select class="form-control select2" type="text" id="source" name="source">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('source')" id='opt'}
-                        <option value="{$opt.val}" {if isset($item) &&
+                        <option value="{$opt.id}" {if isset($item) &&
                                 $item.source==$opt.id}selected{/if}>
                             {$opt.name}
                         </option>

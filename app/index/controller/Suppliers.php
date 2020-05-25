@@ -43,7 +43,7 @@ class Suppliers extends Application
         }
 		
         $items = Supplier::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
-        $total = Supplier::count();
+        $total = Supplier::where($where)->count();
         $data = [
             'rows' => $items,
             'total' => $total,

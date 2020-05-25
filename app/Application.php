@@ -122,7 +122,9 @@ class Application extends BaseController
             'beautician',
             'service_to_package',
             'import_data',
-            'booking_to_invoice'
+            'booking_to_invoice',
+            'service_packages_list',
+            'del_transfer'
 
         ];
 

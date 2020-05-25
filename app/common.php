@@ -316,7 +316,7 @@ function array_get_by_index($index, $array) {
 
 
 function workingHours($to_json=false){
-    $start = '10:30:00';
+    $start = '10:00:00';
     $end = '22:30:00';
     $time = strtotime($start);
     $timeStop = strtotime($end);

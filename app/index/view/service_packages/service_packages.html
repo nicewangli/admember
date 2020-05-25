@@ -177,6 +177,7 @@ $(document).ready( function (){
                             '      <input type="hidden" name="service[' + number + '][expiration_date]" value="' + expiration_date + '"> \n' +
                             '      <input type="hidden" name="service[' + number + '][package_value]" value="' + element.package_value + '" class="package_value"> \n' +
                             '      <input type="hidden" name="service[' + number + '][package_unit]" value="' + element.package_unit + '"> \n' +
+                            '      <i class="fa fa-plus-square-o collaps"></i> \n' +
                             '   </td> \n' +
                             '   <td width="13%">' + element.code + '</td> \n' +
                             '   <td width="28%">' + element.name + '</td> \n' +
@@ -193,6 +194,31 @@ $(document).ready( function (){
                             '   <td width="13%">\n' +
                             '      <input type="text" name="service[' + number + '][total]" value="' + element.price + '" class="form-control text-right total" style="width: 100%;" readonly="">\n' +
                             '   </td> \n' +
+                            '</tr> \n' +
+                            '<tr class="border-b change hidden" id="table' + number + '">\n' +
+                            '    <td colspan="3"></td>\n' +
+                            '    <td colspan="5">\n' +
+                            '       <table width="100%">\n' +
+                            '          <tr bgcolor="#ced4da">\n' +
+                            '             <td colspan="8">\n' +
+                            '                 <a title="刪除" onclick="del_transfer()" class="btn btn-default btn-sm " href="#">刪除</a>\n' +
+                            '                 <a title="服務套票" onclick="transfer_packages(' + number + ')" class="btn btn-default btn-sm " href="#">轉套票</a>\n' +
+                            '                 <input type="hidden" class="item_count" value="0">\n' +
+                            '             </td>\n' +
+                            '           </tr>\n' +
+                            '           <tr bgcolor="#e9ecef">\n' +
+                            '               <th width="10%"></th>\n' +
+                            '               <th width="15%">編號</th>\n' +
+                            '               <th width="30%">名稱</th>\n' +
+                            '               <th width="15%">轉套票值</th>\n' +
+                            '               <th width="15%">平均</th>\n' +
+                            '               <th width="15%">減免金額</th>\n' +
+                            '            </tr>\n' +
+                            '            <tr class="deduction" id="deduction' + number + '">\n' +
+                            '                <td colspan="8" class="text-right">0.0</td>\n' +
+                            '             </tr>\n' +
+                            '          </table>\n' +
+                            '     </td>\n' +
                             '   </tr>';
                         number++;
                     }

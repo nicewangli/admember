@@ -2,7 +2,6 @@
 {block name='content'}
 
 <section class="content">
-    <input type="hidden" id="user_tel" value="{$user_tel}">
     <input type="hidden" id="phone_mobile" value="{$item.phone_mobile}">
    <div class="card">
             <div class="card-body" style="padding-bottom: 8px">
@@ -95,7 +94,7 @@
 
                     <div class="col-md-4" align="right">
                         <button type="button" class="btn btn-default" onclick="wa_info()" item-toggle="modal" item-target="#modal-sm">
-                            WhatsApp
+                            <i class="fa fa-whatsapp"></i>  WhatsApp
                         </button>
                         <button type="button" class="btn btn-default" item-toggle="modal" item-target="#modal-sm">
                             跟随
@@ -215,8 +214,8 @@
 {block name="js"}
     <script>
         function wa_info(){
-            let phone = $("#phone_mobile").val();
-            let senderId = $("#user_tel").val();
+            let phone =   "{$item.phone_mobile}"
+            let senderId = "{$item.wa_acc}"
             let url = '{:url("wa_logs/wa_info?phone=")}'+phone+'&sender_jid='+senderId;
             layer.open({
                 type: 2,

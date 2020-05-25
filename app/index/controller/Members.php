@@ -45,7 +45,7 @@ class Members extends Application
           if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
 
-              $query_fields = ['first_name','last_name','phone_mobile','member_no','opt'];
+              $query_fields = ['m.member_no','m.first_name','m.last_name','m.phone_mobile','m.phone_work','m.email1'];
             foreach ($query_fields as $field){
                 if(isset($filter[$field])) {
                     $where[] = [$field, 'like', $filter[$field] . '%'];
@@ -53,8 +53,8 @@ class Members extends Application
             }
 
         }
-        $items = Member::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
-        $total = Member::count();
+        $items = Member::alias('m')->leftJoin('mapping mp', 'm.opt = mp.id')->field('m.*, mp.val as opt')->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
+        $total = Member::where($where)->count();
         $data = [
             'rows' => $items,
             'total' => $total,
@@ -210,7 +210,7 @@ class Members extends Application
         $where[] = ['member_no','=',$member_no];
         $member = $model->findMember($where);
         $invoices = [];
-
+        $notes = "";
         if ($member) {
             $invoices = $invoice->findInvoice($member->id);
 

@@ -116,7 +116,7 @@ function getOptions($type_id){
 }
 
 function getUsers(){
-    $data = Db::name('users')->field("uid,concat_ws(' ',first_name,last_name) as name")->select();
+    $data = Db::name('users')->field("uid, for_short as name")->order('for_short asc')->select();
     return $data;
 }
 
@@ -188,7 +188,14 @@ function getWarehouse()
 //    return $no;
 //}
 
+
 //Whatsapp Handler
+function getWaAcc(){
+    $data = Db::name('wa_account')->field('mobile,status')->select();
+    return $data;
+}
+
+
 function check_health($uid){
     $number = "";
     //return number if session[:user_whatsapp].blank?

@@ -20,9 +20,28 @@ class Bookings extends Application
 
     public function index()
     {
-        $date_start = date("Y-m-d",time());
-        $date_end = date("Y-m-d",time());
-        return View::fetch('index',['date_start'=>$date_start,'date_end'=>$date_end]);
+        $date_start = date("Y-m-d", time());
+        $date_end = date("Y-m-d", time());
+        $dayArr = [];
+        if (Request::isPost()) {
+            $params = input('post.');
+            $start_date = $params['date_start'];
+            $end_date = $params['date_end'];
+            $start_ts = strtotime($start_date);
+            $end_ts = strtotime($end_date);
+            for ($i = $start_ts; $i <= $end_ts;) {
+                $dayArr[] = date("Y-m-d",$i);
+                $i += 86400;
+            }
+        } else {
+            $dayArr[] = $date_start;
+        }
+
+
+        $result = User::field('uid as id, first_name as title')->order("first_name asc")->select()->toArray();
+        $time = workingHours();
+        $booking_item = BookingItem::with(['booking'])->select()->toArray();
+        return View::fetch('index', ['date_start' => $date_start, 'date_end' => $date_end, 'beauticianArr' => $result, 'bookingItems' => $booking_item, 'time' => $time,'dayArr'=>$dayArr]);
     }
 
 
@@ -36,11 +55,12 @@ class Bookings extends Application
     {
         $member = input('member');
         $where = [];
-        $where[] = ['m.member_no','like','%'.$member.'%'];
-        $where[] = ['m.first_name','like','%'.$member.'%'];
-        $data = $model->alias('b')->leftJoin('booking_item bi','b.id=bi.booking_id')->leftJoin('member m','m.id = b.member_id')->field('b.*,bi.beautician1,bi.id as bi_id,m.first_name')->whereOr($where)->select();
-        return json(['booking'=>$data]);
+        $where[] = ['m.member_no', 'like', '%' . $member . '%'];
+        $where[] = ['m.first_name', 'like', '%' . $member . '%'];
+        $data = $model->alias('b')->leftJoin('booking_item bi', 'b.id=bi.booking_id')->leftJoin('member m', 'm.id = b.member_id')->field('b.*,bi.beautician1,bi.id as bi_id,m.first_name')->whereOr($where)->select();
+        return json(['booking' => $data]);
     }
+
     public function lists()
     {
         $param = input('get.');
@@ -53,13 +73,13 @@ class Bookings extends Application
         if (isset($param['store_id'])) {
             $bookingWhere[] = ['store_id', '=', (int)$param['store_id']];
         }
-        if (isset($param['uid'])) {
-            $bookingWhere[] = ['consultant', '=', (int)$param['uid']];
+        if (isset($param['consultant'])) {
+            $bookingWhere[] = ['consultant_id', '=', (int)$param['consultant']];
         }
-        if (isset($param['date_start'])&&isset($param['date_end'])) {
-            $bookingWhere[] = ['booking_date','between',[$param['date_start'],$param['date_end']]];
+        if (isset($param['date_start']) && isset($param['date_end'])) {
+            $bookingWhere[] = ['booking_date', 'between', [$param['date_start'], $param['date_end']]];
         }
-            $items = BookingItem::where($where)->select()->toArray();
+        $items = BookingItem::where($where)->select()->toArray();
         $res = [];
         $items = array_group_by($items, "booking_id");
         foreach ($items as $booking_id => $data) {
@@ -86,6 +106,7 @@ class Bookings extends Application
         ]);
     }
 
+    //TODO 弹窗数据加载
     public function list(Request $request, Booking $model)
     {
         $param = input('get.');
@@ -93,18 +114,24 @@ class Bookings extends Application
         //member  users  room  booking_item  store
         $item = $model->alias('b')->leftJoin('booking_item bi', 'bi.booking_id = b.id')->leftJoin('member m', 'm.id = b.member_id')->leftJoin('room r', 'r.id = b.room_id')->leftJoin('users u', 'u.uid = bi.beautician1')->leftJoin('users use', 'use.uid = bi.beautician2')->leftJoin('store s', 's.id = b.store_id')->field('b.*,m.first_name as member_name,m.phone_mobile,u.username as b1_name,use.username as b2_name');
         $where = [];
-        if (isset($param['status'])) {
-            $stArr = Booking::event_status();
-            $status = $stArr[$param['status']];
+        $stArr = Booking::event_status();
+        $stZnArr = Booking::event_status_zn();
+        if (isset($param['type']) && $param['type'] !== 'all_booking' && empty($param['status'])) {
+            $status = $stArr[$param['type']];
             $where[] = ['b.status', '=', $status];
         }
+        if (isset($param['status']) && $param['status'] !== 'all_booking') {
+            $status = $stZnArr[$param['status']];
+            $where[] = ['b.status', '=', $status];
+        }
+
         if (isset($param['store_id'])) {
             $where[] = ['s.id', '=', $param['store_id']];
         }
-        if (isset($param['consultant'])) {
+        if (!empty($param['consultant'])) {
             $where[] = ['u.uid', '=', $param['consultant']];
         }
-        if (isset($param['room_id'])) {
+        if (!empty($param['room_id'])) {
             $where[] = ['r.id', '=', $param['room_id']];
         }
         $where[] = ['booking_date', 'between', [$param['start_date'], $param['end_date']]];

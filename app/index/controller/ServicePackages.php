@@ -75,9 +75,19 @@ class ServicePackages extends Application
         $total = $model::where($where)->count();
 
         foreach ($items as $key => $value) {
-            if($value['category_id']){
-                $items[$key]['category'] = $category::where('id', $value['category_id'])->value('name');
+
+			if($value['category_id']){
+				$cate = $category::find($value['category_id']);
+				$cate_name = "";
+				if($cate['pid'] != 0){
+					$parent_cate = $category::find($cate['pid']);
+					$cate_name = $parent_cate['name']." -> ".$cate['name'];
+				}else{
+					$cate_name = $cate['name'];
+				}
+                $items[$key]['category'] = $cate_name;
             }
+        
 
             if (!empty($ids)) {
                 if (in_array($value['id'], $ids)) {
@@ -248,7 +258,7 @@ class ServicePackages extends Application
 //        }else{
         if ($service_package_id) {
             if ($service_type == 2) {
-                $items = $packageItem->alias('spi')->leftJoin('invoice_item it', 'spi.service_package_id = it.service_id')->leftJoin('service s', 'spi.service_id = s.id')->field('spi.*, s.code, s.name, s.beautician_pay, s.price')->where(['spi.service_package_id' => $service_package_id])->order($sort.' '.$order)->select()->toArray();
+                $items = $packageItem->alias('spi')->leftJoin('invoice_item it', 'spi.service_package_id = it.service_id')->leftJoin('service s', 'spi.service_id = s.id')->field('spi.*, s.code, s.name, s.beautician_pay, s.price')->where(['spi.service_package_id' => $service_package_id, 'it.invoice_id' => $invoice_id])->order($sort.' '.$order)->select()->toArray();
             } else {
                 $items = Service::where('status', '可用')->field('id as service_id, code, name, beautician_pay, price as deduct_val') ->select()->toArray();
             }

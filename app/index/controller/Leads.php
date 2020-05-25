@@ -47,7 +47,7 @@ class Leads extends Application
 
         }
         $items = Lead::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
-        $total = Lead::count();
+        $total = Lead::where($where)->count();
         $data = [
             'rows' => $items,
             'total' => $total,

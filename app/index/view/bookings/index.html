@@ -24,7 +24,7 @@
                         <input type="hidden" name="oblation">
                         <div class="row">
                             <!-- Left -->
-                            <div class="col-md-5"  valign="top">
+                            <div class="col-md-5" valign="top">
                                 <div class="form-group row">
                                     <div class="col-md-3">店舖:</div>
                                     <div class="col-md-8">
@@ -44,7 +44,8 @@
                                     <div class="col-md-8">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <select class="form-control select2" type="text" id="consultant" name="consultant">
+                                                <select class="form-control select2" type="text" id="consultant"
+                                                        name="consultant">
                                                     <option value="">&nbsp;</option>
                                                     {foreach name=":getUsers()" id='user'}
                                                     <option value="{$user.uid|default=''}" {if isset($search) &&
@@ -55,7 +56,8 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
-                                                <select class="form-control form-control-sm" name="room_id" id="room_id">
+                                                <select class="form-control form-control-sm" name="room_id"
+                                                        id="room_id">
                                                     <option value=""></option>
                                                     {foreach name=":getRooms()" id='val'}
                                                     <option value="{$val.id}" {if isset($search) &&
@@ -66,7 +68,7 @@
                                                 </select>
                                             </div>
                                         </div>
-                                   </div>
+                                    </div>
                                 </div>
 
                                 <div class="form-group row">
@@ -79,7 +81,7 @@
                                                        value="{$item.date_start|default=$date_start}"
                                                        placeholder="">
                                             </div>
-                                            <div class="col-md-2  d-flex  justify-content-center"> 至 </div>
+                                            <div class="col-md-2  d-flex  justify-content-center"> 至</div>
                                             <div class="col-md-5">
                                                 <input class="form-control form-control-sm datePicker" type="text"
                                                        id="date_end" name="date_end"
@@ -145,14 +147,16 @@
                                 <div class="form-group row">
                                     <div class="col-md-2">會員 / 非會員:</div>
                                     <div class="col-md-5">
-                                        <input type="text" id="member" name="member" value="" class="form-control form-control-sm">
+                                        <input type="text" id="member" name="member" value=""
+                                               class="form-control form-control-sm">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-md-2"></div>
                                     <div class="col-md-5">
-                                        <select id="booking_item" name="booking_item_id" class="form-control form-control-sm" size="4" multiple>
+                                        <select id="booking_item" name="booking_item_id"
+                                                class="form-control form-control-sm" size="4" multiple>
                                         </select>
                                     </div>
                                 </div>
@@ -165,23 +169,71 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
-                                <button class="btn btn-sm col-md-1 ml-2 btn-outline-primary" id="all_booking">列表</button>
-                                <button class="btn btn-sm col-md-1 ml-2 btn-success">新預約</button>
-                                <button class="btn btn-sm col-md-1 ml-2 btn-warning" style="color: white;">已通知</button>
-                                <button class="btn btn-sm col-md-1 ml-2" style="background-color: #fd7e14!important; color: white;">新客已通知</button>
-                                <button class="btn btn-sm col-md-1 ml-2 btn-danger">未能聯絡</button>
-                                <button class="btn btn-sm col-md-1 ml-2 bg-info">已到</button>
-                                <button class="btn btn-sm col-md-1 ml-2 btn-secondary">缺席</button>
-                                <button class="btn btn-sm col-md-1 ml-2 bg-pink">已扣除套票</button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-outline-primary book-type" id="all_booking">
+                                    列表
+                                </button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-success book-type" id="new">新預約</button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-warning book-type" id="confirmed"
+                                        style="color: white;">已通知
+                                </button>
+                                <button class="btn btn-sm col-md-1 ml-2 book-type"
+                                        style="background-color: #fd7e14!important; color: white;" id="new_confirmed">
+                                    新客已通知
+                                </button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-danger book-type" id="unreachable">未能聯絡
+                                </button>
+                                <button class="btn btn-sm col-md-1 ml-2 bg-info book-type" id="present">已到</button>
+                                <button class="btn btn-sm col-md-1 ml-2 btn-secondary book-type" id="absent">缺席</button>
+                                <button class="btn btn-sm col-md-1 ml-2 bg-pink book-type" id="charged">已扣除套票</button>
                             </div>
                         </div>
                     </div>
 
                     <!-- Calendar -->
+                    {volist name="dayArr" id="day"}
                     <div class="row">
-                        <div id='calendar'></div>
-                    </div>
 
+                        <table class="table table-bordered table-striped table-responsive" id="bea">
+                            <thead>
+                                <tr class="bg-purple disabled color-palette">
+                                    <td>日期</td>
+                                    <td>时间</td>
+<!--                                    循环美容师-->
+                                    {volist name='beauticianArr' id='beautician'}
+                                    <td>{$beautician.title}</td>
+                                    {/volist}
+                                    <td>时间</td>
+                                    <td>日期</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+<!--                                第一层循环控制行数 时间-->
+<!--                                第二层循环控制列数  美容师-->
+                                    {volist name="time" id="shijian"}
+                                    <tr id="list">
+                                        <td>{$day}</td>
+                                        <td>{$shijian.id}</td>
+                                        {volist name="beauticianArr" id="bea"}
+                                        <td>
+                                        {volist name="bookingItems" id="bi"}
+
+                                        {if condition="$bi.booking.booking_date eq $day  && $bi.beautician1 eq $bea.id && $bi.start_time = $shijian.id"}
+
+                                            {$bi.service_name}
+
+                                        {/if}
+                                        {/volist}
+                                        </td>
+                                        {/volist}
+                                        <td>{$shijian.text}</td>
+                                        <td>{$day}</td>
+                                    </tr>
+                                    {/volist}
+                            </tbody>
+                        </table>
+                    </div>
+                    {/volist}
                 </div>
             </div>
 
@@ -203,27 +255,31 @@
 {js href="__PLUGIN__/fullcalendar/premium/resource-timegrid/main.min.js"}
 
 <script>
-    // $("#all_booking").click(function () {
-    //     let url = '{:url("all_info")}';
-    //     // alert(id)
-    //     layer.open({
-    //         type: 2,
-    //         title: '預約列表',
-    //         area: ['90%', '80%'],
-    //         content: url
-    //     })
-    // });
+    $(".book-type").click(function () {
+        let type = $(this).attr('id');
+        let url = '{:url("all_info")}?type=' + type;
+        layer.open({
+            type: 2,
+            title: '預約列表',
+            area: ['90%', '80%'],
+            content: url
+        })
+    });
     var calendar;
     $(function () {
+        $("#bea tr").each(function(rowIndex) {
+            _w_table_rowspan("#bea",rowIndex);
+        });
+        // _w_table_rowspan("#bea",5);
         var calendarEl = document.getElementById('calendar');
 
-         calendar = new FullCalendar.Calendar(calendarEl, {
-            plugins: [ 'interaction', 'resourceDayGrid', 'resourceTimeGrid' ],
+        calendar = new FullCalendar.Calendar(calendarEl, {
+            plugins: ['interaction', 'resourceDayGrid', 'resourceTimeGrid'],
             defaultView: 'resourceTimeGridDay',
             editable: true,
             selectable: true,
             eventLimit: true,
-            allDaySlot:false,
+            allDaySlot: false,
             minTime: "10:00:00",
             maxTime: "23:00:00",
             contentHeight: 'auto',
@@ -235,7 +291,7 @@
             views: {
                 resourceTimeGridTwoDay: {
                     type: 'resourceTimeGrid',
-                    duration: { days: 2 },
+                    duration: {days: 2},
                     buttonText: '2 days',
                 }
             },
@@ -243,33 +299,33 @@
 
             resources: "{:url('beautician')}",
             events: "{:url('lists')}",
-            select: function(info) {
-                 var start = moment(info.start);
-                 var end = moment(info.end);
-                 var resourceId = info.resource.id
-                 var month_day = start.format("HH")
-                 if(month_day == "00"){
-                     var date_start = start.format("YYYY-MM-DD")+" "+moment().format('HH:mm:ss');
-                     var date_end = start.format("YYYY-MM-DD")+" "+moment().add(1, 'hours').format("HH:mm:ss");
-                 }else{
-                     var date_start = start.format("YYYY-MM-DD HH:mm:ss");
-                     if(start.format("YYYY-MM-DD") == end.format("YYYY-MM-DD")) {
-                         var date_end = end.format("YYYY-MM-DD HH:mm:ss");
-                     } else {
-                         var date_end = date_start;
-                     }
-                 }
+            select: function (info) {
+                var start = moment(info.start);
+                var end = moment(info.end);
+                var resourceId = info.resource.id
+                var month_day = start.format("HH")
+                if (month_day == "00") {
+                    var date_start = start.format("YYYY-MM-DD") + " " + moment().format('HH:mm:ss');
+                    var date_end = start.format("YYYY-MM-DD") + " " + moment().add(1, 'hours').format("HH:mm:ss");
+                } else {
+                    var date_start = start.format("YYYY-MM-DD HH:mm:ss");
+                    if (start.format("YYYY-MM-DD") == end.format("YYYY-MM-DD")) {
+                        var date_end = end.format("YYYY-MM-DD HH:mm:ss");
+                    } else {
+                        var date_end = date_start;
+                    }
+                }
 
-                 var url = "{:url('bookings/add')}?date_start=" + date_start + "&date_end=" + date_end+"&resourceId="+resourceId+"&eventId=0";
-                 bookingWin(url);
-             },
-             eventClick: function(info) {
+                var url = "{:url('bookings/add')}?date_start=" + date_start + "&date_end=" + date_end + "&resourceId=" + resourceId + "&eventId=0";
+                bookingWin(url);
+            },
+            eventClick: function (info) {
                 console.log(info)
-                 var resourceId  = info.event._def.resourceIds[0]
-                 var id = info.event.extendedProps.booking_id
-                 var url = "{:url('bookings/edit')}?id="+id +"&resourceId="+resourceId+"&eventId="+info.event.id;
-                 bookingWin(url);
-             }
+                var resourceId = info.event._def.resourceIds[0]
+                var id = info.event.extendedProps.booking_id
+                var url = "{:url('bookings/edit')}?id=" + id + "&resourceId=" + resourceId + "&eventId=" + info.event.id;
+                bookingWin(url);
+            }
 
         });
 
@@ -277,10 +333,7 @@
 
 
     });
-    $("#all_booking").click(function () {
-        calendar.removeAllEvents();
-        calendar.addEventSource("{:url('beautician')}");
-    });
+
     $("#room_id").change(function () {
         form_change();
     });
@@ -291,42 +344,43 @@
     $("#consultant").change(function () {
         form_change();
     });
-    $("#date_start").change(function () {
+    $("#date_start").blur(function () {
         form_change();
     });
-    $("#date_end").change(function () {
+    $("#date_end").blur(function () {
         form_change();
     });
     $("#member").blur(function () {
         let member = $("#member").val();
         $.ajax({
-           url:'{:url("get_booking_item")}',
-           type:"POST",
-           data:{member:member},
-           success(res) {
-               let nodes = '<option value=""></option>';
-               $('#booking_item').empty();
-               $.each(res.booking,function (index,element) {
-                   console.log(element);
-                   nodes += '<option value="'+element.id+'" onclick="show_booking('+element.id+','+element.beautician1+','+element.bi_id+')">'+element.first_name+'</option>';
-               });
-               $('#booking_item').append(nodes);
-           }
+            url: '{:url("get_booking_item")}',
+            type: "POST",
+            data: {member: member},
+            success(res) {
+                let nodes = '<option value=""></option>';
+                $('#booking_item').empty();
+                $.each(res.booking, function (index, element) {
+                    console.log(element);
+                    nodes += '<option value="' + element.id + '" onclick="show_booking(' + element.id + ',' + element.beautician1 + ',' + element.bi_id + ')">' + element.first_name + '</option>';
+                });
+                $('#booking_item').append(nodes);
+            }
         });
     });
+
     function form_change() {
         //TODO:给个祭品  <input type="hidden" name="oblation">
         let params = $("#booking_form").serialize();
-        let url = "{:url('lists')}?params="+params;
+        let url = "{:url('lists')}?params=" + params;
         calendar.removeAllEvents();
         calendar.addEventSource(url);
     }
 
-    function show_booking(id,beautician1,bi_id)
-    {
-        let url = "{:url('bookings/edit')}?id="+id +"&resourceId="+beautician1+"&eventId="+bi_id;
+    function show_booking(id, beautician1, bi_id) {
+        let url = "{:url('bookings/edit')}?id=" + id + "&resourceId=" + beautician1 + "&eventId=" + bi_id;
         bookingWin(url);
     }
+
     $("#services_current_month").click(function () {
         let date = $("#date_start").val();
         let start_date = moment(date).startOf("month");
@@ -432,7 +486,6 @@
 
     });
 
-
     $("#services_next_week").click(function () {
         let date = $("#date_end").val();
         let start_date = moment(date, "YYYY-MM-DD").add(1, 'd');
@@ -444,5 +497,29 @@
 
 
     });
+    function _w_table_rowspan(_w_table_id,_w_table_colnum){
+        _w_table_firsttd = "";
+        _w_table_currenttd = "";
+        _w_table_SpanNum = 0;
+        _w_table_Obj = $(_w_table_id + " tr td:nth-child(" + _w_table_colnum + ")");
+        _w_table_Obj.each(function(i){
+            if(i==0){
+                _w_table_firsttd = $(this);
+                _w_table_SpanNum = 1;
+            }else{
+                _w_table_currenttd = $(this);
+                if(_w_table_firsttd.text()==_w_table_currenttd.text()){
+                    console.log(_w_table_firsttd.text());
+                    _w_table_SpanNum++;
+                    _w_table_currenttd.hide(); //remove();
+                    _w_table_firsttd.attr("rowSpan",_w_table_SpanNum);
+                }else{
+                    _w_table_firsttd = $(this);
+                    _w_table_SpanNum = 1;
+                }
+            }
+        });
+    }
+
 </script>
 {/block}

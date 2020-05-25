@@ -6,6 +6,7 @@
 namespace app\index\controller;
 
 use app\Application;
+use app\model\InvoiceTransfer;
 use think\facade\View;
 use think\Request;
 use app\model\Invoice;
@@ -253,13 +254,17 @@ class Invoices extends Application
     }
 
     //删除item
-    public function del_item(InvoiceItem $invoiceItem)
+    public function del_item(InvoiceItem $invoiceItem, InvoiceTransfer $invoiceTransfer)
     {
         $ids = input('ids');
         $result = $invoiceItem->whereIn('id', $ids)->delete();
-        // if ($result) {
-        //     return json(['code' => 200]);
-        // }
+        if ($result) {
+            $transfer_ids = $invoiceTransfer->whereIn('new_invoice_item_id', $ids)->column('id');
+            foreach ($transfer_ids as $id) {
+                $invoiceTransfer->delItem($id);
+            }
+//             return json(['code' => 200]);
+        }
     }
 
     public function find_invoice(Invoice $model)
@@ -303,5 +308,97 @@ class Invoices extends Application
         $data['items_count'] = count($inv_items['service_packages']);
 
         return view('add',['data' => $data, 'inv_items' => $inv_items, 'member' => $member_info, 'from' => $from]);
+    }
+
+
+    public function service_packages()
+    {
+        $ids = input('ids', []);
+        $index = input('index', 0);
+        $member_id = input('member_id', 0);
+        $invoice_id = input('invoice_id', 0);
+        return View::fetch('service_packages', ['ids' => $ids, 'index' => $index, 'member_id' => $member_id, 'invoice_id' => $invoice_id]);
+    }
+
+    public function service_packages_list(InvoiceItem $invoiceItem)
+    {
+        $param = input('get.');
+        $sort = isset($param['sort']) ?  $param['sort'] :  'id';
+        $order = isset($param['order']) ?  $param['order'] :  'desc';
+        $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
+        $where = [];
+        $list = [];
+
+        if ($param['member_id']) {
+            $where[] = ['i.member_id', '=', $param['member_id']];
+        }
+        if ($param['invoice_id']) {
+            $where[] = ['i.id', '<>', $param['invoice_id']];
+        }
+
+        if(isset($param['filter'])){
+            $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
+            if(isset($filter['code'])){
+                $where[] = ['code', '=', $filter['code']];
+            }
+            if(isset($filter['name'])){
+                $where[] = ['name', 'like', '%'.$filter['name'].'%'];
+            }
+            if(isset($filter['category_id'])){
+                $where[] = ['category_id', '=', $filter['category_id']];
+            }
+            if(isset($filter['status'])){
+                $where[] = ['status', '=', $filter['status']];
+            }
+        }
+
+        if (isset($param['limit'])) {
+            $limit = $param['limit'];
+            $offset = $param['offset'];
+
+            $list = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.invoice_no, sp.code, sp.name')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+
+            $total = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->count();
+        }else{
+            $list = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.invoice_no, sp.code, sp.name')->order($sort.' '.$order)->select()->toArray();
+
+            $total = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->count();
+        }
+
+
+        foreach ($list as $key => $value) {
+            $avg = $value['total'] / $value['package_value'];
+            $used = $avg * $value['package_value_used'];
+            $list[$key]['avg'] = sprintf('%.1f', $avg);
+            $list[$key]['used'] = sprintf('%.1f', $used);
+            $list[$key]['lave_money'] = sprintf('%.1f', $value['total'] - $used);
+            $list[$key]['lave_value'] = sprintf('%.1f', $value['package_value'] - $value['package_value_used']);
+
+            if (!empty($ids)) {
+                if (in_array($value['id'], $ids)) {
+                    $list[$key]['checked'] = true;
+                }else{
+                    $list[$key]['checked'] = false;
+                }
+            }
+        }
+
+        $data = [
+            'rows' => $list,
+            'total' => $total,
+        ];
+        return json($data);
+    }
+
+    //删除transfer
+    public function del_transfer(InvoiceTransfer $invoiceTransfer)
+    {
+        $ids = input('ids');
+        foreach ($ids as $id) {
+            $invoiceTransfer->delItem($id);
+        }
+        // if ($result) {
+        //     return json(['code' => 200]);
+        // }
     }
 }

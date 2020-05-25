@@ -38,42 +38,42 @@
                             </div>
 
 
-                            <div class="form-group row">
+ <!--                            <div class="form-group row">
                                 <label class="col-md-3 control-label" for="grade">級別</label>
                                 <div class="col-md-7">
                                     <select class="form-control select2" type="text" id="grade" name="grade">
                                         <option value="">&nbsp;</option>
                                         {foreach name=":getOptions('grade')" id='opt'}
-                                        <option value="{$opt.id}" {if isset($item) &&
-                                                $item.grade==$opt.id}selected{/if}>
+                                        <option value="{$opt.val}" {if isset($item) &&
+                                                $item.grade==$opt.val}selected{/if}>
                                             {$opt.name}
                                         </option>
                                         {/foreach}
                                     </select>
                                 </div>
+                            </div> -->
+
+                               <div class="form-group row">
+                                <label class="col-md-3 control-label" for="ugid">級別</label>
+                                <div class="col-md-7">
+                                    <select class="form-control" id="ugid" name="ugid" size="1"
+                                            value="{$userinfo.ugid ?? ''}">
+
+                                        <option value="0"></option>
+                                        {notempty name="group"}
+                                        {volist name="group" id="val"}
+                                        <option value="{$val.id}" {if isset($userinfo) && $val.id == $userinfo.ugid} selected {/if}>{$val.title}</option>
+                                        {/volist}
+                                        {/notempty}
+                                    </select>
+                                </div>
                             </div>
-
-<!--                            <div class="form-group row">-->
-<!--                                <label class="col-md-3 control-label" for="ugid">級別</label>-->
-<!--                                <div class="col-md-7">-->
-<!--                                    <select class="form-control" id="ugid" name="ugid" size="1"-->
-<!--                                            value="{$userinfo.ugid ?? ''}">-->
-<!--                                        <option value="0"></option>-->
-<!--                                        {notempty name="teams"}-->
-<!--                                        {volist name="teams" id="val"}-->
-<!--                                        <option value="{$val.id}" {if isset($userinfo) && $val.id == $userinfo.ugid} selected {/if}>{$val.title}</option>-->
-<!--                                        {/volist}-->
-<!--                                        {/notempty}-->
-<!--                                    </select>-->
-
-<!--                                </div>-->
-<!--                            </div>-->
 
                             <div class="form-group row">
                                 <label class="col-md-3 control-label" for="last_name">名稱(中文)</label>
                                 <div class="col-md-7">
-                                    <input class="form-control" type="text" id="last_name" name="last_name"
-                                           value="{$userinfo.last_name ?? ''}"
+                                    <input class="form-control" type="text" id="last_name" name="username"
+                                           value="{$userinfo.username ?? ''}"
                                            placeholder="">
                                 </div>
                             </div>
@@ -90,8 +90,8 @@
                             <div class="form-group row">
                                 <label class="col-md-3 control-label" for="for_short">名稱(簡稱)</label>
                                 <div class="col-md-7">
-                                    <input class="form-control" type="text" id="for_short" name="username"
-                                           value="{$userinfo.username ?? ''}"
+                                    <input class="form-control" type="text" id="for_short" name="for_short"
+                                           value="{$userinfo.for_short ?? ''}"
                                            placeholder="test">
                                 </div>
                             </div>
@@ -102,9 +102,9 @@
                                 <div class="col-md-7">
                                     <select class="form-control" id="sex" name="sex" size="1"
                                             value="{$userinfo.sex ?? ''}">
-                                        <option value="0" {if isset($userinfo) && 0 == $userinfo.sex} selected {/if}>保密</option>
-                                        <option value="1" {if isset($userinfo) && 1 == $userinfo.sex} selected {/if}>男</option>
-                                        <option value="2" {if isset($userinfo) && 2 == $userinfo.sex} selected {/if}>女</option>
+                                         <option value="保密" {if isset($userinfo)&&$userinfo.sex == 0} selected {/if}>保密</option>
+                                        <option value="男" {if isset($userinfo)&&$userinfo.sex == 1} selected {/if}>男</option>
+                                        <option value="女" {if isset($userinfo)&&$userinfo.sex == 2} selected {/if}>女</option>
                                     </select>
                                 </div>
                             </div>
@@ -236,8 +236,8 @@
                                 <div class="col-md-7">
                                     <select class="form-control" id="shop" name="shop" size="1"
                                             value="{$userinfo.shop ?? ''}">
-                                        <option value="0" {if isset($userinfo) && 0 == $userinfo.shop} selected {/if}>可登入</option>
-                                        <option value="1" {if isset($userinfo) && 1 == $userinfo.shop} selected {/if}>沒有權限</option>
+                                        <option value="可登入" {if isset($userinfo) && 0 == $userinfo.shop} selected {/if}>可登入</option>
+                                        <option value="停用" {if isset($userinfo) && 1 == $userinfo.shop} selected {/if}>停用</option>
                                     </select>
                                 </div>
                             </div>
@@ -248,8 +248,8 @@
                                 <div class="col-md-7">
                                     <select class="form-control" id="source" name="source"
                                             size="1" value="{$userinfo.source ?? ''}">
-                                        <option value="0" {if isset($userinfo) && 0 == $userinfo.source} selected {/if}>繁體中文</option>
-                                        <option value="1" {if isset($userinfo) && 1 == $userinfo.source} selected {/if}>English</option>
+                                        <option value="繁體中文" {if isset($userinfo) && 0 == $userinfo.source} selected {/if}>繁體中文</option>
+                                        <option value="English" {if isset($userinfo) && 1 == $userinfo.source} selected {/if}>English</option>
 
                                     </select>
                                 </div>

@@ -16,20 +16,19 @@ use app\validate\AttendanceValidate;
 class Attendances extends Application
 {
 
-    public function index(Request $request,Attendance $attendance,User $user)
+    public function index(Request $request, Attendance $attendance, User $user)
     {
 
-         $params = $request->param();
+        $params = $request->param();
 
-           $start_date = $params["start_date"] ?? date('Y-m-01');
-           $end_date  =  $params["end_date"] ??  date('Y-m-t');
-
+        $start_date = $params["start_date"] ?? date('Y-m-01');
+        $end_date = $params["end_date"] ?? date('Y-m-t');
 
         $days = getDays($start_date, $end_date);
         $attendances = $attendance->select();
         $users = $user->field("uid,first_name")->select()->toArray();
         foreach ($users as $key => $value) {
-            $where=['user_id' => $value['uid'], 'vdate' => 'vdate'];
+            $where = ['user_id' => $value['uid'], 'vdate' => 'vdate'];
             $users[$key]['attendance'] = $attendance::where($where)->select()->toArray();
         }
 
@@ -37,7 +36,7 @@ class Attendances extends Application
 
         View::assign([
             'days' => $days,
-            'grid_url' => url('lists',['user_id' => $user_id]),
+            'grid_url' => url('lists', ['user_id' => $user_id]),
             'user_id' => $user_id,
             'users' => $users,
             'attendances' => $attendances,
@@ -49,42 +48,42 @@ class Attendances extends Application
 
 
 
-/*  public function detail(){
-      $arrayDays = getDays(3, 2020);
-      $startDays = $arrayDays;
-      $endDays = $arrayDays;
+    /*  public function detail(){
+          $arrayDays = getDays(3, 2020);
+          $startDays = $arrayDays;
+          $endDays = $arrayDays;
 
-      $keys = array_keys($endDays);
-      $endDays[$keys[count($keys)-1]]['selected'] = true;
+          $keys = array_keys($endDays);
+          $endDays[$keys[count($keys)-1]]['selected'] = true;
 
 
-      $attendances = Attendance::select();
-      $users = User::field("uid,first_name")->select()->toArray();
-      foreach ($users as $key => $value) {
-          $where=['user_id' => $value['uid'], 'vdate' => 'vdate'];
-          $users[$key]['attendance'] = Attendance::where($where)->select()->toArray();
-      }
+          $attendances = Attendance::select();
+          $users = User::field("uid,first_name")->select()->toArray();
+          foreach ($users as $key => $value) {
+              $where=['user_id' => $value['uid'], 'vdate' => 'vdate'];
+              $users[$key]['attendance'] = Attendance::where($where)->select()->toArray();
+          }
 
-      $user_id = input('get.user_id');
+          $user_id = input('get.user_id');
 
-      View::assign([
-          'startDays' => $startDays,
-          'endDays' => $endDays,
-          'grid_url' => url('lists',['user_id' => $user_id]),
-          'user_id' => $user_id,
-          'users' => $users,
-          'attendances' => $attendances,
-          'start_date' => '',
-          'end_date' => '',
-          'getdate'=> '',
+          View::assign([
+              'startDays' => $startDays,
+              'endDays' => $endDays,
+              'grid_url' => url('lists',['user_id' => $user_id]),
+              'user_id' => $user_id,
+              'users' => $users,
+              'attendances' => $attendances,
+              'start_date' => '',
+              'end_date' => '',
+              'getdate'=> '',
 
-      ]);
-      return view('detail');
-  }*/
+          ]);
+          return view('detail');
+      }*/
 
 
     //添加
-    public function add(Request $request, Attendance $model, AttendanceValidate $validate,User $user)
+    public function add(Request $request, Attendance $model, AttendanceValidate $validate, User $user)
     {
         $item = [];
         $item['users'] = $user->field("uid,first_name")->select();
@@ -95,7 +94,7 @@ class Attendances extends Application
                 return $this->error($validate->getError());
             }
             $items = $param['item'];
-            foreach ($items  as $key => $value){
+            foreach ($items as $key => $value) {
                 $items[$key]['user_id'] = $param['user_id'];
                 $items[$key]['vdate'] = $param['vdate'];
                 $items[$key]['id'] = $param['id'];
@@ -103,11 +102,11 @@ class Attendances extends Application
             }
             $result = $model::insertAll($items);
             if ($result) {
-                return json(['code' => 200,'msg' => ' successfully.']);
+                return json(['code' => 200, 'msg' => ' successfully.']);
             } else {
                 return json(['code' => 0]);
             }
-        }else {
+        } else {
             $item['user_id'] = input('get.user_id');
             $item['vdate'] = input('get.vdate');
             $item['user_name'] = input('get.user_name');
@@ -129,16 +128,16 @@ class Attendances extends Application
             $pur_items = $item['item'];
             $result = $model->saveAll($pur_items);
             if ($result) {
-                return json(['code' => 200,'msg' => ' successfully.']);
+                return json(['code' => 200, 'msg' => ' successfully.']);
             } else {
                 return json(['code' => 0]);
             }
-        }else {
+        } else {
             $item = input('get.');
-            $pur_items = $model->where(['user_id'=> $item['user_id'],'vdate' => $item['vdate']])->select();
+            $pur_items = $model->where(['user_id' => $item['user_id'], 'vdate' => $item['vdate']])->select();
         }
 
-        return view('form', ['item' => $item,'act' => url('edit'),'pur_items'=>$pur_items]);
+        return view('form', ['item' => $item, 'act' => url('edit'), 'pur_items' => $pur_items]);
     }
 
 
@@ -154,7 +153,6 @@ class Attendances extends Application
 
         return $this->redirect(url("index"));
     }
-
 
 
 }

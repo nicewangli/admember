@@ -85,7 +85,15 @@ class Services extends Application
 
         foreach ($items as $key => $value) {
             if($value['category_id']){
-                $items[$key]['category'] = $category::where('id', $value['category_id'])->value('name');
+				$cate = $category::find($value['category_id']);
+				$cate_name = "";
+				if($cate['pid'] != 0){
+					$parent_cate = $category::find($cate['pid']);
+					$cate_name = $parent_cate['name']." -> ".$cate['name'];
+				}else{
+					$cate_name = $cate['name'];
+				}
+                $items[$key]['category'] = $cate_name;
             }
         }
 
