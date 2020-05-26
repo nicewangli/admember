@@ -188,7 +188,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Calendar -->
                     {volist name="dayArr" id="day"}
                     <div class="row">
@@ -211,21 +210,11 @@
 <!--                                第一层循环控制行数 时间-->
 <!--                                第二层循环控制列数  美容师-->
                                     {volist name="time" id="shijian"}
-                                    <tr id="list">
+                                    <tr id="list" data-day="{$day}">
                                         <td>{$day}</td>
                                         <td>{$shijian.id}</td>
                                         {volist name="beauticianArr" id="bea"}
-                                        <td>
-                                        {volist name="bookingItems" id="bi"}
-
-                                        {if condition="$bi.booking.booking_date eq $day  && $bi.beautician1 eq $bea.id && $bi.start_time = $shijian.id"}
-
-                                            {$bi.service_name}
-
-                                        {/if}
-                                        {/volist}
-                                        </td>
-                                        {/volist}
+                                        <td data-bea="{$bea.id}">{volist name="bookingItems" id="bi"}{if condition="$bi.booking.booking_date eq $day  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}{$bi.service_name}<input type="hidden" value="{$bi.bc}" data-id="{$bi.booking.id}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$day}">{/if}{/volist}</td>{/volist}
                                         <td>{$shijian.text}</td>
                                         <td>{$day}</td>
                                     </tr>
@@ -271,67 +260,6 @@
             _w_table_rowspan("#bea",rowIndex);
         });
         // _w_table_rowspan("#bea",5);
-        var calendarEl = document.getElementById('calendar');
-
-        calendar = new FullCalendar.Calendar(calendarEl, {
-            plugins: ['interaction', 'resourceDayGrid', 'resourceTimeGrid'],
-            defaultView: 'resourceTimeGridDay',
-            editable: true,
-            selectable: true,
-            eventLimit: true,
-            allDaySlot: false,
-            minTime: "10:00:00",
-            maxTime: "23:00:00",
-            contentHeight: 'auto',
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'resourceTimeGridDay,resourceTimeGridTwoDay,timeGridWeek,dayGridMonth'
-            },
-            views: {
-                resourceTimeGridTwoDay: {
-                    type: 'resourceTimeGrid',
-                    duration: {days: 2},
-                    buttonText: '2 days',
-                }
-            },
-            //allDaySlot: false,
-
-            resources: "{:url('beautician')}",
-            events: "{:url('lists')}",
-            select: function (info) {
-                var start = moment(info.start);
-                var end = moment(info.end);
-                var resourceId = info.resource.id
-                var month_day = start.format("HH")
-                if (month_day == "00") {
-                    var date_start = start.format("YYYY-MM-DD") + " " + moment().format('HH:mm:ss');
-                    var date_end = start.format("YYYY-MM-DD") + " " + moment().add(1, 'hours').format("HH:mm:ss");
-                } else {
-                    var date_start = start.format("YYYY-MM-DD HH:mm:ss");
-                    if (start.format("YYYY-MM-DD") == end.format("YYYY-MM-DD")) {
-                        var date_end = end.format("YYYY-MM-DD HH:mm:ss");
-                    } else {
-                        var date_end = date_start;
-                    }
-                }
-
-                var url = "{:url('bookings/add')}?date_start=" + date_start + "&date_end=" + date_end + "&resourceId=" + resourceId + "&eventId=0";
-                bookingWin(url);
-            },
-            eventClick: function (info) {
-                console.log(info)
-                var resourceId = info.event._def.resourceIds[0]
-                var id = info.event.extendedProps.booking_id
-                var url = "{:url('bookings/edit')}?id=" + id + "&resourceId=" + resourceId + "&eventId=" + info.event.id;
-                bookingWin(url);
-            }
-
-        });
-
-        calendar.render();
-
-
     });
 
     $("#room_id").change(function () {
@@ -371,16 +299,17 @@
     function form_change() {
         //TODO:给个祭品  <input type="hidden" name="oblation">
         let params = $("#booking_form").serialize();
-        let url = "{:url('lists')}?params=" + params;
-        calendar.removeAllEvents();
-        calendar.addEventSource(url);
+        window.location = "{:url('index')}?params=" + params;
     }
 
     function show_booking(id, beautician1, bi_id) {
         let url = "{:url('bookings/edit')}?id=" + id + "&resourceId=" + beautician1 + "&eventId=" + bi_id;
         bookingWin(url);
     }
-
+    function add_booking(date,beautician){
+        let url = "{:url('bookings/add')}?date="+date+'&resourceId='+beautician+ "&eventId=0";
+        bookingWin(url);
+    }
     $("#services_current_month").click(function () {
         let date = $("#date_start").val();
         let start_date = moment(date).startOf("month");
@@ -486,6 +415,10 @@
 
     });
 
+    function Booking() {
+        let url = "";
+        bookingWin()
+    }
     $("#services_next_week").click(function () {
         let date = $("#date_end").val();
         let start_date = moment(date, "YYYY-MM-DD").add(1, 'd');
@@ -508,13 +441,33 @@
                 _w_table_SpanNum = 1;
             }else{
                 _w_table_currenttd = $(this);
-                if(_w_table_firsttd.text()==_w_table_currenttd.text()){
-                    console.log(_w_table_firsttd.text());
+
+                if(_w_table_firsttd.text()==_w_table_currenttd.text()&&_w_table_firsttd.text()!=''){
                     _w_table_SpanNum++;
                     _w_table_currenttd.hide(); //remove();
                     _w_table_firsttd.attr("rowSpan",_w_table_SpanNum);
+                    let bc = _w_table_firsttd.find('input').val();
+                    let b_id = _w_table_firsttd.find('input').attr('data-id');
+                    let beautician1 = _w_table_firsttd.find('input').attr('data-resource');
+                    let bi_id = _w_table_firsttd.find('input').attr('data-event');
+                    _w_table_firsttd.attr("onClick","show_booking("+b_id+','+beautician1+','+bi_id+");");
+                    _w_table_firsttd.css('background-color',bc);
                 }else{
                     _w_table_firsttd = $(this);
+                    if(_w_table_firsttd.text()!=''){
+
+                        let bc = _w_table_firsttd.find('input').val();
+                        let b_id = _w_table_firsttd.find('input').attr('data-id');
+                        let beautician1 = _w_table_firsttd.find('input').attr('data-resource');
+                        let bi_id = _w_table_firsttd.find('input').attr('data-event');
+                        _w_table_firsttd.attr("onClick","show_booking("+b_id+','+beautician1+','+bi_id+");");
+                        _w_table_firsttd.css('background-color',bc);
+                    } else {
+                        let day = _w_table_firsttd.parent().attr('data-day');
+                        let bea = _w_table_firsttd.attr('data-bea');
+                        _w_table_firsttd.attr("onClick","add_booking("+'\''+day+'\''+','+bea+");");
+                    }
+
                     _w_table_SpanNum = 1;
                 }
             }

@@ -39,16 +39,16 @@ class Users extends Application
             }
             $uid = intval($uid);
             $data = input('post.');
-            $data['birthday'] = strtotime($data['birthday']);
+         
             if (!isset($data['status'])) {
                 $data['status'] = 0;
             }
             unset($data['store']);
             if (Db::name('users')->where(['uid'=>$uid])->count()==0) {//新增
-			 if ($data['username']=='') {
+			 if ($data['user_name']=='') {
                     return $this->error('用户名不能为空！');
                 }
-             if (Db::name('users')->where(['username'=>$data['username']])->count()>0) {
+             if (Db::name('users')->where(['user_name'=>$data['user_name']])->count()>0) {
                     return $this->error('用户名已被占用，请重试！');
                 }
 
@@ -58,7 +58,7 @@ class Users extends Application
                 $data['member_no'] = Users::getConfigNo('employee_data','users');
                 $r = Db::name('users')->insert($data);
                 if ($r) {
-                    addlog('新增用户，用户名：'.$data['username'], $this->user['username']);
+                    addlog('新增用户，用户名：'.$data['user_name'], $this->user['user_name']);
                     return $this->success('新增用戶成功！', url('users/index'));
                 }
             } else {//编辑
@@ -69,7 +69,7 @@ class Users extends Application
                 }
                 $r = Db::name('users')->where(['uid'=>$uid])->update($data);
                 if ($r) {
-                    addlog('修改用户信息，UID：'.$uid, $this->user['username']);
+                    addlog('修改用户信息，UID：'.$uid, $this->user['user_name']);
                     return $this->success('修改用戶成功！', url('users/index'));
                 }
             }
@@ -87,14 +87,14 @@ class Users extends Application
             $uids = $uids['uids'];
             $r = Db::name('users')->delete($uids);
             if ($r) {
-                addlog('删除用户，UID：'.implode(',', $uids), $this->user['username']);
+                addlog('删除用户，UID：'.implode(',', $uids), $this->user['user_name']);
                 return $this->error('用戶刪除成功！', url('admin/user/index'));
             } else {
                 return $this->error('請選擇要刪除的用戶！');
             }
         }
 
-        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->field('u.uid,u.,u.member_no,u.first_name,u.for_short,u.last_name,u.category,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.for_short asc')->paginate(10);
+        $list = Db::name('users')->alias('u')->join('teams g', 'g.title=u.ugid', 'left')->field('u.uid,u.ugid,u.member_no,u.first_name,u.for_short,u.last_name,u.category,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.for_short asc')->paginate(10);
 //        $list = User::order('for_short asc')->paginate(10);
 
         View::assign('list', $list);
@@ -132,7 +132,7 @@ class Users extends Application
         $where = [];
 
         if(isset($param['search'])){
-            $where[] = ['username', 'like', '%'.$param['search'].'%'];
+            $where[] = ['member_no', 'like', '%'.$param['search'].'%'];
         }
 
         if(isset($param['filter'])){

@@ -23,25 +23,45 @@ class Bookings extends Application
         $date_start = date("Y-m-d", time());
         $date_end = date("Y-m-d", time());
         $dayArr = [];
+        $beaWhere = [];
+        $biWhere = [];
         if (Request::isPost()) {
-            $params = input('post.');
-            $start_date = $params['date_start'];
-            $end_date = $params['date_end'];
-            $start_ts = strtotime($start_date);
-            $end_ts = strtotime($end_date);
-            for ($i = $start_ts; $i <= $end_ts;) {
-                $dayArr[] = date("Y-m-d",$i);
-                $i += 86400;
+            $params = input('get.');
+
+            if (isset($params['consultant'])) {
+                $beaWhere = ['uid', '=', $params['consultant']];
             }
+            if (isset($params['room_id'])) {
+                $biWhere[] = ['room_id', '=', $params['room_id']];
+            }
+            if (isset($params['store_id'])) {
+                $biWhere[] = ['store_id', '=', $params['store_id']];
+            }
+            if(isset($params['date_start'])) {
+                $start_date = $params['date_start'];
+                $end_date = $params['date_end'];
+
+                $start_ts = strtotime($start_date);
+                $end_ts = strtotime($end_date);
+                for ($i = $start_ts; $i <= $end_ts;) {
+                    $dayArr[] = date("Y-m-d", $i);
+                    $i += 86400;
+                }
+            }
+
         } else {
             $dayArr[] = $date_start;
         }
 
 
-        $result = User::field('uid as id, first_name as title')->order("first_name asc")->select()->toArray();
+        $result = User::field('uid as id, for_short as title')->order("first_name asc")->where($beaWhere)->select()->toArray();
         $time = workingHours();
-        $booking_item = BookingItem::with(['booking'])->select()->toArray();
-        return View::fetch('index', ['date_start' => $date_start, 'date_end' => $date_end, 'beauticianArr' => $result, 'bookingItems' => $booking_item, 'time' => $time,'dayArr'=>$dayArr]);
+        $colorArr = Booking::event_colors();
+        $booking_item = BookingItem::with(['booking'])->where($biWhere)->select()->toArray();
+        foreach ($booking_item as &$item) {
+            $item['bc'] = $colorArr[$item['booking']['status']];
+        }
+        return View::fetch('index', ['date_start' => $date_start, 'date_end' => $date_end, 'beauticianArr' => $result, 'bookingItems' => $booking_item, 'time' => $time, 'dayArr' => $dayArr]);
     }
 
 
@@ -169,17 +189,17 @@ class Bookings extends Application
         } else {
             $item = new Booking();
             $param = input('get.');
-            $dt = explode(" ", $param['date_start']);
-            $item['booking_date'] = $dt[0];
+//            $dt = explode(" ", $param['date_start']);
+            $item['booking_date'] = (string)$param['date'];
             $item['is_member'] = 1;
             $item['created_user_id'] = $this->user->uid;
             $item['team_id'] = $this->user->ugid;
-            $booking_init_time = $dt[1];
+//            $booking_init_time = $dt[1];
             $resourceId = $param['resourceId'];
             $eventId = $param['eventId'];
             $workinghours = workingHours();
             View::assign([
-                'booking_init_time' => $booking_init_time,
+//                'booking_init_time' => $booking_init_time,
                 'resourceId' => $resourceId,
                 'eventId' => $eventId,
                 'workingHours' => $workinghours,

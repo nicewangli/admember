@@ -45,16 +45,16 @@ class Members extends Application
           if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
 
-              $query_fields = ['m.member_no','m.first_name','m.last_name','m.phone_mobile','m.phone_work','m.email1'];
+            $query_fields = ['member_no','first_name','last_name','phone_mobile','phone_work','email1'];
             foreach ($query_fields as $field){
                 if(isset($filter[$field])) {
-                    $where[] = [$field, 'like', $filter[$field] . '%'];
+                    $where[] = ['m.'.$field, 'like', $filter[$field] . '%'];
                 }
             }
 
         }
         $items = Member::alias('m')->leftJoin('mapping mp', 'm.opt = mp.id')->field('m.*, mp.val as opt')->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
-        $total = Member::where($where)->count();
+        $total = Member::alias('m')->where($where)->count();
         $data = [
             'rows' => $items,
             'total' => $total,

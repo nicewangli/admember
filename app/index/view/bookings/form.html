@@ -546,6 +546,8 @@
         })
     }
     $(document).ready(function () {
+        get_week(moment($("#booking_date").val()).format('d'));
+
         loadBeautician();
         $(document).on("input propertychange", "#invoice_no", function () {
             let invoice_no = $(this).val();
@@ -689,6 +691,47 @@
             })
         })
 
+        $("#booking_date").daterangepicker({
+            "singleDatePicker": true,
+            "startDate": $("#booking_date").val() ? $("#booking_date").val() : moment().format("YYYY-MM-DD"),
+            "locale": {
+                "format": "YYYY-MM-DD",
+            }
+        }).on('apply.daterangepicker', function(ev, picker) {
+            // console.log(picker.startDate.format('YYYY-MM-DD HH:mm:ss'));
+            $("#booking_date").val(picker.startDate.format('YYYY-MM-DD'));
+            // $("#booking_week").val(moment(picker.startDate).format('dddd'));
+            get_week(moment(picker.startDate).format('d'));
+        });
     })
+
+    function get_week(date) {
+        let week_date = '';
+        switch (date) {
+            case '0':
+                week_date = '星期日';
+                break;
+            case '1':
+                week_date = '星期一';
+                break;
+            case '2':
+                week_date = '星期二';
+                break;
+            case '3':
+                week_date = '星期三';
+                break;
+            case '4':
+                week_date = '星期四';
+                break;
+            case '5':
+                week_date = '星期五';
+                break;
+            case '6':
+                week_date = '星期六';
+                break;
+        }
+
+        $("#booking_week").val(week_date);
+    }
 </script>
 {/block}

@@ -476,6 +476,23 @@ function importExecl(string $file = '', int $sheet = 0, int $columnCnt = 0, &$op
                     $data[$j - 2]['date_of_birth'] = implode('/', [$temp[1], $temp[2]]);
                 }
             }
+
+            //地址
+            if (!empty($data[$j - 2]['address'])){
+                $data[$j - 2]['address'] = str_replace('<br>', "\r\n", $data[$j - 2]['address']);
+            }
+            //備註
+            if (!empty($data[$j - 2]['remark'])){
+                $data[$j - 2]['remark'] = str_replace('<br>', "\r\n", $data[$j - 2]['remark']);
+            }
+            //預約備註
+            if (!empty($data[$j - 2]['reservation_remarks'])){
+                $data[$j - 2]['reservation_remarks'] = str_replace('<br>', "\r\n", $data[$j - 2]['reservation_remarks']);
+            }
+            //來源備註
+            if (!empty($data[$j - 2]['source_notes'])){
+                $data[$j - 2]['source_notes'] = str_replace('<br>', "\r\n", $data[$j - 2]['source_notes']);
+            }
         }
         //halt($usersExits);
 
