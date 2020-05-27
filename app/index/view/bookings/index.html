@@ -30,7 +30,7 @@
                                     <div class="col-md-8">
                                         <select class="form-control select2" name="store_id" id="store_id">
                                             {foreach name=":getStores()" id='val'}
-                                            <option value="{$val.id}" {if isset($search) &&
+                                            <option value="{$val.id}" {if isset($search.store_id) &&
                                                     $search.store_id==$val.id}selected{/if}>
                                                 {$val.name}
                                             </option>
@@ -48,7 +48,7 @@
                                                         name="consultant">
                                                     <option value="">&nbsp;</option>
                                                     {foreach name=":getUsers()" id='user'}
-                                                    <option value="{$user.uid|default=''}" {if isset($search) &&
+                                                    <option value="{$user.uid|default=''}" {if !empty($search.consultant) &&
                                                             $search.consultant==$user.uid}selected{/if}>
                                                         {$user.name}
                                                     </option>
@@ -60,7 +60,7 @@
                                                         id="room_id">
                                                     <option value=""></option>
                                                     {foreach name=":getRooms()" id='val'}
-                                                    <option value="{$val.id}" {if isset($search) &&
+                                                    <option value="{$val.id}" {if isset($search.room_id) &&
                                                             $search.room_id==$val.id}selected{/if}>
                                                         {$val.name}
                                                     </option>
@@ -193,8 +193,8 @@
                     <div class="row">
 
                         <table class="table table-bordered table-striped table-responsive" id="bea">
-                            <thead>
-                                <tr class="bg-purple disabled color-palette">
+                            <thead style="height: 10%">
+                                <tr class="bg-info disabled color-palette">
                                     <td>日期</td>
                                     <td>时间</td>
 <!--                                    循环美容师-->
@@ -206,15 +206,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-
+<!--                            <tr><td onselectstart="return false" οnselect="document.selection.empty()">宝宝(不能选)</td></tr>-->
 <!--                                第一层循环控制行数 时间-->
 <!--                                第二层循环控制列数  美容师-->
                                     {volist name="time" id="shijian"}
                                     <tr id="list" data-day="{$day}">
+
                                         <td>{$day}</td>
                                         <td>{$shijian.id}</td>
                                         {volist name="beauticianArr" id="bea"}
-                                        <td data-bea="{$bea.id}">{volist name="bookingItems" id="bi"}{if condition="$bi.booking.booking_date eq $day  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}{$bi.service_name}<input type="hidden" value="{$bi.bc}" data-id="{$bi.booking.id}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$day}">{/if}{/volist}</td>{/volist}
+                                        <td data-bea="{$bea.id}">{volist name="bookingItems" id="bi"}{if condition="$bi.booking_date eq $day  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}{$bi.service_name}<input type="hidden" value="{$bi.bc}" data-id="{$bi.bid}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$day}" data-type="bi">{/if}{/volist}{volist name="adArr" id="ad"}{if condition='$ad.vdate eq $day && $ad.user_id eq $bea.id && ($ad.end_time > $shijian.id&&$shijian.id>=$ad.start_time)'}{$ad.item}<input type="hidden" data-type="ad">{/if}{/volist}</td>{/volist}
                                         <td>{$shijian.text}</td>
                                         <td>{$day}</td>
                                     </tr>
@@ -310,6 +311,63 @@
         let url = "{:url('bookings/add')}?date="+date+'&resourceId='+beautician+ "&eventId=0";
         bookingWin(url);
     }
+    function _w_table_rowspan(_w_table_id,_w_table_colnum){
+        _w_table_firsttd = "";
+        _w_table_currenttd = "";
+        _w_table_SpanNum = 0;
+        _w_table_Obj = $(_w_table_id + " tr td:nth-child(" + _w_table_colnum + ")");
+        _w_table_Obj.each(function(i){
+            if(i==0){
+                _w_table_firsttd = $(this);
+                _w_table_SpanNum = 1;
+            }else{
+                _w_table_currenttd = $(this);
+
+                if(_w_table_firsttd.text()==_w_table_currenttd.text()&&_w_table_firsttd.text()!=''){
+                    //TODO:再加一个判断  判断是休假还是服务
+                    _w_table_SpanNum++;
+                    _w_table_currenttd.hide(); //remove();
+                    _w_table_firsttd.attr("rowSpan",_w_table_SpanNum);
+                    let type = _w_table_firsttd.find('input').attr('data-type');
+                    if(type === 'bi') { //D3D3D3
+                        let bc = _w_table_firsttd.find('input').val();
+                        let b_id = _w_table_firsttd.find('input').attr('data-id');
+                        let beautician1 = _w_table_firsttd.find('input').attr('data-resource');
+                        let bi_id = _w_table_firsttd.find('input').attr('data-event');
+                        _w_table_firsttd.attr("onClick","show_booking("+b_id+','+beautician1+','+bi_id+");");
+                        _w_table_firsttd.css('background-color',bc);
+                    } else if(type==='ad') { //onselectstart="return false" οnselect="document.selection.empty()"
+                        _w_table_firsttd.attr('οnselect','document.selection.empty()');
+                        _w_table_firsttd.attr('onselectstart','return false');
+                    }
+                }else{
+                    _w_table_firsttd = $(this);
+                    if(_w_table_firsttd.text()!=''){
+                        let type = _w_table_firsttd.find('input').attr('data-type');
+
+                        if(type === 'bi') { //D3D3D3
+                            let bc = _w_table_firsttd.find('input').val();
+                            let b_id = _w_table_firsttd.find('input').attr('data-id');
+                            let beautician1 = _w_table_firsttd.find('input').attr('data-resource');
+                            let bi_id = _w_table_firsttd.find('input').attr('data-event');
+                            _w_table_firsttd.attr("onClick","show_booking("+b_id+','+beautician1+','+bi_id+");");
+                            _w_table_firsttd.css('background-color',bc);
+                        } else if(type==='ad') { //onselectstart="return false" οnselect="document.selection.empty()"
+                            _w_table_firsttd.attr('οnselect','document.selection.empty()');
+                            _w_table_firsttd.attr('onselectstart','return false');
+                        }
+                    } else {
+                        let day = _w_table_firsttd.parent().attr('data-day');
+                        let bea = _w_table_firsttd.attr('data-bea');
+                        _w_table_firsttd.attr("onClick","add_booking("+'\''+day+'\''+','+bea+");");
+                    }
+
+                    _w_table_SpanNum = 1;
+                }
+            }
+        });
+    }
+
     $("#services_current_month").click(function () {
         let date = $("#date_start").val();
         let start_date = moment(date).startOf("month");
@@ -415,10 +473,6 @@
 
     });
 
-    function Booking() {
-        let url = "";
-        bookingWin()
-    }
     $("#services_next_week").click(function () {
         let date = $("#date_end").val();
         let start_date = moment(date, "YYYY-MM-DD").add(1, 'd');
@@ -430,49 +484,5 @@
 
 
     });
-    function _w_table_rowspan(_w_table_id,_w_table_colnum){
-        _w_table_firsttd = "";
-        _w_table_currenttd = "";
-        _w_table_SpanNum = 0;
-        _w_table_Obj = $(_w_table_id + " tr td:nth-child(" + _w_table_colnum + ")");
-        _w_table_Obj.each(function(i){
-            if(i==0){
-                _w_table_firsttd = $(this);
-                _w_table_SpanNum = 1;
-            }else{
-                _w_table_currenttd = $(this);
-
-                if(_w_table_firsttd.text()==_w_table_currenttd.text()&&_w_table_firsttd.text()!=''){
-                    _w_table_SpanNum++;
-                    _w_table_currenttd.hide(); //remove();
-                    _w_table_firsttd.attr("rowSpan",_w_table_SpanNum);
-                    let bc = _w_table_firsttd.find('input').val();
-                    let b_id = _w_table_firsttd.find('input').attr('data-id');
-                    let beautician1 = _w_table_firsttd.find('input').attr('data-resource');
-                    let bi_id = _w_table_firsttd.find('input').attr('data-event');
-                    _w_table_firsttd.attr("onClick","show_booking("+b_id+','+beautician1+','+bi_id+");");
-                    _w_table_firsttd.css('background-color',bc);
-                }else{
-                    _w_table_firsttd = $(this);
-                    if(_w_table_firsttd.text()!=''){
-
-                        let bc = _w_table_firsttd.find('input').val();
-                        let b_id = _w_table_firsttd.find('input').attr('data-id');
-                        let beautician1 = _w_table_firsttd.find('input').attr('data-resource');
-                        let bi_id = _w_table_firsttd.find('input').attr('data-event');
-                        _w_table_firsttd.attr("onClick","show_booking("+b_id+','+beautician1+','+bi_id+");");
-                        _w_table_firsttd.css('background-color',bc);
-                    } else {
-                        let day = _w_table_firsttd.parent().attr('data-day');
-                        let bea = _w_table_firsttd.attr('data-bea');
-                        _w_table_firsttd.attr("onClick","add_booking("+'\''+day+'\''+','+bea+");");
-                    }
-
-                    _w_table_SpanNum = 1;
-                }
-            }
-        });
-    }
-
 </script>
 {/block}

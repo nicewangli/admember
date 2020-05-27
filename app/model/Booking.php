@@ -32,7 +32,7 @@ class Booking extends Model
         return ['新預約' => 1,'已通知' => 2, '新客已通知' => 3,'未能聯絡' => 4,'已到' => 5,'缺席' => 6,'已扣除套票' => 9,'closed' => -1,'deleted' => 0];
     }
     public static  function event_colors(){
-        return [1 => '#28a745',2 => '#ffc107', 3 => '#fd7e14', 4 => '#dc3545', 5 => '#17a2b8',6 => '#6c757d',9 => '#e83e8c'];
+        return [1 => '#28a745',2 => '#ffc107', 3 => '#fd7e14', 4 => '#dc3545', 5 => '#17a2b8',6 => '#D3D3D3',9 => '#e83e8c'];
     }
 
     public static function status_colors()
