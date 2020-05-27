@@ -636,13 +636,9 @@
                     success(res) {
                         layer.msg(res.msg);
                         if (res.code == 200) {
-                            if (id) {
-                                parent.calendar.refetchEvents(res.events);
-                            } else {
-                                parent.calendar.addEventSource(res.events)
-                            }
                             let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                             parent.layer.close(index);
+                            parent.location.reload();
                         }
                     }
                 })
