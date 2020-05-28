@@ -62,7 +62,7 @@
                                         <option value="0"></option>
                                         {notempty name="group"}
                                         {volist name="group" id="val"}
-                                        <option value="{$val.id}" {if isset($userinfo) && $val.id == $userinfo.ugid} selected {/if}>{$val.title}</option>
+                                        <option value="{$val.id}" {if isset($userinfo) && $val.title == $userinfo.ugid} selected {/if}>{$val.title}</option>
                                         {/volist}
                                         {/notempty}
                                     </select>

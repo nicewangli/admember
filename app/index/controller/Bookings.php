@@ -21,6 +21,7 @@ class Bookings extends Application
 
     public function index()
     {
+        $weekArr=array("日","一","二","三","四","五","六");
         $date_start = date("Y-m-d", time());
         $date_end = date("Y-m-d", time());
         $dayArr = [];
@@ -48,7 +49,7 @@ class Bookings extends Application
                 $start_ts = strtotime($start_date);
                 $end_ts = strtotime($end_date);
                 for ($i = $start_ts; $i <= $end_ts;) {
-                    $dayArr[] = date("Y-m-d", $i);
+                    $dayArr[] = ['date'=>date("Y-m-d", $i),'week'=>$weekArr[date("w", $i)]];
                     $i += 86400;
                 }
                 $date_start = $params['date_start'];
@@ -56,15 +57,19 @@ class Bookings extends Application
             }
 
         } else {
-            $dayArr[] = $date_start;
+            $dayArr[] = ['date'=>$date_start,'week'=>$weekArr[date('w',$date_start)]];
         }
-
         $result = User::field('uid as id, for_short as title')->order("first_name asc")->where($beaWhere)->select()->toArray();
         $time = workingHours();
         $colorArr = Booking::event_colors();
+        $ads = Attendance::attendanceType();
         $model = new BookingItem();
-        $booking_item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->field('bi.*,b.status,b.booking_date,b.id as bid')->where($biWhere)->select()->toArray();
+        $item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->field('bi.*,b.status,b.booking_date,b.id as bid')->where($biWhere);
+        $booking_item = $item->where($biWhere)->select()->toArray();
         $adArr = Attendance::field('user_id,vdate,start_time,end_time,item')->select()->toArray();
+        foreach ($adArr as &$ad) {
+            $ad['item'] = $ads[$ad['item']];
+        }
         foreach ($booking_item as &$item) {
             $item['bc'] = $colorArr[$item['status']];
         }
@@ -83,8 +88,9 @@ class Bookings extends Application
         $where = [];
         $where[] = ['m.member_no', 'like', '%' . $member . '%'];
         $where[] = ['m.first_name', 'like', '%' . $member . '%'];
-        $data = $model->alias('b')->leftJoin('booking_item bi', 'b.id=bi.booking_id')->leftJoin('member m', 'm.id = b.member_id')->field('b.*,bi.beautician1,bi.id as bi_id,m.first_name')->whereOr($where)->select();
-        return json(['booking' => $data]);
+        $data = $model->alias('b')->leftJoin('booking_item bi', 'b.id=bi.booking_id')->leftJoin('member m', 'm.id = b.member_id')->field('b.*,bi.beautician1,bi.id as bi_id,bi.start_time,bi.end_time,m.first_name,m.phone_mobile')->whereOr($where)->group('b.id')->select()->toArray();
+        $total = count($data);
+        return json(['booking' => $data,'total' => $total]);
     }
 
     public function lists()
@@ -296,7 +302,6 @@ class Bookings extends Application
         $result = User::field('uid as id, first_name as title')->order("first_name asc")->select()->toArray();
         return json($result);
     }
-
 
     function format_events($booking, $items)
     {

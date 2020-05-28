@@ -31,31 +31,22 @@ class Combinations extends Application
         $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
         $where = [];
 
-        if(isset($param['search'])){
-            $where[] = ['name', 'like', '%'.$param['search'].'%'];
+        if (isset($param['status']) && $param['status'] != '') {
+            $where[] = ['status', '=', $param['status']];
         }
 
-        if(isset($param['filter'])){
-            $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
-            if(isset($filter['code'])){
-                $where[] = ['code', '=', $filter['code']];
-            }
-            if(isset($filter['name'])){
-                $where[] = ['name', 'like', '%'.$filter['name'].'%'];
-            }
-            if(isset($filter['category_id'])){
-                $where[] = ['category_id', '=', $filter['category_id']];
-            }
-            if(isset($filter['status'])){
-                $where[] = ['status', '=', $filter['status']];
-            }
-            if(isset($filter['category'])){
-                $category_id = $category::where('name', $filter['category'])->value('id');
-                $where[] = ['category_id', '=', $category_id];
-            }
-            if(isset($filter['brand_name'])){
-                $brand_id = $mapping::where('val', $filter['brand_name'])->value('id');
-                $where[] = ['brand', '=', $brand_id];
+        if (isset($param['field'])) {
+            if ($param['field'] == 'category') {
+                if ($param['parent_category_id']) {
+                    $where[] = ['parent_category_id', '=', $param['parent_category_id']];
+                }
+                if ($param['category_id']) {
+                    $where[] = ['category_id', '=', $param['category_id']];
+                }
+            } else {
+                if ($param['keyword']) {
+                    $where[] = [$param['field'], 'like', '%' . trim($param['keyword']) . '%'];
+                }
             }
         }
         
@@ -63,32 +54,17 @@ class Combinations extends Application
             $limit = $param['limit'];
             $offset = $param['offset'];
 
-            $items = $model::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+            $items = $model::with(['parent_category','category', 'brand'])->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
 
         }else{
-            $items = $model::where($where)->order($sort.' '.$order)->select()->toArray();
+            $items = $model::with(['parent_category','category', 'brand'])->where($where)->order($sort.' '.$order)->select()->toArray();
         }
 
         $total = $model::where($where)->count();
 
-        foreach ($items as $key => $value) {
-			if($value['category_id']){
-				$cate = $category::find($value['category_id']);
-				$cate_name = "";
-				if($cate['pid'] != 0){
-					$parent_cate = $category::find($cate['pid']);
-					$cate_name = $parent_cate['name']." -> ".$cate['name'];
-				}else{
-					$cate_name = $cate['name'];
-				}
-                $items[$key]['category'] = $cate_name;
-            }
-        
-            if($value['brand']){
-                $items[$key]['brand_name'] = $mapping::where('id', $value['brand'])->value('val');
-            }
-            
-            if (!empty($ids)) {
+
+        if (!empty($ids)) {
+            foreach ($items as $key => $value) {
                 if (in_array($value['id'], $ids)) {
                     $items[$key]['checked'] = true;
                 }else{
@@ -136,20 +112,7 @@ class Combinations extends Application
     public function edit($id, Request $request, Combination $model, CombinationValidate $validate, ProductCategory $category, Mapping $mapping, CombinationItem $combinationItem)
     {
 
-        $data = $model::find($id);
-        $category = $category::find($data['category_id']);
-        if($category && $category['pid']){
-            $data['child_category_id'] = $data['category_id'];
-            $data['child_category_name'] = $category['name'];
-            $parent_category = $category::find($category['pid']);
-            if($parent_category){
-                $data['parent_category_name'] = $parent_category['name'];
-                $data['parent_category_id'] = $parent_category['id'];
-            }
-        }else{
-            $data['parent_category_name'] = $category['name'];
-            $data['parent_category_id'] = $data['category_id'];
-        }
+        $data = $model::with(['parent_category','category', 'brand'])->find($id);
 
         $combination_product = $combinationItem->options($id);
 

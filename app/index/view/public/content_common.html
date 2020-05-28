@@ -1,5 +1,94 @@
 <script>
     $(function () {
         $(".datatable").bootstrapTable();
-    })
+
+        $(".select2").select2();
+
+
+        // $('#parent_category').on('select2:select', function (e) {
+        $('#parent_category').on('change', function (e) {
+            // let data = e.params.data;
+            if ($(this).val()) {
+                $("#category").children().not(":eq(0)").remove();
+                initRolesChildCategory($(this).val(), 'service');
+            }
+        });
+
+        $('#package_parent_category').on('select2:select', function (e) {
+            let data = e.params.data;
+            if (data.id) {
+                $("#package_category").children().not(":eq(0)").remove();
+                initRolesChildCategory(data.id, 'package');
+            }
+        });
+
+        $('#product_parent_category').on('select2:select', function (e) {
+            let data = e.params.data;
+            if (data.id) {
+                $("#product_category").children().not(":eq(0)").remove();
+                initRolesChildCategory(data.id, 'product');
+            }
+        });
+
+        $('#combination_parent_category').on('select2:select', function (e) {
+            let data = e.params.data;
+            if (data.id) {
+                $("#combination_category").children().not(":eq(0)").remove();
+                initRolesChildCategory(data.id, 'combination');
+            }
+        });
+
+    });
+
+    function initRolesParentCategory(panel) {
+        $.ajax({
+            url: "{:url('product_categories/option')}",
+            data: {id: 0},
+            dataType: 'json',
+            success(res){
+                let id = '';
+                if (panel == 'service') {
+                    id = '#parent_category';
+                    let node = '',
+                        data = res.results;
+                    $.each(data, function (index, element) {
+                        node += '<option value="' + element.id + '">' + element.text + '</option>';
+                    });
+                    $(id).append(node);
+                } else {
+                    id = '#' + panel + '_parent_category';
+                    $(id).select2({
+                        // placeholder: "请选择", //默认input 文字
+                        data: res.results,
+                    })
+                }
+            }
+        })
+    }
+
+    function initRolesChildCategory(id, panel) {
+        $.ajax({
+            url: "{:url('product_categories/option')}",
+            data: {id: id},
+            dataType: 'json',
+            success(res){
+                let id = '';
+                if (panel == 'service') {
+                    id = '#category';
+                    let node = '',
+                        data = res.results;
+                    $.each(data, function (index, element) {
+                        node += '<option value="' + element.id + '">' + element.text + '</option>';
+                    });
+                    $(id).append(node);
+                } else {
+                    id = '#' + panel + '_category';
+                    $(id).select2({
+                        // placeholder: "请选择", //默认input 文字
+                        data: res.results,
+                    })
+                }
+            }
+        })
+    }
 </script>

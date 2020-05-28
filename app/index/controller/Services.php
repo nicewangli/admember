@@ -17,24 +17,6 @@ class Services extends Application
     //列表
     public function index(Request $request, Service $model)
     {
-        // $param = $request->param();
-
-        // $search = input('get.search');
-
-        // $data = $model::whereOr([
-        //     ['code', 'like', $search . '%'],
-        //     ['name', 'like', $search . '%'],
-        // ])->paginate();
-
-        // //关键词，排序等赋值
-
-        // View::assign([
-        //     'data' => $data,
-        //     'page' => $data->render(),
-        //     'total' => $data->total(),
-        //     'search'=>$search
-
-        // ]);
         return View::fetch();
     }
 
@@ -46,56 +28,34 @@ class Services extends Application
         $order = isset($param['order']) ?  $param['order'] :  'desc';
         $where = [];
 
-        if(isset($param['search'])){
-            $where[] = ['name', 'like', '%'.$param['search'].'%'];
+        if ($param['status'] != '') {
+            $where[] = ['status', '=', $param['status']];
         }
 
-        if(isset($param['filter'])){
-            $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
-            if(isset($filter['code'])){
-                $where[] = ['code', '=', $filter['code']];
+        if ($param['field'] == 'category') {
+            if ($param['parent_category_id']) {
+                $where[] = ['parent_category_id', '=', $param['parent_category_id']];
             }
-            if(isset($filter['name'])){
-                $where[] = ['name', 'like', '%'.$filter['name'].'%'];
+            if ($param['category_id']) {
+                $where[] = ['category_id', '=', $param['category_id']];
             }
-            if(isset($filter['category_id'])){
-                $where[] = ['category_id', '=', $filter['category_id']];
-            }
-            if(isset($filter['status'])){
-                $where[] = ['status', '=', $filter['status']];
-            }
-            if(isset($filter['category'])){
-                $category_id = $category::where('name', $filter['category'])->value('id');
-                $where[] = ['category_id', '=', $category_id];
+        } else {
+            if ($param['keyword']) {
+                $where[] = [$param['field'], 'like', '%'.trim($param['keyword']).'%'];
             }
         }
-        // var_dump($where);
 
         if (isset($param['limit'])) {
             $limit = $param['limit'];
             $offset = $param['offset'];
 
-            $items = $model::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
+            $items = $model::with(['parent_category','category'])->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
 
         }else{
-            $items = $model::where($where)->order($sort.' '.$order)->select();
+            $items = $model::with(['parent_category','category'])->where($where)->order($sort.' '.$order)->select();
         }
-        
-        $total = $model::where($where)->count();
 
-        foreach ($items as $key => $value) {
-            if($value['category_id']){
-				$cate = $category::find($value['category_id']);
-				$cate_name = "";
-				if($cate['pid'] != 0){
-					$parent_cate = $category::find($cate['pid']);
-					$cate_name = $parent_cate['name']." -> ".$cate['name'];
-				}else{
-					$cate_name = $cate['name'];
-				}
-                $items[$key]['category'] = $cate_name;
-            }
-        }
+        $total = $model::where($where)->count();
 
         $data = [
             'rows' => $items,
@@ -153,20 +113,7 @@ class Services extends Application
     public function edit($id, Request $request, Service $model, ServiceValidate $validate, ProductCategory $category, ServiceItem $serviceItem)
     {
 
-        $data = $model::find($id);
-        $category = $category::find($data['category_id']);
-        if($category && $category['pid']){
-            $data['child_category_id'] = $data['category_id'];
-            $data['child_category_name'] = $category['name'];
-            $parent_category = $category::find($category['pid']);
-            if($parent_category){
-                $data['parent_category_name'] = $parent_category['name'];
-                $data['parent_category_id'] = $parent_category['id'];
-            }
-        }else{
-            $data['parent_category_name'] = $category['name'];
-            $data['parent_category_id'] = $data['category_id'];
-        }
+        $data = $model::with(['parent_category','category'])->find($id);
 
         if ($request->isPost()) {
             $param = $request->param();

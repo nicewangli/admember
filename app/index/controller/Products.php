@@ -21,46 +21,6 @@ class Products extends Application
     //列表
     public function index(Request $request, Product $model)
     {
-        // $param = $request->param();
-        // if (isset($param['export_data']) && $param['export_data'] == 1) {
-        //     $header = ['Product Code','Name','Product Number','Effective Date','Unit','Weight','Price','Suggested Price','Part Number','Category','Closing Date','Status',' Dimension','Description and notes','Target Price'];
-        //     $body = [];
-        //     $data = $model->select();
-        //     foreach ($data as $item) {
-        //         $record = [];
-        //         $record['code'] = $item->code;
-        //         $record['name'] = $item->name;
-        //         $record['effective_date'] = $item->effective_date;
-        //         $record['unit'] = $item->unit;
-        //         $record['weight'] = $item->weight;
-        //         $record['price'] = $item->price;
-        //         $record['sgs_price'] = $item->sgs_price;
-        //         $record['part'] = $item->part;
-        //         $record['category_id'] = $item->category_id;
-        //         $record['closing_date'] = $item->closing_date;
-        //         $record['status'] = $item->status;
-        //         $record['dimension'] = $item->dimension;
-        //         $record['description'] = $item->description;
-        //         $record['trg_price'] = $item->trg_price;
-
-        //         $body[] = $record;
-        //     }
-        //     return exportData($header, $body, 'Product-' . date('Y-m-d-H-i-s'));
-        // }
-        // $search = input('get.search');
-
-        // $data = $model::whereOr([
-        //     ['code', 'like', $search . '%'],
-        //     ['category_id', 'like', $search . '%'],
-
-        // ])->paginate();
-        // //关键词，排序等赋值
-        // View::assign([
-        //     'data' => $data,
-        //     'page' => $data->render(),
-        //     'total' => $data->total(),
-        //     'search' => $search
-        // ]);
         return View::fetch();
     }
 
@@ -72,31 +32,22 @@ class Products extends Application
         $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
         $where = [];
 
-        if(isset($param['search'])){
-            $where[] = ['name', 'like', '%'.$param['search'].'%'];
+        if (isset($param['status']) && $param['status'] != '') {
+            $where[] = ['status', '=', $param['status']];
         }
 
-        if(isset($param['filter'])){
-            $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
-            if(isset($filter['code'])){
-                $where[] = ['code', '=', $filter['code']];
-            }
-            if(isset($filter['name'])){
-                $where[] = ['name', 'like', '%'.$filter['name'].'%'];
-            }
-            if(isset($filter['category_id'])){
-                $where[] = ['category_id', '=', $filter['category_id']];
-            }
-            if(isset($filter['status'])){
-                $where[] = ['status', '=', $filter['status']];
-            }
-            if(isset($filter['category'])){
-                $category_id = $category::where('name', $filter['category'])->value('id');
-                $where[] = ['category_id', '=', $category_id];
-            }
-            if(isset($filter['brand_name'])){
-                $brand_id = $mapping::where('val', $filter['brand_name'])->value('id');
-                $where[] = ['brand', '=', $brand_id];
+        if (isset($param['field'])) {
+            if ($param['field'] == 'category') {
+                if ($param['parent_category_id']) {
+                    $where[] = ['parent_category_id', '=', $param['parent_category_id']];
+                }
+                if ($param['category_id']) {
+                    $where[] = ['category_id', '=', $param['category_id']];
+                }
+            } else {
+                if ($param['keyword']) {
+                    $where[] = [$param['field'], 'like', '%' . trim($param['keyword']) . '%'];
+                }
             }
         }
         
@@ -104,31 +55,16 @@ class Products extends Application
             $limit = $param['limit'];
             $offset = $param['offset'];
 
-            $items = $model::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+            $items = $model::with(['parent_category','category', 'brand'])->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
 
         }else{
-            $items = $model::where($where)->order($sort.' '.$order)->select()->toArray();
+            $items = $model::with(['parent_category','category', 'brand'])->where($where)->order($sort.' '.$order)->select()->toArray();
         }
         $total = $model::where($where)->count();
 
-        foreach ($items as $key => $value) {
-			if($value['category_id']){
-				$cate = $category::find($value['category_id']);
-				$cate_name = "";
-				if($cate['pid'] != 0){
-					$parent_cate = $category::find($cate['pid']);
-					$cate_name = $parent_cate['name']." -> ".$cate['name'];
-				}else{
-					$cate_name = $cate['name'];
-				}
-                $items[$key]['category'] = $cate_name;
-            }
-        
-            if($value['brand']){
-                $items[$key]['brand_name'] = $mapping::where('id', $value['brand'])->value('val');
-            }
-            
-            if (!empty($ids)) {
+
+        if (!empty($ids)) {
+            foreach ($items as $key => $value) {
                 if (in_array($value['id'], $ids)) {
                     $items[$key]['checked'] = true;
                 }else{
@@ -171,20 +107,7 @@ class Products extends Application
     public function edit($id, Request $request, Product $model, ProductValidate $validate, ProductCategory $category, Mapping $mapping)
     {
 
-        $data = $model::find($id);
-        $category = $category::find($data['category_id']);
-        if($category && $category['pid']){
-            $data['child_category_id'] = $data['category_id'];
-            $data['child_category_name'] = $category['name'];
-            $parent_category = $category::find($category['pid']);
-            if($parent_category){
-                $data['parent_category_name'] = $parent_category['name'];
-                $data['parent_category_id'] = $parent_category['id'];
-            }
-        }else{
-            $data['parent_category_name'] = $category['name'];
-            $data['parent_category_id'] = $data['category_id'];
-        }
+        $data = $model::with(['parent_category','category', 'brand'])->find($id);
 
         if ($request->isPost()) {
             $param = input('post.');

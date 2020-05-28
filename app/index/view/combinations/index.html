@@ -1,7 +1,33 @@
-<div id="combinations-toolbar">
-    <a title="Add" onclick="combinations(0)" class="btn btn-primary btn-sm " href="#">
+<div id="combinations-toolbar" class=" d-flex align-items-center">
+    <select name="status" id="combination_status" class="form-control select2 col-md-2 col-lg-1 col-xl-1">
+        <option value="">（所有狀態）</option>
+        <option value="發售中">發售中</option>
+        <option value="停售">停售</option>
+    </select>
+
+    <select name="field" id="combination_field" class="form-control select2 ml-2 col-md-2 col-lg-1 col-xl-1">
+        <option value="code">編號</option>
+        <option value="category">類別</option>
+        <option value="name">名稱</option>
+        <option value="summary">摘要</option>
+    </select>
+
+    <input type="text" class="form-control ml-2 col-md-3 col-lg-3 col-xl-3" id="combination_keyword" name="keyword">
+
+    <select name="parent_category" id="combination_parent_category" class="form-control ml-2 col-md-2 col-lg-1 col-xl-1 hidden" style="width: 100%;">
+        <option value="">（所有類別）</option>
+
+    </select>
+    <select name="category" id="combination_category" class="form-control ml-2 col-md-2 col-lg-1 col-xl-1 hidden" style="width: 100%;">
+        <option value="">（所有類別）</option>
+
+    </select>
+
+    <button class="btn btn-primary btn-sm ml-2 search" style="white-space: nowrap;">搜尋</button>
+
+    <button title="Add" onclick="combinations(0)" class="btn btn-primary btn-sm ml-2 d-flex align-items-center">
         <i class="fa fa-plus"></i> Add
-    </a>
+    </button>
 
 </div>
 
@@ -70,6 +96,21 @@
             $('#combinations-grid').bootstrapTable({
                 url: '/index/combinations/lists',            //请求后台的URL（*）
                 method: 'get',                                   //请求方式（*）
+                queryParams: function (params) {
+                    return {
+                        offset: params.offset,  //页码
+                        limit: params.limit,   //页面大小
+                        search : params.search, //搜索
+                        order : params.order, //排序
+                        sort : params.sort, //排序
+                        filter: params.filter,
+                        status: $("#combination_status").val(),
+                        field: $("#combination_field").val(),
+                        keyword: $("#combination_keyword").val(),
+                        parent_category_id: $("#combination_parent_category").val(),
+                        category_id: $("#combination_category").val()
+                    };
+                },
                 toolbar: "#combinations-toolbar",                    //工具按钮用哪个容器
                 pagination: true,                                //是否显示分页（*）
                 sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
@@ -83,7 +124,7 @@
                 stickyHeader: true,
                 stickyHeaderOffsetLeft: '3em',
                 stickyHeaderOffsetRight: '3em',
-                filterControl: true,
+                filterControl: false,
                 search: false,                                   //显示搜索框
                 pageSize: 10,                                    //每页的记录行数（*）
                 pageList: [10, 20, 50, 100],
@@ -96,20 +137,17 @@
                     width: "120px",
                     clickToSelect: true,                        //是否在单击行时选择复选框或radiobox
                     sortable: true,                              //是否允许列可以排序
-                    filterControl: 'input'
                 }, {
                     field: 'category',
                     title: '類別',
                     searchable: true,
-                    filterControl: 'select'
+                    formatter: cateFormatter
                 }, {
                     field: 'name',
                     title: '名稱',
-                    filterControl: 'input'
                 }, {
                     field: 'status',
                     title: '狀態',
-                    filterControl: 'select'
                 }, {
                     field: 'price',
                     title: '售價',
@@ -117,9 +155,9 @@
                 }, {
                     field: 'brand_name',
                     title: '品牌',
-                    filterControl: 'select',
-                    visible: false, 
-                    sortable: true
+                    visible: false,
+                    sortable: true,
+                    formatter: brandFormatter
                 }, {
                     field: 'part',
                     title: '條碼',
@@ -134,7 +172,53 @@
                     formatter: operateFormatter
                 }, ],
             });
-        })
-        
+
+            $(".search").click(function () {
+                $("#combinations-grid").bootstrapTable('selectPage', 1).bootstrapTable('refresh');
+            });
+
+            $("#combination_field").change(function () {
+                if ($(this).val() == 'category') {
+                    $("#combination_keyword").addClass('hidden');
+                    $("#combination_parent_category").removeClass('hidden').select2();
+                    $("#combination_category").removeClass('hidden').select2();
+                    initRolesParentCategory('combination');
+
+                } else {
+                    $("#combination_keyword").removeClass('hidden');
+                    $("#combination_parent_category").addClass('hidden').val('');
+                    $("#combination_category").addClass('hidden').val('');
+                    if ($('#combination_parent_category').data('select2')) {
+                        $('#combination_parent_category').select2('destroy');
+                    }
+                    if ($('#combination_category').data('select2')) {
+                        $('#combination_category').select2('destroy');
+                    }
+                }
+            })
+        });
+
+        function brandFormatter(value, row, index){
+            let name = '';
+            if (row.brand && row.brand.name) {
+                name +=  row.brand.name;
+            }
+
+            return name;
+        }
+
+        function cateFormatter(value, row, index){
+            let name = '';
+            if (row.parent_category && row.parent_category.name) {
+                name +=  row.parent_category.name;
+            }
+            if(row.category && row.category.name){
+                name += '->' + row.category.name;
+            }
+            return name;
+        }
+
     </script>
+{include file='public/content_common' /}
+
 {/block}

@@ -70,16 +70,15 @@
 
                         <div class="form-group row ">
                             <label class="col-md-3 control-label" for="category_id">類別：</label>
-                            <input type="hidden" name="category_id" id="category_id" value="{$data.category_id|default=''}">
                             <div class="col-md-7">
                                 <select id="parent_category_id" name="parent_category_id"  class="form-control" required="required">
                                     <option value=""></option>
-                                    <option value="{$data.parent_category_id|default=''}" selected> {$data.parent_category_name|default=''}</option>
+                                    <option value="{$data.parent_category_id|default=''}" selected> {$data.parent_category.name|default=''}</option>
                                 </select>
 
-                                <select id="child_category_id" name="child_category_id"  class="form-control">
+                                <select id="category_id" name="category_id"  class="form-control">
                                     <option value=""></option>
-                                    <option value="{$data.child_category_id|default=''}" selected>{$data.child_category_name|default=''}</option>
+                                    <option value="{$data.category_id|default=''}" selected>{$data.category.name|default=''}</option>
                                     
                                 </select>
                             </div>
@@ -174,11 +173,11 @@
                                         <tr>
                                             <input type="hidden" name="item[{$key}][product_id]" value="{$cp.id}">
                                             <td width="5%"><input type="checkbox" name=""></td>
-                                            <td width="15%"><input type="number" name="item[{$key}][ordering]" value="{$cp.ordering}"style="width: 100%;"></td>
+                                            <td width="15%"><input class="form-control form-control-sm" type="number" name="item[{$key}][ordering]" value="{$cp.ordering}"style="width: 100%;"></td>
                                             <td>{$cp.product_code}</td>
                                             <td>{$cp.product_name}</td>
                                             <td width="15%">{$cp.product_price}</td>
-                                            <td width="15%"><input type="number" name="item[{$key}][quantity]" value="{$cp.quantity}"style="width: 100%;"></td>
+                                            <td width="15%"><input class="form-control form-control-sm" type="number" name="item[{$key}][quantity]" value="{$cp.quantity}"style="width: 100%;"></td>
                                         </tr>
                                     {/volist}
                                     {/notempty}
@@ -220,7 +219,7 @@
     $(document).ready( function (){
 
         initRolesParentCategory();
-        $("#child_category_id").select2();
+        $("#category_id").select2();
         let parent_category_id = $("#parent_category_id").val();
         if(parent_category_id){
             initRolesChildCategory(parent_category_id);
@@ -242,7 +241,7 @@
 
         $('#parent_category_id').on('select2:select', function (e) {
             let data = e.params.data;
-            $("#child_category_id").children().not(":eq(0)").remove();
+            $("#category_id").children().not(":eq(0)").remove();
             initRolesChildCategory(data.id);
         })
 
@@ -253,7 +252,7 @@
                 data: {id: id},
                 dataType: 'json',
                 success(res){
-                    $("#child_category_id").select2({
+                    $("#category_id").select2({
                         placeholder: "请选择", //默认input 文字
                         data: res.results,
                     })
@@ -269,14 +268,6 @@
             if (id) {
                 url = '{:url("combinations/edit?id=")}' + id
             }
-
-            let category_id = $("#parent_category_id").val();
-            let child_category_id = $("#child_category_id").val();
-
-            if (child_category_id) {
-                category_id = child_category_id;
-            }
-            $("#category_id").val(category_id);
 
             let params = $("#combinationForm").serialize();  
             

@@ -71,16 +71,15 @@
                         <div class="form-group row ">
                             <label class="col-md-3 control-label" for="category_id">類別：</label>
                             <div class="col-md-7">
-                                <input type="hidden" name="category_id" name="category_id" id="category_id" value="{$data.category_id|default=''}">
 
                                 <select id="parent_category_id" name="parent_category_id"  class="form-control" required="required">
                                     <option value=""></option>
-                                    <option value="{$data.parent_category_id|default=''}" selected> {$data.parent_category_name|default=''}</option>
+                                    <option value="{$data.parent_category_id|default=''}" selected> {$data.parent_category.name|default=''}</option>
                                 </select>
 
-                                <select id="child_category_id" name="child_category_id"  class="form-control">
+                                <select id="category_id" name="category_id"  class="form-control">
                                     <option value=""></option>
-                                    <option value="{$data.child_category_id|default=''}" selected>{$data.child_category_name|default=''}</option>
+                                    <option value="{$data.category_id|default=''}" selected>{$data.category.name|default=''}</option>
                                     
                                 </select>
                             </div>
@@ -223,7 +222,7 @@
 $(document).ready( function (){
 
     initRolesParentCategory();
-    $("#child_category_id").select2();
+    $("#category_id").select2();
     let parent_category_id = $("#parent_category_id").val();
     if(parent_category_id){
         initRolesChildCategory(parent_category_id);
@@ -245,7 +244,7 @@ $(document).ready( function (){
 
     $('#parent_category_id').on('select2:select', function (e) {
         let data = e.params.data;
-        $("#child_category_id").children().not(":eq(0)").remove();
+        $("#category_id").children().not(":eq(0)").remove();
         initRolesChildCategory(data.id);
     })
 
@@ -256,7 +255,7 @@ $(document).ready( function (){
             data: {id: id},
             dataType: 'json',
             success(res){
-                $("#child_category_id").select2({
+                $("#category_id").select2({
                     placeholder: "请选择", //默认input 文字
                     data: res.results,
                 })
@@ -272,16 +271,6 @@ $(document).ready( function (){
         if (id) {
             url = '{:url("products/edit?id=")}' + id
         }
-
-
-        let category_id = $("#parent_category_id").val();
-        let child_category_id = $("#child_category_id").val();
-
-        if (child_category_id) {
-            category_id = child_category_id
-        }
-
-        $("#category_id").val(category_id);
 
         let params = $("#productForm").serialize();  
         

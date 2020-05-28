@@ -118,7 +118,8 @@ $(document).ready( function (){
             field: 'category',
             title: '類別',
             searchable: true,
-            filterControl: 'select'
+            filterControl: 'select',
+            formatter: cateFormatter
         }, {
             field: 'name',
             title: '名稱',
@@ -283,6 +284,7 @@ $(document).ready( function (){
         parent.layer.close(index);
     });
 
-})
+});
+
 </script>
 </html>
