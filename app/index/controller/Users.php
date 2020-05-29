@@ -93,11 +93,24 @@ class Users extends Application
                 return $this->error('請選擇要刪除的用戶！');
             }
         }
+		
+		 $search = input('get.search');
+        $where =[];
+        if(isset($search)){
+            $where =       [
+                ['first_name', 'like', '%'. $search . '%'],
+                ['for_short', 'like', '%'. $search . '%'],
+                ['category', 'like', '%'. $search . '%'],
+            ];
+        }
 
-        $list = Db::name('users')->alias('u')->join('teams g', 'g.title=u.ugid', 'left')->field('u.uid,u.ugid,u.member_no,u.first_name,u.for_short,u.last_name,u.category,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.for_short asc')->paginate(10);
+        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->whereOr($where)->field('u.uid,u.ugid,u.member_no,u.first_name,u.for_short,u.last_name,u.category,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.uid desc')->paginate(10);
 //        $list = User::order('for_short asc')->paginate(10);
 
-        View::assign('list', $list);
+       View::assign([
+            'list'=>$list,
+            'search'=>$search,
+        ]);
         return View::fetch();
     }
 

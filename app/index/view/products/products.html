@@ -28,7 +28,6 @@
     {js href="__PLUGIN__/bootstrap/js/bootstrap.bundle.min.js" /}
     {js href="__JS__/adminlte.min.js" /}
     {js href="__JS__/init.js" /}
-    {js href="__JS__/application.js" /}
 
     <!-- 加载 Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.full.min.js"></script>
@@ -246,5 +245,15 @@ $(document).ready( function (){
 
 });
 
+function cateFormatter(value, row, index){
+    let name = '';
+    if (row.parent_category && row.parent_category.name) {
+        name +=  row.parent_category.name;
+    }
+    if(row.category && row.category.name){
+        name += '->' + row.category.name;
+    }
+    return name;
+}
 </script>
 </html>

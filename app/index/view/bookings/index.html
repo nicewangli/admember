@@ -1,9 +1,5 @@
 {extend name="public/base" /}
 {block name='style'}
-{css href="__PLUGIN__/fullcalendar/core/main.min.css"}
-{css href="__PLUGIN__/fullcalendar/daygrid/main.min.css"}
-{css href="__PLUGIN__/fullcalendar/timegrid/main.min.css"}
-{css href="__PLUGIN__/fullcalendar/bootstrap/main.min.css"}
 {/block}
 
 {block name="head_js"}
@@ -216,7 +212,7 @@
                                         <td class="bg-info disabled color-palette">({$dateWeek.week})<br>{$dateWeek.date}</td>
                                         <td>{$shijian.id}</td>
                                         {volist name="beauticianArr" id="bea"}
-                                        <td data-bea="{$bea.id}">{volist name="bookingItems" id="bi"}{if condition="$bi.booking_date eq $dateWeek.date  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}{$bi.service_name}<input type="hidden" value="{$bi.bc}" data-id="{$bi.bid}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$dateWeek.date}" data-type="bi">{/if}{/volist}{volist name="adArr" id="ad"}{if condition='$ad.vdate eq $dateWeek.date && $ad.user_id eq $bea.id && ($ad.end_time > $shijian.id&&$shijian.id>=$ad.start_time)'}{$ad.item}<input type="hidden" data-type="ad">{/if}{/volist}</td>{/volist}
+                                        <td class="get_tooltip" data-bea="{$bea.id}" data-placement="right">{volist name="bookingItems" id="bi"}{if condition="$bi.booking_date eq $dateWeek.date  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}{$bi.service_name}<input type="hidden" value="{$bi.bc}" data-id="{$bi.bid}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$dateWeek.date}" data-type="bi" data-start_time="{$bi.start_time}" data-end_time="{$bi.end_time}" data-bea_name="{$bi.u_name}" data-r_name="{$bi.r_name}" data-m_name="{$bi.m_name}" data-m_phone="{$bi.phone_mobile}" data-service_name="{$bi.service_name}" data-status_name="{$bi.status_name}"><i class="test_tooltip" data-toggle="tooltip"style="position: absolute;"></i>{/if}{/volist}{volist name="adArr" id="ad"}{if condition='$ad.vdate eq $dateWeek.date && $ad.user_id eq $bea.id && ($ad.end_time > $shijian.id&&$shijian.id>=$ad.start_time)'}{$ad.item}<input type="hidden" data-type="ad">{/if}{/volist}</td>{/volist}
                                         <td>{$shijian.text}</td>
                                         <td class="bg-info disabled color-palette">{$dateWeek.date}</td>
                                     </tr>
@@ -236,14 +232,6 @@
 
 
 {block name='js'}
-{js href="__PLUGIN__/fullcalendar/core/main.min.js"}
-{js href="__PLUGIN__/fullcalendar/daygrid/main.min.js"}
-{js href="__PLUGIN__/fullcalendar/timegrid/main.min.js"}
-{js href="__PLUGIN__/fullcalendar/interaction/main.min.js"}
-{js href="__PLUGIN__/fullcalendar/bootstrap/main.min.js"}
-{js href="__PLUGIN__/fullcalendar/premium/resource-common/main.min.js"}
-{js href="__PLUGIN__/fullcalendar/premium/resource-daygrid//main.min.js"}
-{js href="__PLUGIN__/fullcalendar/premium/resource-timegrid/main.min.js"}
 
 <script>
     $(".book-type").click(function () {
@@ -258,7 +246,7 @@
     });
     var calendar;
     $(function () {
-        $("[data-toggle='tooltip']").tooltip();
+        $("[data-toggle='tooltip']").tooltip({html : true });
         $("#bea tr").each(function(rowIndex) {
             _w_table_rowspan("#bea",rowIndex);
         });
@@ -288,7 +276,7 @@
             type: "POST",
             data: {member: member},
             success(res) {
-                let nodes = '<option value="">共'+res.total+'個相關預約</option>';
+                let nodes = '<option value="" selected>共'+res.total+'個相關預約</option>';
                 $('#booking_item').empty();
                 $.each(res.booking, function (index, element) {
                     console.log(element);
@@ -355,14 +343,54 @@
             let b_id = _w_table_firsttd.find('input').attr('data-id');
             let beautician1 = _w_table_firsttd.find('input').attr('data-resource');
             let bi_id = _w_table_firsttd.find('input').attr('data-event');
+            let day = _w_table_firsttd.find('input').attr('data-day');
+            let start_time = _w_table_firsttd.find('input').attr('data-start_time');
+            let end_time = _w_table_firsttd.find('input').attr('data-end_time');
+            let phone = _w_table_firsttd.find('input').attr('data-m_phone');
+            let room = _w_table_firsttd.find('input').attr('data-r_name');
+            let member = _w_table_firsttd.find('input').attr('data-m_name');
+            let bea = _w_table_firsttd.find('input').attr('data-bea_name');
+            let service = _w_table_firsttd.find('input').attr('data-service_name');
+            let status = _w_table_firsttd.find('input').attr('data-status_name');
             _w_table_firsttd.attr("onClick","show_booking("+b_id+','+beautician1+','+bi_id+");");
-            _w_table_firsttd.attr("onmouseover","alert('ggg')");
+            //TODO:差显示排版
+            let title = '<div class="card">\n' +
+                '    <div class="card-body">\n' +
+                '        <span class="form-control">状态:'+status+'</span>\n' +
+                '        <hr>\n' +
+                '        <span class="form-control">日期:'+day+'</span>\n' +
+                '        <hr>\n' +
+                '        <span class="form-control">时间:'+start_time+'--'+end_time+'</span>\n' +
+                '        <hr>\n' +
+                '        <span class="form-control">房间:'+room+'</span>\n' +
+                '        <hr>\n' +
+                '        <span class="form-control">会员/非会员:'+member+'</span>\n' +
+                '        <hr>\n' +
+                '        <span class="form-control">电话:'+phone+'</span>\n' +
+                '        <hr>\n' +
+                '        <span class="form-control">美容师:'+bea+'</span>\n' +
+                '        <hr>\n' +
+                '        <span class="form-control">服务:'+service+'</span>\n' +
+                '        <hr>\n' +
+                '        <span class="form-control">备注：</span>\n' +
+                '    </div>' +
+                '</div>';
+            _w_table_firsttd.find('i').attr("data-original-title",title);
             _w_table_firsttd.css('background-color',bc);
         } else if(type==='ad') { //onselectstart="return false" οnselect="document.selection.empty()"
             _w_table_firsttd.attr('οnselect','document.selection.empty()');
             _w_table_firsttd.attr('onselectstart','return false');
         }
     }
+    $(".get_tooltip").on('mousemove',function (e) {
+        console.log(e.pageY);
+        $(this).find('i').css({top: e.pageY, left: e.pageX });
+        $(this).find('i').tooltip('show');
+    });
+    $(".get_tooltip").on('mouseleave',function (e) {
+        $(this).find('i').tooltip('hide');
+    });
+
     $("#services_current_month").click(function () {
         let date = $("#date_start").val();
         let start_date = moment(date).startOf("month");
@@ -479,5 +507,8 @@
 
 
     });
+
+    //给个悬浮弹窗显示和隐藏函数
+
 </script>
 {/block}

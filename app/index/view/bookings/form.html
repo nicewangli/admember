@@ -109,8 +109,17 @@
                 <div class="form-group row">
                     <label class="col-md-2 control-label" for="booking_date">日期：</label>
                     <div class="col-md-9">
-                        <input type="text" class="form-control datePicker to-search" id="booking_date" name="booking_date"
-                               value="{$item.booking_date|default=''}" required>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control datePicker" id="booking_date" name="booking_date"
+                                       value="{$item.booking_date|default=''}" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="booking_week" name="booking_week"
+                                       value="{$item.booking_week|default=''}" readonly>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

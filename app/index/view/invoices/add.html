@@ -51,7 +51,7 @@
 <body>
     <div class="container-fluid">
         <form id="invoiceForm">
-            <input type="hidden" name="id" id="id" value="{$data.id|default=''}">
+            <input type="hidden" name="id" id="id" value="{$data.id|default='0'}">
             <div class="card-body">
                 <div class="row pt-2">
                     <div class="col-xs-12 col-md-6">
@@ -120,7 +120,7 @@
                         <div class="form-group row">
                             <label class="col-md-3 control-label" for="member_id">編號：</label>
                             <div class="col-md-7">
-                                <input class="form-control" type="hidden" id="member_id" name="member_id" value="{$member.id|default=''}" required>
+                                <input class="form-control" type="hidden" id="member_id" name="member_id" value="{$member.id|default='0'}" required>
                                 <input class="form-control" type="text" id="member_no" value="{$member.member_no|default=''}" required>
                             </div>
                         </div>
@@ -230,7 +230,11 @@
                                             <td colspan="8">
                                                 <a title="刪除" onclick="del_transfer()" class="btn btn-default btn-sm " href="#">刪除</a>
                                                 <a title="服務套票" onclick="transfer_packages('{$val.index}')" class="btn btn-default btn-sm " href="#">轉套票</a>
-                                                <input type="hidden" class="item_count{$val.index}" value="{:count($val.transfer)}">
+                                                {if isset($val.transfer)}
+                                                    <input type="hidden" class="item_count{$val.index}" value="{:count($val.transfer)}">
+                                                {else /}
+                                                    <input type="hidden" class="item_count{$val.index}" value="0">
+                                                {/if}
                                             </td>
                                         </tr>
                                         <tr bgcolor="#e9ecef">
@@ -479,11 +483,11 @@
                         <div class="col-lg-12" align="center">
                             <button class="btn flat btn-info btn-sm submit">
                                 <i class=" fa fa-file-alt"></i>
-                                Save
+                                存儲
                             </button>
 
                             <button class="btn btn-default btn-sm btn-close">
-                                Close
+                                取消
                             </button>
                         </div>
                     </div>
@@ -890,7 +894,7 @@
             let url = '{:url("invoices/add")}';
 
             let id = $("#id").val();
-            if (id) {
+            if (id > 0) {
                 url = '{:url("invoices/edit?id=")}' + id
             }
 

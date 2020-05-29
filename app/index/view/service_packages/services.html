@@ -180,6 +180,11 @@
             pageList: [10, 20, 50, 100],
             singleSelect: false,                              //开启单选,想要获取被选中的行数据必须要有该参数
             columns: [{
+                field: 'expiration_date',
+                title: '有效日期',
+                filterControl: 'select',
+                sortable: true
+            },{
                 field: 'code',
                 title: '編號',
                 width: "120px",
@@ -191,23 +196,21 @@
                 title: '名稱',
                 filterControl: 'input'
             }, {
-                field: 'status',
-                title: '狀態',
-                filterControl: 'select'
+                field: 'arrears',
+                title: '分期尚欠',
+                formatter: function (value, row, index) {
+                    return '$' + parseFloat(value).toFixed(1)
+                }
             }, {
-                field: 'price',
-                title: '售價',
-                sortable: true
+                field: 'avg_price',
+                title: '平均價值',
+                sortable: true,
+                formatter: function (value, row, index) {
+                    return '$' + parseFloat(value).toFixed(1)
+                }
             }, {
-                field: 'brand_name',
-                title: '品牌',
-                filterControl: 'select',
-                visible: false, 
-                sortable: true
-            }, {
-                field: 'part',
-                title: '條碼',
-                visible: false, 
+                field: 'package_value_unit',
+                title: '套票值',
                 sortable: true
             }, ],
             onClickRow:function (row, element) {

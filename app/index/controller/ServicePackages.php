@@ -218,6 +218,7 @@ class ServicePackages extends Application
         }
 
         $where[] = ['it.service_type', '=', 1];
+        $where[] = ['it.used_up', '=', 0];
 
         //        if (isset($param['limit'])) {
 //            $limit = $param['limit'];
@@ -248,8 +249,8 @@ class ServicePackages extends Application
 
             foreach ($items as $key => $value) {
                 $items[$key]['package_value_unit'] = $value['package_value'] . $value['package_unit'];
-                $items[$key]['arrears'] = '$0.0';
-                $items[$key]['avg_price'] = '$' . number_format($value['total'] / $value['package_value'], 1);
+                $items[$key]['arrears'] = 0.0;
+                $items[$key]['avg_price'] = $value['package_value'] ? $value['total'] / $value['package_value'] : 0;
 
                 if ($value['expiration_month'] == 0) {
                     $items[$key]['expiration_date'] = '';

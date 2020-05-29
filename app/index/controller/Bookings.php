@@ -57,14 +57,16 @@ class Bookings extends Application
             }
 
         } else {
-            $dayArr[] = ['date'=>$date_start,'week'=>$weekArr[date('w',$date_start)]];
+            $dayArr[] = ['date'=>$date_start,'week'=>$weekArr[date('w',time())]];
         }
         $result = User::field('uid as id, for_short as title')->order("first_name asc")->where($beaWhere)->select()->toArray();
         $time = workingHours();
         $colorArr = Booking::event_colors();
+        $statusArr = Booking::event_status_zn();
         $ads = Attendance::attendanceType();
         $model = new BookingItem();
-        $item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->field('bi.*,b.status,b.booking_date,b.id as bid')->where($biWhere);
+        //
+        $item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->leftJoin('member m','m.id = b.member_id')->leftJoin('users u','u.uid = bi.beautician1')->leftJoin('room r','r.id = b.room_id')->field('bi.*,b.status,b.booking_date,b.id as bid,m.first_name as m_name,r.name as r_name,u.for_short as u_name,m.phone_mobile')->where($biWhere);
         $booking_item = $item->where($biWhere)->select()->toArray();
         $adArr = Attendance::field('user_id,vdate,start_time,end_time,item')->select()->toArray();
         foreach ($adArr as &$ad) {
@@ -72,6 +74,7 @@ class Bookings extends Application
         }
         foreach ($booking_item as &$item) {
             $item['bc'] = $colorArr[$item['status']];
+            $item['status_name'] = array_search($item['status'],$statusArr);
         }
         return View::fetch('index', ['date_start' => $date_start, 'date_end' => $date_end, 'beauticianArr' => $result, 'bookingItems' => $booking_item, 'time' => $time, 'dayArr' => $dayArr,'search'=>$search,'adArr'=>$adArr]);
     }
@@ -139,6 +142,7 @@ class Bookings extends Application
     }
 
     //TODO 弹窗数据加载
+
     public function list(Request $request, Booking $model)
     {
         $param = input('get.');

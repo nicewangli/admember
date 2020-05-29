@@ -166,6 +166,7 @@ class Invoices extends Application
                 return $this->error($validate->getError());
             }
 
+            unset($param['id']);
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
             //编号

@@ -129,21 +129,12 @@ class Invoice extends Model
             $list[$key]['package_value_lave'] = number_format(floatval($value['package_value']) - floatval($value['package_value_used']), 1).$unit;
             $list[$key]['package_unit'] = $unit;
 
+            //套票使用item
+            $items = Db::name('use_package_item')->alias('upi')->leftJoin('use_package up', 'up.id = upi.use_package_id')->field('up.id, up.use_time, upi.total_deduction, up.code, "使用" as action, "使用套票" as type')->where(['upi.invoice_id' => $value['invoice_id'], 'up.store_id' => $value['store_id'], 'up.member_id' => $value['member_id'], 'upi.service_package_id' => $value['service_id']])->select()->toArray();
 
-            $used = Db::name('use_package_item')->alias('upi')->leftJoin('use_package up', 'upi.use_package_id = up.id')->where(['upi.invoice_id' => $value['invoice_id'], 'store_id' => $value['store_id'], 'member_id' => $value['member_id'], 'upi.service_package_id' => $value['service_id']])->sum('upi.deduction');
-            $list[$key]['used'] = number_format(floatval($used), 1);
+            $transfers = Db::name('invoice_transfer')->alias('it')->leftJoin('invoice i', 'it.new_invoice_id = i.id')->field('i.id, i.invoice_date as use_time, it.transfer_value as total_deduction, i.invoice_no as code, "轉套票" as action, "發票" as type')->where(['it.old_invoice_id' => $value['invoice_id'], 'i.store_id' => $value['store_id'], 'i.member_id' => $value['member_id'], 'it.old_invoice_item_id' => $value['id']])->select()->toArray();
 
-            $list[$key]['lave'] = number_format((floatval($value['total']) - floatval($used)), 1);
-
-
-            $items = Db::name('use_package_item')->alias('upi')->leftJoin('use_package up', 'up.id = upi.use_package_id')->field('up.id, up.use_time, upi.total_deduction, up.code')->where(['upi.invoice_id' => $value['invoice_id'], 'store_id' => $value['store_id'], 'member_id' => $value['member_id']])->select()->toArray();
-            foreach ($items as $k => $v) {
-                $items[$k]['action'] = '使用';
-                $items[$k]['type'] = '使用套票';
-            }
-
-            $list[$key]['items'] = $items;
-
+            $list[$key]['items'] = array_merge($items, $transfers);
 
             if ($value['package_type'] == 2) {
                 $services = Db::name('service_package_item')->alias('spi')->leftJoin('service s', 's.id = spi.service_id')->field('spi.service_id, spi.deduct_val, s.code, s.name, s.price')->where('service_package_id', $value['service_id'])->select();

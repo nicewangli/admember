@@ -204,7 +204,7 @@ $(document).ready( function (){
                             '             <td colspan="8">\n' +
                             '                 <a title="刪除" onclick="del_transfer()" class="btn btn-default btn-sm " href="#">刪除</a>\n' +
                             '                 <a title="服務套票" onclick="transfer_packages(' + number + ')" class="btn btn-default btn-sm " href="#">轉套票</a>\n' +
-                            '                 <input type="hidden" class="item_count" value="0">\n' +
+                            '                 <input type="hidden" class="item_count' + number + '" value="0">\n' +
                             '             </td>\n' +
                             '           </tr>\n' +
                             '           <tr bgcolor="#e9ecef">\n' +
@@ -286,5 +286,15 @@ $(document).ready( function (){
 
 });
 
+function cateFormatter(value, row, index){
+    let name = '';
+    if (row.parent_category && row.parent_category.name) {
+        name +=  row.parent_category.name;
+    }
+    if(row.category && row.category.name){
+        name += '->' + row.category.name;
+    }
+    return name;
+}
 </script>
 </html>

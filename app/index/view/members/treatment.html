@@ -251,8 +251,8 @@
                         '<td>' + row.package_value_used  + row.package_unit + '</td>\n'+
                         '<td>' + row.package_value_lave + '</td>\n'+
                         '<td>' + row.total + '</td>\n'+
-                        '<td>' + row.used + '</td>\n'+
-                        '<td>' + row.lave + '</td>\n'+
+                    '<td>' + parseFloat(row.total / row.package_value * row.package_value_used).toFixed(1) + '</td>\n'+
+                    '<td>' + parseFloat(row.total - row.total / row.package_value * row.package_value_used).toFixed(1) + '</td>\n'+
                         '</tr>';
 
                 use_list = '<tr>\n'+
@@ -270,9 +270,9 @@
                     $.each(items, function(index, element){
                         use_list += '<tr>\n'+
                             '<td>' + element.use_time + '</td>\n'+
-                            '<td>使用</td>\n'+
+                            '<td>' + element.action + '</td>\n'+
                             '<td class="text-right">' + '-' + parseFloat(element.total_deduction).toFixed(1) + '</td>\n'+
-                            '<td>使用套票</td>\n'+
+                            '<td>' + element.type + '</td>\n'+
                             '<td>' + element.code + '</td>\n'+
                                 '<td class="text-right">' + '-' + parseFloat(element.total_deduction * (row.total / row.package_value)).toFixed(1) + '</td>\n'+
                             '</tr>';

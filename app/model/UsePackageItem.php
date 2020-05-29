@@ -26,7 +26,7 @@ class UsePackageItem extends Model
                 $this->insert($data[$key]);
             }
 
-            $total_deduction = $this::withTrashed()->where(['service_package_id' => $value['service_package_id']])->sum('total_deduction');
+            $total_deduction = $this::withTrashed()->where(['service_package_id' => $value['service_package_id'], 'invoice_id' => $value['invoice_id']])->sum('total_deduction');
 
             $invoice_item = Db::name('invoice_item')->alias('it')->rightJoin('invoice i', 'i.id = it.invoice_id')->where(['it.invoice_id' => $value['invoice_id'], 'it.service_id' => $value['service_package_id'], 'it.service_type' => 1, 'i.member_id' => $member_id])->field('it.id, it.package_value')->find(); 
 
