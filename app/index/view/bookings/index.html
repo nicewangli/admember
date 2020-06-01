@@ -11,16 +11,15 @@
         opacity: 1!important;
     }
     .tooltip-inner {
-        max-width: 300px;
+        min-width: 260px;
         padding: 0.25rem 0.5rem;
         color: black;
         text-align: left;
         background-color: #ffff003b;
         border-radius: 0.25rem;
     }
-    .tooltip-arrow {
+    .bs-tooltip-auto[x-placement^=bottom] .arrow::before, .bs-tooltip-bottom .arrow::before{
         border-bottom-color: #ffff003b!important;
-        opacity:0;
     }
     .tooltip-inner .card .card-body{
         background-color: #ffff003b;
@@ -403,7 +402,7 @@
         $(this).find('i').tooltip('show');
     });
     $(".get_tooltip").on('mouseleave',function (e) {
-        $(this).find('i').tooltip('hide');
+        // $(this).find('i').tooltip('hide');
     });
 
     $("#services_current_month").click(function () {
