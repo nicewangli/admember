@@ -237,7 +237,7 @@
                     <select class="form-control select2" type="text" id="wa_acc" name="wa_acc">
                         <option value="">&nbsp;</option>
                         {foreach name=":getWaAcc()" id='opt'}
-                        <option value="{$opt.mobile}" {if $opt.mobile==$item.wa_acc}selected{/if}>
+                        <option value="{$opt.mobile}" {if isset($item) && $opt.mobile==$item.wa_acc}selected{/if}>
                             {$opt.mobile}
                         </option>
                         {/foreach}

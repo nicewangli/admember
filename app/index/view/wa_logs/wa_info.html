@@ -201,7 +201,7 @@
 
         $(".submit").click(function () {
             let node = '';
-            let url = '{:url("wa_logs/send_msg")}';
+            let url = '{:url("wa_accounts/send_msg")}';
             let params = $("#wa_info").serialize();
             $.ajax({
                 url: url,

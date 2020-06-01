@@ -185,114 +185,122 @@
                             <div class="col-xs-12 col-md-8">
                                 <h5>快速設定</h5>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 control-label " for="shops"> 設定方式 </label>
+                                    <label class="col-sm-2 control-label " for="types"> 設定方式 </label>
                                     <div class="col-sm-3">
-                                        <select class="form-control" id="shops" name="shops" size="1"
-                                                value="{$sysConfig.shops}">
+                                        <select class="form-control" id="types" name="shops" size="1">
                                             <option value="0">(編假/取消)</option>
                                             <option value="1">單日編假</option>
                                             <option value="2">重複編假</option>
                                             <option value="3">單日取消</option>
                                         </select>
-
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2  control-label " for="shops"> 注意：</label>
+
+                                <div class="form-group row text-danger hidden" id="attention">
+                                    <label class="col-sm-2  control-label" for="attention"> 注意：</label>
                                     <div class="col-sm-10">
-                                        <h6><a class="bg-danger disabled ">以下設定只會應用在上面的時間表所顯示的日期和美容師</a></h6>
+                                        <h6><a>以下設定只會應用在上面的時間表所顯示的日期和美容師</a></h6>
                                     </div>
                                 </div>
 
 
-                                <div class="form-group row">
-                                    <label class="col-sm-2 control-label " for="shops"> 星期：</label>
+                                <div class="form-group row hidden" id="week">
+                                    <label class="col-sm-2 control-label " for="week"> 星期：</label>
                                     <div class="col-sm-10">
-                                        <input class="form-check-input" type="checkbox">
-                                        <label class="form-check-label">
-                                            <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期日</trans>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <div class="d-flex align-items-center">
+                                            <input class="mr-1" type="checkbox">
+                                            <label class="form-check-label">
+                                                <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期日</trans>
+                                            </label>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                        <input class="form-check-input" type="checkbox">
-                                        <label class="form-check-label">
-                                            <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期一</trans>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="mr-1" type="checkbox">
+                                            <label class="form-check-label">
+                                                <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期一</trans>
+                                            </label>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                        <input class="form-check-input" type="checkbox">
-                                        <label class="form-check-label">
-                                            <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期二</trans>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="mr-1" type="checkbox">
+                                            <label class="form-check-label">
+                                                <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期二</trans>
+                                            </label>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                        <input class="form-check-input" type="checkbox">
-                                        <label class="form-check-label">
-                                            <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期三</trans>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="mr-1" type="checkbox">
+                                            <label class="form-check-label">
+                                                <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期三</trans>
+                                            </label>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                        <input class="form-check-input" type="checkbox">
-                                        <label class="form-check-label">
-                                            <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期四</trans>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input class="form-check-input" type="checkbox">
-                                        <label class="form-check-label">
-                                            <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期五</trans>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input class="form-check-input" type="checkbox">
-                                        <label class="form-check-label">
-                                            <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期六</trans>
-                                        </label>
-
-
+                                            <input class="mr-1" type="checkbox">
+                                            <label class="form-check-label">
+                                                <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期四</trans>
+                                            </label>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="mr-1" type="checkbox">
+                                            <label class="form-check-label">
+                                                <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期五</trans>
+                                            </label>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input class="mr-1" type="checkbox">
+                                            <label class="form-check-label">
+                                                <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期六</trans>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
 
 
-                                <div class="form-group row">
-                                    <label class="col-sm-2 control-label " for="shops"> 休假 </label>
+                                <div class="form-group row hidden" id="vacation">
+                                    <label class="col-sm-2 control-label " for="vacation"> 休假 </label>
                                     <div class="col-sm-3">
-                                        <select class="form-control" id="shops" name="shops" size="1"
-                                                value="{$sysConfig.shops}">
-                                            <option value="0"></option>
-                                            <option value="1"></option>
-                                            <option value="2"></option>
-                                            <option value="3"></option>
+                                        <select class="form-control" id="vacation_item" name="vacation_item" size="1">
+                                            <option value=""></option>
+                                            <option value="O">Day Off</option>
+                                            <option value="AF">年假</option>
+                                            <option value="*">补假</option>
+                                            <option value="PL">事假</option>
+                                            <option value="SL">病假</option>
+                                            <option value="B">工作时间B</option>
+                                            <option value="D">工作时间D</option>
+                                            <option value="E">工作时间E</option>
+                                            <option value="NP">无休假</option>
+                                            <option value="OT">超时工作</option>
+                                            <option value="X">未到/已过办公时间</option>
+                                            <option value="OF">不在公司</option>
+                                            <option value="ER">补公</option>
+                                            <option value="MT">Meeting</option>
+                                            <option value="TR">Training</option>
                                         </select>
 
                                     </div>
                                 </div>
 
 
-                                <div class="form-group row">
-                                    <label class="col-sm-2 control-label " for="shops"> 時間 </label>
+                                <div class="form-group row hidden" id="time">
+                                    <label class="col-sm-2 control-label " for="time"> 時間 </label>
                                     <div class="col-sm-2">
-                                        <select class="form-control" id="shops" name="shops" size="1"
-                                                value="{$sysConfig.shops}">
-                                            <option value="0"></option>
-                                            <option value="1"></option>
-                                            <option value="2"></option>
-                                            <option value="3"></option>
+                                        <select class="form-control" id="start_time" name="shops" size="1">
+                                            <option value=""></option>
+                                            {volist name=":attendanceHours()" id="att"}
+                                            <option value="{$att.id}">{$att.text}</option>
+                                            {/volist}
                                         </select>
                                     </div>
                                     至
                                     <div class="col-sm-2">
-                                        <select class="form-control" id="shops" name="shops" size="1"
-                                                value="{$sysConfig.shops}">
-                                            <option value="0"></option>
-                                            <option value="1"></option>
-                                            <option value="2"></option>
-                                            <option value="3"></option>
+                                        <select class="form-control" id="end_time" name="shops" size="1">
+                                            <option value=""></option>
+                                            {volist name=":attendanceHours()" id="att"}
+                                            <option value="{$att.id}">{$att.text}</option>
+                                            {/volist}
                                         </select>
                                     </div>
                                 </div>
 
 
-                                <div class="form-group row">
-                                    <label class="col-sm-2 control-label " for="shops"> 備註 </label>
+                                <div class="form-group row hidden" id="remark">
+                                    <label class="col-sm-2 control-label " for="remark"> 備註 </label>
                                     <div class="col-sm-6">
                                         <input class="form-control" type="text" id="terms"
                                                name="terms"
@@ -302,6 +310,12 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row hidden" id="set">
+                                    <label class="col-sm-2 control-label ">  </label>
+                                    <div class="col-sm-6">
+                                        <button class="btn btn-default btn-sm">設定</button>
+                                    </div>
+                                </div>
                             </div>
 
 
@@ -379,7 +393,7 @@
             console.log(moment(start_date).format("YYYY-MM-DD"))
             console.log(moment(end_date).format("YYYY-MM-DD"))
             console.log(moment().subtract(1, 'months'))
-        })
+        });
 
 
         $("#next_month").click(function () {
@@ -395,7 +409,7 @@
             console.log(moment(start_date).format("YYYY-MM-DD"))
             console.log(moment(end_date).format("YYYY-MM-DD"))
             console.log(moment().add(1, 'months'))
-        })
+        });
 
 
         $("#pre_day").click(function () {
@@ -411,7 +425,7 @@
             console.log(moment(start_date).format("YYYY-MM-DD"))
             console.log(moment(end_date).format("YYYY-MM-DD"))
             console.log(moment().subtract(1, 'months'))
-        })
+        });
 
 
         $("#next_day").click(function () {
@@ -427,7 +441,7 @@
             console.log(moment(start_date).format("YYYY-MM-DD"))
             console.log(moment(end_date).format("YYYY-MM-DD"))
             console.log(moment().subtract(1, 'months'))
-        })
+        });
 
 
         $("#pre_week").click(function () {
@@ -443,7 +457,7 @@
             console.log(moment(start_date).format("YYYY-MM-DD"))
             console.log(moment(end_date).format("YYYY-MM-DD"))
             console.log(moment().subtract(1, 'months'))
-        })
+        });
 
 
         $("#next_week").click(function () {
@@ -459,14 +473,49 @@
             console.log(moment(start_date).format("YYYY-MM-DD"))
             console.log(moment(end_date).format("YYYY-MM-DD"))
             console.log(moment().subtract(1, 'months'))
-        })
+        });
 
 
         $('.click-search').click(function () {
             $('#att_index').submit()
+        });
+
+
+        $("#types").change(function () {
+            let type = $(this).val();
+            if (type == 1) {
+                $("#attention").removeClass('hidden');
+                $("#week").addClass('hidden');
+                $("#vacation").removeClass('hidden');
+                $("#time").removeClass('hidden');
+                $("#remark").removeClass('hidden');
+                $("#set").addClass('hidden');
+            }
+            else if (type == 2) {
+                $("#attention").removeClass('hidden');
+                $("#week").removeClass('hidden');
+                $("#vacation").removeClass('hidden');
+                $("#time").removeClass('hidden');
+                $("#remark").removeClass('hidden');
+                $("#set").removeClass('hidden');
+            }
+            else if (type == 3) {
+                $("#attention").removeClass('hidden');
+                $("#week").addClass('hidden');
+                $("#vacation").removeClass('hidden');
+                $("#time").addClass('hidden');
+                $("#remark").addClass('hidden');
+                $("#set").addClass('hidden');
+            }
+            else {
+                $("#attention").addClass('hidden');
+                $("#week").addClass('hidden');
+                $("#vacation").addClass('hidden');
+                $("#time").addClass('hidden');
+                $("#remark").addClass('hidden');
+                $("#set").addClass('hidden');
+            }
         })
-
-
     })
 
 

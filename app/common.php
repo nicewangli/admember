@@ -337,6 +337,28 @@ function workingHours($to_json=false){
     }
 }
 
+function attendanceHours($to_json=false){
+    $start = '00:00:00';
+    $end = '23:30:00';
+    $time = strtotime($start);
+    $timeStop = strtotime($end);
+    $times = [];
+    $val['id'] = date('H:i:s', $time);
+    $val['text'] = date('h:i A', $time);
+    $times[] = $val;
+    while($time<$timeStop) {
+        $time = strtotime('+30 minutes', $time);
+        $val2['id'] = date('H:i:s', $time);
+        $val2['text'] = date('h:i A', $time);
+        $times[] = $val2;
+    }
+    if($to_json){
+        return json_encode($times);
+    }else{
+        return $times;
+    }
+}
+
 function datetime_merge($arr,$fmt='Y-m-d H:i')
 {
     $all_dates = array();

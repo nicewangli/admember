@@ -8,7 +8,7 @@ namespace app\model;
 
 class WaLog extends Model
 {
-    protected $name = 'whatsapps';
+    protected $name = 'whatsapp';
     //处理wa_log数据
     public function setWaLogArray($waLogInfoArr)
     {
