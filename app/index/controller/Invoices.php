@@ -34,7 +34,7 @@ class Invoices extends Application
             $header = ['Invoice No','Store','Member','总金额','待支付','操作人','create_time'];
             $body = [];
             $data = $model->alias('i')->leftJoin('member m','i.member_id = m.id')->leftJoin('store s','s.id = i.store_id')->leftJoin('users u','u.uid  = i.created_user_id')->field('i.*,m.first_name as member_name,s.name as store_name,u.username as user_name')->select();
-//那个平日嬉闹、脸上常挂着轻浮笑容的陈红中            $data = $model->select();
+//            $data = $model->select();
             foreach ($data as $item) {
                 $record = [];
                 $record['invoice_no'] = $item->invoice_no;
