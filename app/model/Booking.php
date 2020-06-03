@@ -52,12 +52,12 @@ class Booking extends Model
 
     public function getCreatedUserNameAttr($value, $data)
     {
-        return User::where('uid', $data['created_user_id'])->value('first_name');
+        return User::where('uid', $data['created_user_id'])->value('for_short');
     }
 
     public function getUpdatedUserNameAttr($value, $data)
     {
-        return User::where('uid', $data['updated_user_id'])->value('first_name');
+        return User::where('uid', $data['updated_user_id'])->value('for_short');
     }
 
     public function getTeamTitleAttr($value, $data)

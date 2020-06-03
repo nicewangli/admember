@@ -16,6 +16,8 @@ use app\model\UsePackageItem;
 use app\model\ServicePackage;
 use app\validate\UsePackageValidate;
 use think\facade\Db;
+use app\model\Booking;
+use app\model\BookingItem;
 
 class UsePackages extends Application
 {
@@ -46,7 +48,7 @@ class UsePackages extends Application
 
 
             if(isset($filter['invoice'])){
-                $invoice_id = $invoice::where('invoice_no', $filter['invoice'])->value('id');
+                $invoice_id = $invoice::where('code', $filter['invoice'])->value('id');
                 $where[] = ['invoice_id', '=', $invoice_id];
             }
             if(isset($filter['use_time'])){
@@ -105,14 +107,20 @@ class UsePackages extends Application
             }
 
             $param['created_user_id'] = getUserId();
+            $param['updated_user_id'] = getUserId();
             $param['created_time'] = time();
+            $param['updated_time'] = time();
             //编号
             $param['code'] = UsePackages::getConfigNo('service_packages','use_package');;
             $result = $model::create($param);
             $use_package_id = $result->id;
 
-            if (isset($param['service'])) {
-                $usePackageItem->saveItem($use_package_id, $param['member_id'], $param['service']);
+            if ($use_package_id) {
+                Booking::where('id', $param['booking_id'])->update(['is_deduct' => 1, 'update_time' => time(), 'updated_user_id' => $this->user->uid, 'use_package_id' => $use_package_id]);
+
+                if (isset($param['service'])) {
+                    $usePackageItem->saveItem($use_package_id, $param['member_id'], $param['service']);
+                }
             }
             
 
@@ -192,6 +200,23 @@ class UsePackages extends Application
         } else {
             $result = $usePackageItem->whereIn('id', $ids)->delete();
         }
+
+    }
+
+    //booking 新增使用套票
+    public function booking_to_use_package(Booking $booking, BookingItem $item_booking, UsePackageItem $usePackageItem, Member $member)
+    {
+        $booking_id = input('booking_id', 0);
+        $from = input('from', '');
+        $data = $booking->alias('b')->leftJoin('store s', 'b.store_id = s.id')->field('b.member_id, b.store_id, s.name as store_name, b.is_member')->find($booking_id);
+        $member_info = [];
+        if ($data['member_id']) {
+            $where['id'] = $data['member_id'];
+            $member_info = $member->findMember($where);
+        }
+        $use_package_items = $item_booking->findItems($booking_id);
+//        dump($use_package_items);
+        return view('add', ['data' => $data, 'use_package_items' => $use_package_items, 'member' => $member_info, 'from' => $from, 'booking_id' => $booking_id]);
 
     }
 }

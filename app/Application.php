@@ -1,4 +1,5 @@
 <?php
+
 namespace app;
 
 use think\facade\Db;
@@ -24,12 +25,12 @@ class Application extends BaseController
         #获取配置
         $this->sysConfig = $this->config->get('setting');
         $this->view->assign('sysConfig', $this->sysConfig);
-        
+
         #菜单
         if ($this->user) {
             $permissions = Permission::field('id,pid,title,url,icon,tips')->where("status=1 and id in({$this->user->team->auth})")->order('o', 'asc')->select();
             $permission = [];
-            foreach ($permissions as $key=>$val) {
+            foreach ($permissions as $key => $val) {
                 $permission[$key]['id'] = $val->id;
                 $permission[$key]['pid'] = $val->pid;
                 $permission[$key]['title'] = $val->title;
@@ -38,22 +39,22 @@ class Application extends BaseController
                 $permission[$key]['tips'] = $val->tips;
             }
             $permission = $this->getPermission($permission);
-            $current_permission = Permission::name('permission')->field('id,pid,title,url,icon,tips,status')->where(['ctrl'=>$this->ctrl,'act' => $this->act] )->find();
+            $current_permission = Permission::name('permission')->field('id,pid,title,url,icon,tips,status')->where(['ctrl' => $this->ctrl, 'act' => $this->act])->find();
 
-            
+
             View::assign('current_permission', $current_permission);
-            View::assign('current_permission_father', $current_permission?$current_permission->father:'');
+            View::assign('current_permission_father', $current_permission ? $current_permission->father : '');
             View::assign('permission', $permission);
             View::assign('user', $this->user);
         }
     }
-    
+
     protected function auth()
     {
 
         //无需登录页面
         $noNeedLogin = [
-            'auth/index','auth/login','auth/verify',
+            'auth/index', 'auth/login', 'auth/verify',
             'auth/logout',
             'profile/index',
         ];
@@ -63,10 +64,10 @@ class Application extends BaseController
             'Upload/uploadpic',
             'Upload/uploadpics',
             'Users/skin',
-			'WaLogs/setting',
+            'WaLogs/setting',
             'WaLogs/send_msg',
-			'WaLogs/send_direct',
-			'WaLogs/logout',
+            'WaLogs/send_direct',
+            'WaLogs/logout',
         ];
 
 
@@ -124,13 +125,16 @@ class Application extends BaseController
             'import_data',
             'booking_to_invoice',
             'service_packages_list',
-            'del_transfer'
+            'del_transfer',
+            'booking_to_use_package',
+            'del_fast',
+            'change_status'
 
         ];
 
 
         $status = false;
-        $this->url = strtolower($this->request->controller().'/'.$this->request->action());
+        $this->url = strtolower($this->request->controller() . '/' . $this->request->action());
         $this->ctrl = $this->request->controller();
         $this->act = $this->request->action();
         //放过无需登录页面
@@ -141,19 +145,19 @@ class Application extends BaseController
         //登录判断
         $auth = Session::get('auth');
         if (!$auth) {
-            return $this -> redirect(url('auth/index'));
+            return $this->redirect(url('auth/index'));
         }
 
         list($identifier, $token) = str_split($auth, 32);
         if (ctype_alnum($identifier) && ctype_alnum($token)) {
-            $user = User::where(['identifier'=>$identifier,'token'=>$token,'status'=>1])->find();
+            $user = User::where(['identifier' => $identifier, 'token' => $token, 'status' => 1])->find();
             if ($user) {
                 if ($token == $user->token && $user->identifier == password($user->uid . md5($user->username . $user->salt))) {
 //                    $status = false;
-                }else{
+                } else {
                     return $this->redirect("/index/auth/index")->with('toastr', 'Login failed!');
                 }
-            }else{
+            } else {
 //                return $this->redirect("/auth/index");
                 return $this->redirect('/index/auth/index')->with('toastr', 'Login failed!');
             }
@@ -166,15 +170,15 @@ class Application extends BaseController
 
 
         //验证页面权限
-        $current_url_id = Permission::where(['ctrl'=>$this->ctrl,'act' => $this->act])->find();
-        if ($current_url_id && in_array($current_url_id->id, explode(',',$this->user->team->auth))) {
+        $current_url_id = Permission::where(['ctrl' => $this->ctrl, 'act' => $this->act])->find();
+        if ($current_url_id && in_array($current_url_id->id, explode(',', $this->user->team->auth))) {
             return true;
         } else {
-            return $this -> error('Permission deny！');
+            return $this->error('Permission deny！');
         }
     }
-    
-    protected function getPermission($items, $id='id', $pid='pid', $son = 'children')
+
+    protected function getPermission($items, $id = 'id', $pid = 'pid', $son = 'children')
     {
         $tree = array();
         $tmpMap = array();
@@ -192,26 +196,33 @@ class Application extends BaseController
         }
         return $tree;
     }
-	
-	
-	//登录提示
-    protected function flash_msg($value,$name='success')
+
+
+    //登录提示
+    protected function flash_msg($value, $name = 'success')
     {
-        Session::flash('flash_'.$name, $value);
+        Session::flash('flash_' . $name, $value);
     }
 
-	
 
     //编号 生成
-    protected function getConfigNo($type,$dbName)
+    protected function getConfigNo($type, $dbName)
     {
-        $count = Db::table($dbName)->select()->count();
-        $no = (string)($count+1);
+        $str = '';
+        //查询最大编号
+        $count = Db::query('SELECT MAX(code) as max_no FROM '.$dbName.' limit 1');
+        foreach ($count as $value) {
+            $str = $value['max_no'];
+        }
+        //正则去掉编号中的字母
+        $str = preg_replace('|[a-zA-Z/]+|', '', $str);
+        //最大编号加一
+        $no = (string)((int)$str + 1);
         //编号拼凑
         for ($i = strlen($no); $i < strlen($this->sysConfig[$type . '_code']); ++$i) {
-            $no = '0'.$no;
+            $no = '0' . $no;
         }
-        $no = $this->sysConfig[$type].$no;
+        $no = $this->sysConfig[$type] . $no;
         return $no;
     }
 

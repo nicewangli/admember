@@ -35,7 +35,7 @@ class Invoice extends Model
             $where[] = ['it.service_type', '=', $cate];
         }
 
-        $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->field('it.*, i.invoice_date as udate, i.invoice_no as code, i.total_amount as amount')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+        $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->field('it.*, i.invoice_date as udate, i.code as code, i.total_amount as amount')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
 
         $total = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->count();
 
@@ -44,7 +44,7 @@ class Invoice extends Model
         if ($cate == 0 || $cate == 4){
             $where[] = ['member_store', '>', 0];
 
-            $store = Db::name('invoice')->alias('i')->field('i.id, id as invoice_id, i.invoice_date as udate, i.invoice_no as code, i.total_amount as amount, i.member_store as item_total, 0 as service_type')->where($where)->select()->toArray();
+            $store = Db::name('invoice')->alias('i')->field('i.id, id as invoice_id, i.invoice_date as udate, i.code as code, i.total_amount as amount, i.member_store as item_total, 0 as service_type')->where($where)->select()->toArray();
             $store_amount = Db::name('invoice')->alias('i')->where($where)->sum('i.member_store');
         }
 
@@ -107,12 +107,12 @@ class Invoice extends Model
     public function treatmentList($where, $whereOr, $offset, $limit, $sort, $order)
     {
         if (!empty($whereOr)) {
-            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->field('it.*, i.invoice_date, i.invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type as package_type, sp.deducted_percent')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->field('it.*, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type as package_type, sp.deducted_percent')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
 
             $total = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->count();
 
         }else{
-            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type as package_type, sp.deducted_percent')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type as package_type, sp.deducted_percent')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
 
             $total = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->count();
 
@@ -132,7 +132,7 @@ class Invoice extends Model
             //套票使用item
             $items = Db::name('use_package_item')->alias('upi')->leftJoin('use_package up', 'up.id = upi.use_package_id')->field('up.id, up.use_time, upi.total_deduction, up.code, "使用" as action, "使用套票" as type')->where(['upi.invoice_id' => $value['invoice_id'], 'up.store_id' => $value['store_id'], 'up.member_id' => $value['member_id'], 'upi.service_package_id' => $value['service_id']])->select()->toArray();
 
-            $transfers = Db::name('invoice_transfer')->alias('it')->leftJoin('invoice i', 'it.new_invoice_id = i.id')->field('i.id, i.invoice_date as use_time, it.transfer_value as total_deduction, i.invoice_no as code, "轉套票" as action, "發票" as type')->where(['it.old_invoice_id' => $value['invoice_id'], 'i.store_id' => $value['store_id'], 'i.member_id' => $value['member_id'], 'it.old_invoice_item_id' => $value['id']])->select()->toArray();
+            $transfers = Db::name('invoice_transfer')->alias('it')->leftJoin('invoice i', 'it.new_invoice_id = i.id')->field('i.id, i.invoice_date as use_time, it.transfer_value as total_deduction, i.code as code, "轉套票" as action, "發票" as type')->where(['it.old_invoice_id' => $value['invoice_id'], 'i.store_id' => $value['store_id'], 'i.member_id' => $value['member_id'], 'it.old_invoice_item_id' => $value['id']])->select()->toArray();
 
             $list[$key]['items'] = array_merge($items, $transfers);
 
@@ -193,7 +193,7 @@ class Invoice extends Model
         $store = 0.0;
         $reward = 0.0;
 
-        $list = Db::name('invoice')->alias('i')->field('i.id, i.invoice_date as date_time, i.invoice_no as code, i.member_store, i.member_reward')->where($where)->select()->toArray();
+        $list = Db::name('invoice')->alias('i')->field('i.id, i.invoice_date as date_time, i.code as code, i.member_store, i.member_reward')->where($where)->select()->toArray();
         foreach ($list as $key => $value) {
             $list[$key]['action'] = '增值';
             $list[$key]['type'] = '發票';
@@ -213,7 +213,7 @@ class Invoice extends Model
 
         $where[] = ['m.type_id', '=', 'payment_method'];
         $where[] = ['m.name', '=', '儲值'];
-        $list = Db::name('invoice_payment')->alias('ip')->leftJoin('invoice i', 'i.id = ip.invoice_id')->leftJoin('mapping m', 'm.id = ip.method')->field('i.id, i.invoice_date as date_time, i.invoice_no as code, ip.amount as member_store')->where($where)->select()->toArray();
+        $list = Db::name('invoice_payment')->alias('ip')->leftJoin('invoice i', 'i.id = ip.invoice_id')->leftJoin('mapping m', 'm.id = ip.method')->field('i.id, i.invoice_date as date_time, i.code as code, ip.amount as member_store')->where($where)->select()->toArray();
         foreach ($list as $key => $value) {
             $list[$key]['action'] = '使用';
             $list[$key]['type'] = '發票';
@@ -231,7 +231,7 @@ class Invoice extends Model
 
         $where[] = ['m.type_id', '=', 'payment_method'];
         $where[] = ['m.name', '=', '獎賞'];
-        $list = Db::name('invoice_payment')->alias('ip')->leftJoin('invoice i', 'i.id = ip.invoice_id')->leftJoin('mapping m', 'm.id = ip.method')->field('i.id, i.invoice_date as date_time, i.invoice_no as code, ip.amount as member_reward')->where($where)->select()->toArray();
+        $list = Db::name('invoice_payment')->alias('ip')->leftJoin('invoice i', 'i.id = ip.invoice_id')->leftJoin('mapping m', 'm.id = ip.method')->field('i.id, i.invoice_date as date_time, i.code as code, ip.amount as member_reward')->where($where)->select()->toArray();
         foreach ($list as $key => $value) {
             $list[$key]['action'] = '使用';
             $list[$key]['type'] = '發票';
@@ -245,6 +245,6 @@ class Invoice extends Model
 
     public function findInvoice($member_id)
     {
-        return $this->field('id,invoice_no')->where('member_id','=',$member_id)->select()->toArray();
+        return $this->field('id,code as invoice_no')->where('member_id','=',$member_id)->select()->toArray();
     }
 }

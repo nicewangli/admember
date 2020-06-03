@@ -120,6 +120,11 @@ function getUsers(){
     return $data;
 }
 
+function getUsersbyTitle($title){
+    $data = Db::name('users')->alias('u')->leftJoin('teams t', 'u.ugid = t.id')->field("u.uid, u.for_short as name")->where('t.title', $title)->order('u.for_short asc')->select();
+    return $data;
+}
+
 function flash_messages(){
     $types = ['success','error','info','warning'];
     foreach ($types as $type){
@@ -188,7 +193,6 @@ function getWarehouse()
 //    return $no;
 //}
 
-
 //Whatsapp Handler
 function getWaAcc(){
     $data = Db::name('wa_account')->field('mobile,status')->select();
@@ -196,19 +200,19 @@ function getWaAcc(){
 }
 
 
-function check_health($uid){
-    $number = "";
-    //return number if session[:user_whatsapp].blank?
-    $url = "http://127.0.0.1:8088/health?uid=".$uid;
-    $response = \Httpful\Request::get($url)
-        ->send();
-    return $response->body;
+function check_health($mobile){
+    $wa = Db::name('wa_account')->where(['mobile' => $mobile])->find();
+    if($wa && $wa['status'] >= 0){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 function wa_sendMessage($to_phone,$content,$sender) {
     if(!empty($to_phone) && !empty($content) && !empty($sender)){
 		$to_phone = wa_phone_format($to_phone);
-        $url = "http://127.0.0.1:8088/send";
+        $url = "http://127.0.0.1:8091/send";
         $response = \Httpful\Request::post($url)
             ->sendsType(\Httpful\Mime::FORM)
             ->body(['msg_type' => 'text', 'phone' => $to_phone, 'content' => $content,'uid' => $sender])

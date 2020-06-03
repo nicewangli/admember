@@ -59,14 +59,16 @@ class Bookings extends Application
         } else {
             $dayArr[] = ['date'=>$date_start,'week'=>$weekArr[date('w',time())]];
         }
-        $result = User::field('uid as id, for_short as title')->order("first_name asc")->where($beaWhere)->select()->toArray();
+        $biWhere[] = ['booking_date', 'between', [$date_start, $date_end]];
+
+        $result = User::field('uid as id, for_short as title')->order("for_short asc")->where($beaWhere)->select()->toArray();
         $time = workingHours();
         $colorArr = Booking::event_colors();
         $statusArr = Booking::event_status_zn();
         $ads = Attendance::attendanceType();
         $model = new BookingItem();
         //
-        $item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->leftJoin('member m','m.id = b.member_id')->leftJoin('users u','u.uid = bi.beautician1')->leftJoin('users cu','cu.uid = b.consultant_id')->leftJoin('room r','r.id = b.room_id')->field('bi.*,b.status,b.booking_date,b.id as bid,m.first_name as m_name,r.name as r_name,u.for_short as u_name,cu.for_short as cu_name,m.phone_mobile')->where($biWhere);
+        $item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->leftJoin('member m','m.id = b.member_id')->leftJoin('users u','u.uid = bi.beautician1')->leftJoin('users cu','cu.uid = b.consultant_id')->leftJoin('room r','r.id = b.room_id')->field('bi.*,b.status,b.is_deduct,b.booking_date,b.id as bid,m.first_name as m_name,r.name as r_name,u.for_short as u_name,cu.for_short as cu_name,m.phone_mobile')->where($biWhere);
         $booking_item = $item->where($biWhere)->select()->toArray();
         $adArr = Attendance::field('user_id,vdate,start_time,end_time,item')->select()->toArray();
         foreach ($adArr as &$ad) {
@@ -191,6 +193,7 @@ class Bookings extends Application
             //编号
             $param['code'] = Bookings::getConfigNo('reservation', 'booking');
             $param['status'] = 1;
+            $param['room_id'] = empty($param['room_id']) ? '' : implode(',', $param['room_id']);
             $param['created_user_id'] = $this->user->uid;
             $param['updated_user_id'] = $this->user->uid;
             $param['team_id'] = $this->user->ugid;
@@ -210,12 +213,12 @@ class Bookings extends Application
             $item['is_member'] = 1;
             $item['created_user_id'] = $this->user->uid;
             $item['team_id'] = $this->user->ugid;
-//            $booking_init_time = $dt[1];
+            $booking_init_time = $param['start_time'];
             $resourceId = $param['resourceId'];
             $eventId = $param['eventId'];
             $workinghours = workingHours();
             View::assign([
-//                'booking_init_time' => $booking_init_time,
+                'booking_init_time' => $booking_init_time,
                 'resourceId' => $resourceId,
                 'eventId' => $eventId,
                 'workingHours' => $workinghours,
@@ -234,8 +237,12 @@ class Bookings extends Application
         $user = getUser();
         $user_tel = $user->tel;
         $item = $model->find($id);
+        $item['room'] = empty($item['room_id']) ? [] : explode(',', $item['room_id']);
+
         if (Request::isPost()) {
             $param = Request::param();
+            $param['room_id'] = empty($param['room_id']) ? '' : implode(',', $param['room_id']);
+
             $param['updated_user_id'] = $this->user->uid;
             $res = $item->save($param);
             if ($res) {
@@ -252,6 +259,17 @@ class Bookings extends Application
             $booking_items = $item_model->where(['booking_id' => $id])->with(['servicePackage', 'service', 'bt1', 'bt2'])->order("end_time asc")->select();
             $booking_init_time = $booking_items[count($booking_items) - 1]['end_time'];
             $workinghours = workingHours();
+
+            $item['new_use_package'] = 0;
+            $findWhere = [
+                ['booking_id', '=', $id],
+                ['invoice_id', '>', 0],
+                ['invoice_item_id', '>', 0]
+            ];
+            $find = $item_model->where($findWhere)->find();
+            if ($find) {
+                $item['new_use_package'] = 1;
+            }
 
             $notes = $model->booking_notes($item['member_id']);
 
@@ -271,6 +289,25 @@ class Bookings extends Application
         }
 
     }
+
+    //改變狀態
+    public function change_status(Booking $model)
+    {
+        $id = input('id');
+        $status = input('status');
+        $find = $model::find($id);
+        if ($find) {
+            $result = $find->save(['status' => $status]);
+            if ($result) {
+                return json(['code' => 200, 'msg' => 'successful']);
+            } else {
+                return json(['code' => 0, 'msg' => 'failed']);
+            }
+        } else {
+            return json(['code' => 0, 'msg' => 'can not found this booking']);
+        }
+    }
+
 
 
     //删除

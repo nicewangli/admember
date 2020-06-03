@@ -19,7 +19,7 @@ class UsePackageItem extends Model
     public function saveItem($id, $member_id, $data)
     {
         foreach ($data as $key => $value){
-            if (isset($value['id'])) {
+            if (isset($value['id']) && $value['id']) {
                 $this->update($data[$key]);
             }else{
                 $data[$key]['use_package_id'] = $id;
@@ -48,8 +48,8 @@ class UsePackageItem extends Model
         foreach ($items as $key => $value) {
             $items[$key]['index'] = $key;
 
-            $items[$key]['beautician1_name'] = Db::name('users')->where('uid', $value['beautician1'])->value('username');
-            $items[$key]['beautician2_name'] = Db::name('users')->where('uid', $value['beautician2'])->value('username');
+            $items[$key]['beautician1_name'] = Db::name('users')->where('uid', $value['beautician1'])->value('for_short');
+            $items[$key]['beautician2_name'] = Db::name('users')->where('uid', $value['beautician2'])->value('for_short');
 
             $items[$key]['service_package'] = Db::name('invoice')->alias('i')->leftJoin('invoice_item it', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->leftJoin('mapping m', 'm.id = it.package_unit')->field('sp.code, sp.name, it.package_value, it.package_value_used, m.val as package_unit')->where(['sp.id' => $value['service_package_id'], 'it.service_type' => 1, 'i.member_id' => $member_id])->find();
 

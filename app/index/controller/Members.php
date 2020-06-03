@@ -36,23 +36,32 @@ class Members extends Application
     }
 
     public function lists(){
+
+
         $param = input('get.');
         $limit = $param['limit'];
         $offset = $param['offset'];
-        $sort = isset($param['sort']) ?  $param['sort'] :  'first_name';
+        $sort = isset($param['sort']) ?  $param['sort'] :  'code';
         $order = $param['order'];
         $where = [];
           if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
 
-            $query_fields = ['member_no','first_name','last_name','phone_mobile','phone_work','email1'];
+            $query_fields = ['code','first_name','last_name','phone_mobile','phone_work','email1'];
             foreach ($query_fields as $field){
                 if(isset($filter[$field])) {
                     $where[] = ['m.'.$field, 'like', $filter[$field] . '%'];
                 }
+
+
+
             }
 
         }
+
+
+
+
         $items = Member::alias('m')->leftJoin('mapping mp', 'm.opt = mp.id')->field('m.*, mp.val as opt')->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
         $total = Member::alias('m')->where($where)->count();
         $data = [
@@ -131,13 +140,14 @@ class Members extends Application
                 return $this->error($validate->getError());
             }
             //编号
-            $param['member_no'] = Members::getConfigNo('membership','member');
+            $param['code'] = Members::getConfigNo('membership','member');
             $result = $model::create($param);
 
-            if ($param['from'] == 'booking') {
+            if (isset($param['from']) && $param['from'] == 'booking') {
                 $id = $result->id;
-                return json(['code' => 200, 'member' => ['id' => $id, 'name' => $param['first_name'], 'phone' => $param['phone_mobile'], 'member_no' => $param['member_no']]]);
+                return json(['code' => 200, 'member' => ['id' => $id, 'name' => $param['first_name'], 'phone' => $param['phone_mobile'], 'code' => $param['code']]]);
             }
+
             return $this->redirect(url("index"));
         }
 
@@ -205,9 +215,9 @@ class Members extends Application
 
     public function find_member(Member $model, Invoice $invoice, Booking $booking)
     {
-        $member_no = input('member_no');
+        $code = input('code');
         $where = [];
-        $where[] = ['member_no','=',$member_no];
+        $where[] = ['code','=',$code];
         $member = $model->findMember($where);
         $invoices = [];
         $notes = "";

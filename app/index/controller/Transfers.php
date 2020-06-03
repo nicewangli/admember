@@ -88,7 +88,7 @@ class Transfers extends Application
                 return json(['code' => 0,'msg' => $validate->getError()]);
             }
             //编号
-            $param['transfer_no'] = Transfers::getConfigNo('turnover','transfer');
+            $param['code'] = Transfers::getConfigNo('turnover','transfer');
             try{
                 $model->startTrans();
                 $result = $model::create($param);

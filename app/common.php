@@ -267,7 +267,15 @@ function getStoreArr(){
     return $storeModel->whereIn('id',$storeArr)->select()->toArray();
 }
 
-
+//员工职务数组
+function getDuty(){
+    return [
+        'CONSULTANT' => '顧問',
+        'COSMETOLOGIST' => '顧問 / 美容師',
+        'STAFF' => '職員',
+        'RESIGNED' => '離職',
+    ];
+}
 
 function array_group_by($arr, $key)
 {
@@ -316,18 +324,18 @@ function array_get_by_index($index, $array) {
 
 
 function workingHours($to_json=false){
-    $start = '10:00:00';
-    $end = '22:30:00';
+    $start = '10:00';
+    $end = '22:30';
     $time = strtotime($start);
     $timeStop = strtotime($end);
     $times = [];
-    $val['id'] = date('H:i:s', $time);
-    $val['text'] = date('H:i A', $time);
+    $val['id'] = date('H:i', $time);
+    $val['text'] = date('H:i', $time);
     $times[] = $val;
     while($time<$timeStop) {
         $time = strtotime('+30 minutes', $time);
-        $val2['id'] = date('H:i:s', $time);
-        $val2['text'] = date('H:i A', $time);
+        $val2['id'] = date('H:i', $time);
+        $val2['text'] = date('H:i', $time);
         $times[] = $val2;
     }
     if($to_json){
@@ -437,7 +445,7 @@ function importExecl(string $file = '', int $sheet = 0, int $columnCnt = 0, &$op
                 'store_id' => $objPHPExcel->getActiveSheet()->getCell("C" . $j)->getValue(),
                 'register_date' => $objPHPExcel->getActiveSheet()->getCell("D" . $j)->getValue(),
                 'date_of_accession' => $objPHPExcel->getActiveSheet()->getCell("E" . $j)->getValue(),
-                'member_no' => $objPHPExcel->getActiveSheet()->getCell("F" . $j)->getValue(),
+                'code' => $objPHPExcel->getActiveSheet()->getCell("F" . $j)->getValue(),
                 'last_name' => $objPHPExcel->getActiveSheet()->getCell("G" . $j)->getValue(),
                 'first_name' => $objPHPExcel->getActiveSheet()->getCell("H" . $j)->getValue(),
                 'salutation' => $objPHPExcel->getActiveSheet()->getCell("I" . $j)->getValue(),
@@ -453,15 +461,15 @@ function importExecl(string $file = '', int $sheet = 0, int $columnCnt = 0, &$op
                 'reservation_remarks' => $objPHPExcel->getActiveSheet()->getCell("S" . $j)->getValue(),
             ];
 
-            if (empty($data[$j - 2]['member_no'])) {
+            if (empty($data[$j - 2]['code'])) {
                 unset($data[$j - 2]);
                 continue;
             }
 
             //看下用户名是否存在。将存在的用户名保存在数组里。
-            $userExist = Db::name('member')->where('member_no', $data[$j - 2]['member_no'])->find();
+            $userExist = Db::name('member')->where('code', $data[$j - 2]['code'])->find();
             if ($userExist) {
-                array_push($usersExits, $data[$j - 2]['member_no']);
+                array_push($usersExits, $data[$j - 2]['code']);
 //                continue;
             }
 

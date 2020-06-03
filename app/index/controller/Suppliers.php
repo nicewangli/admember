@@ -24,7 +24,7 @@ class Suppliers extends Application
         $param = input('get.');
         $limit = $param['limit'];
         $offset = $param['offset'];
-        $sort = isset($param['sort']) ?  $param['sort'] :  'first_name';
+        $sort = isset($param['sort']) ?  'id' :  'first_name';
         $order = $param['order'];
         $where = [];
         if(isset($param['account_id'])){
@@ -33,7 +33,7 @@ class Suppliers extends Application
 		      if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
 
-            $query_fields = ['first_name','last_name','phone_mobile','member_no','opt'];
+            $query_fields = ['first_name','last_name','phone_mobile','code','opt'];
             foreach ($query_fields as $field){
                 if(isset($filter[$field])) {
                     $where[] = [$field, 'like', $filter[$field] . '%'];

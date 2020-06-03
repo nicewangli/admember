@@ -48,7 +48,7 @@ class RefundPackageItem extends Model
     public function findItems($id)
     {
         //TODO:退款查询的修改
-        $items = $this->alias('rpi')->leftJoin('invoice i','i.id = rpi.invoice_id')->leftJoin('member m','m.id = rpi.member_id')->leftJoin('package_staging_item psi','psi.id = rpi.package_staging_item_id')->leftJoin('package_staging ps','psi.package_staging_id = ps.id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->field('rpi.*,sp.name as sp_name,invoice_no,psi.total,ps.ps_no,psi.payment,psi.package_value_used,psi.usable_value,psi.id as package_staging_item_id,i.final_total')->where('rpi.refund_package_id','=',$id)->select()->toArray();
+        $items = $this->alias('rpi')->leftJoin('invoice i','i.id = rpi.invoice_id')->leftJoin('member m','m.id = rpi.member_id')->leftJoin('package_staging_item psi','psi.id = rpi.package_staging_item_id')->leftJoin('package_staging ps','psi.package_staging_id = ps.id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->field('rpi.*,sp.name as sp_name,i.code as invoice_no,psi.total,ps.code as ps_no,psi.payment,psi.package_value_used,psi.usable_value,psi.id as package_staging_item_id,i.final_total')->where('rpi.refund_package_id','=',$id)->select()->toArray();
 //        $items = $this->alias('psi')->leftJoin('service_package sp', 'psi.service_package_id = sp.id')->field('psi.*, sp.code, sp.name')->where('psi.package_staging_id', $id)->order('psi.id ASC')->select()->toArray();
         return $items;
     }

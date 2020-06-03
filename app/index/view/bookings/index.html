@@ -18,7 +18,7 @@
         background-color: #ffff003b;
         border-radius: 0.25rem;
     }
-    .bs-tooltip-auto[x-placement^=bottom] .arrow::before, .bs-tooltip-bottom .arrow::before{
+ .bs-tooltip-bottom .arrow::before{
         border-bottom-color: #ffff003b!important;
     }
     .tooltip-inner .card .card-body{
@@ -36,7 +36,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body table-responsive">
+                <div class="card-body table-responsive"  style="overflow-y: auto">
                     <form role="form" id="booking_form">
                         <input type="hidden" name="oblation">
                         <div class="row">
@@ -114,18 +114,7 @@
                                     <div class="col-xs-12 col-md-2">
                                     </div>
 
-                                    <div class="col-xs-12 col-md-2">
-                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                            <label class="btn btn-default btn-sm click-search" id="services_pre_month">
-                                                <a class="fa fa-chevron-left" aria-hidden="true"></a>
-                                            </label>
-                                            <button type="submit" id="services_current_month"> 月</button>
-                                            <label class="btn btn-default btn-sm click-search" id="services_next_month">
-                                                <a class="fa fa-chevron-right"
-                                                   aria-hidden="true"> </a>
-                                            </label>
-                                        </div>
-                                    </div>
+
 
                                     <div class="col-xs-12 col-md-2">
                                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
@@ -153,6 +142,19 @@
                                             <label class="btn btn-default btn-sm click-search" id="services_next_week">
                                                 <a class="fa fa-chevron-right"
                                                    aria-hidden="true"></a>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-2">
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn btn-default btn-sm click-search" id="services_pre_month">
+                                                <a class="fa fa-chevron-left" aria-hidden="true"></a>
+                                            </label>
+                                            <button type="submit" id="services_current_month"> 月</button>
+                                            <label class="btn btn-default btn-sm click-search" id="services_next_month">
+                                                <a class="fa fa-chevron-right"
+                                                   aria-hidden="true"> </a>
                                             </label>
                                         </div>
                                     </div>
@@ -211,8 +213,8 @@
                     <div class="row">
 
                         <table class="table table-bordered table-responsive" id="bea">
-                            <thead style="height: 10%">
-                                <tr class="bg-info disabled color-palette">
+                            <thead>
+                                <tr class="bg-info disabled color-palette" style="height: 20px">
                                     <td>日期</td>
                                     <td>时间</td>
 <!--                                    循环美容师-->
@@ -228,12 +230,12 @@
 <!--                                第一层循环控制行数 时间-->
 <!--                                第二层循环控制列数  美容师-->
                                     {volist name="time" id="shijian"}
-                                    <tr id="list" data-day="{$dateWeek.date}">
+                                    <tr id="list" data-day="{$dateWeek.date}" data-time="{$shijian.id}">
 
                                         <td class="bg-info disabled color-palette">({$dateWeek.week})<br>{$dateWeek.date}</td>
-                                        <td>{$shijian.id}</td>
+                                        <td>{$shijian.text}</td>
                                         {volist name="beauticianArr" id="bea"}
-                                        <td class="get_tooltip" data-bea="{$bea.id}" data-placement="right">{volist name="bookingItems" id="bi"}{if condition="$bi.booking_date eq $dateWeek.date  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}{$bi.m_name}<br/>{$bi.start_time}--{$bi.end_time}<br/>{$bi.phone_mobile}<br />({$bi.r_name})<br/>(顧問：{$bi.cu_name})<input type="hidden" value="{$bi.bc}" data-id="{$bi.bid}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$dateWeek.date}" data-type="bi" data-start_time="{$bi.start_time}" data-end_time="{$bi.end_time}" data-bea_name="{$bi.u_name}" data-r_name="{$bi.r_name}" data-m_name="{$bi.m_name}" data-m_phone="{$bi.phone_mobile}" data-service_name="{$bi.service_name}" data-status_name="{$bi.status_name}"><i class="test_tooltip" data-toggle="tooltip" style="position: absolute;" data-html="true"></i>{/if}{/volist}{volist name="adArr" id="ad"}{if condition='$ad.vdate eq $dateWeek.date && $ad.user_id eq $bea.id && ($ad.end_time > $shijian.id&&$shijian.id>=$ad.start_time)'}{$ad.item}<input type="hidden" data-type="ad">{/if}{/volist}</td>{/volist}
+                                        <td class="get_tooltip" data-bea="{$bea.id}" data-placement="right">{volist name="bookingItems" id="bi"}{if condition="$bi.booking_date eq $dateWeek.date  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}<font color="white">{$bi.m_name}<br/>{$bi.start_time}--{$bi.end_time}<br/>{$bi.phone_mobile}<br />({$bi.r_name})<br/>(顧問：{$bi.cu_name})</font><input type="hidden" value="{$bi.bc}" data-is_deduct="{$bi.is_deduct}" data-id="{$bi.bid}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$dateWeek.date}" data-type="bi" data-start_time="{$bi.start_time}" data-end_time="{$bi.end_time}" data-bea_name="{$bi.u_name}" data-r_name="{$bi.r_name}" data-m_name="{$bi.m_name}" data-m_phone="{$bi.phone_mobile}" data-service_name="{$bi.service_name}" data-status_name="{$bi.status_name}"><i class="test_tooltip" data-toggle="tooltip" data-placement="top" style="position: absolute;" data-html="true"></i>{/if}{/volist}{volist name="adArr" id="ad"}{if condition='$ad.vdate eq $dateWeek.date && $ad.user_id eq $bea.id && ($ad.end_time > $shijian.id&&$shijian.id>=$ad.start_time)'}{$ad.item}<input type="hidden" data-type="ad">{/if}{/volist}</td>{/volist}
                                         <td>{$shijian.text}</td>
                                         <td class="bg-info disabled color-palette">{$dateWeek.date}</td>
                                     </tr>
@@ -265,7 +267,7 @@
             content: url
         })
     });
-    var calendar;
+    // var calendar;
     $(function () {
         $("[data-toggle='tooltip']").tooltip({html : true });
         $("#bea tr").each(function(rowIndex) {
@@ -318,8 +320,8 @@
         let url = "{:url('bookings/edit')}?id=" + id + "&resourceId=" + beautician1 + "&eventId=" + bi_id;
         bookingWin(url);
     }
-    function add_booking(date,beautician){
-        let url = "{:url('bookings/add')}?date="+date+'&resourceId='+beautician+ "&eventId=0";
+    function add_booking(date,beautician,start_time){
+        let url = "{:url('bookings/add')}?date="+date+'&resourceId='+beautician+ "&eventId=0&start_time="+start_time;
         bookingWin(url);
     }
     function _w_table_rowspan(_w_table_id,_w_table_colnum){
@@ -333,7 +335,7 @@
                 _w_table_SpanNum = 1;
             }else{
                 _w_table_currenttd = $(this);
-
+//TODO:根據是否有服務名||booking_id進行判斷
                 if(_w_table_firsttd.text()==_w_table_currenttd.text()&&_w_table_firsttd.text()!=''){
                     //TODO:再加一个判断  判断是休假还是服务
                     _w_table_SpanNum++;
@@ -347,8 +349,10 @@
                         setTd(_w_table_firsttd);
                     } else {
                         let day = _w_table_firsttd.parent().attr('data-day');
+                        let start_time = _w_table_firsttd.parent().attr('data-time');
                         let bea = _w_table_firsttd.attr('data-bea');
-                        _w_table_firsttd.attr("onClick","add_booking("+'\''+day+'\''+','+bea+");");
+                        // let start_time = _w_table_firsttd.attr('data-init_time');
+                        _w_table_firsttd.attr("onClick","add_booking("+'\''+day+'\''+','+bea+','+'\''+start_time+'\''+");");
                     }
 
                     _w_table_SpanNum = 1;
@@ -361,6 +365,7 @@
         let type = _w_table_firsttd.find('input').attr('data-type');
         if(type === 'bi') {
             let bc = _w_table_firsttd.find('input').val();
+            let is_deduct = _w_table_firsttd.find('input').attr('data-is_deduct');
             let b_id = _w_table_firsttd.find('input').attr('data-id');
             let beautician1 = _w_table_firsttd.find('input').attr('data-resource');
             let bi_id = _w_table_firsttd.find('input').attr('data-event');
@@ -391,18 +396,23 @@
                 '    </div>' +
                 '</div>';
             _w_table_firsttd.find('i').attr("data-original-title",title);
-            _w_table_firsttd.css('background-color',bc);
+            if(is_deduct!=='1') {
+                _w_table_firsttd.css('background-color',bc);
+            } else {
+                _w_table_firsttd.css('background-color','#e83e8c');
+            }
         } else if(type==='ad') { //onselectstart="return false" οnselect="document.selection.empty()"
             _w_table_firsttd.attr('οnselect','document.selection.empty()');
             _w_table_firsttd.attr('onselectstart','return false');
         }
     }
+
     $(".get_tooltip").on('mousemove',function (e) {
         $(this).find('i').css({top: e.pageY-100, left: e.pageX-20 });
         $(this).find('i').tooltip('show');
     });
     $(".get_tooltip").on('mouseleave',function (e) {
-        // $(this).find('i').tooltip('hide');
+        $(this).find('i').tooltip('hide');
     });
 
     $("#services_current_month").click(function () {

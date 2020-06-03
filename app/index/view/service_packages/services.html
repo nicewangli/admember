@@ -141,7 +141,18 @@
         });
 
     }
-
+    function wh_end_time(start_time){
+        let st_strs = start_time.split(":")
+        let time = Number(st_strs[0])
+        let hour = st_strs[1]
+        if(hour == "30"){
+            st_strs[0] = time + 1
+            st_strs[1] = "00"
+        }else{
+            st_strs[1] = "30"
+        }
+        return st_strs.join(":")
+    }
     $(document).ready( function (){
         let member_id = $("#member_id").val();
 
@@ -263,6 +274,7 @@
                                 '   <input type="hidden" name="service[' + number + '][service_id]" value="' + element.service_id + '">\n'+
                                 '   <input type="hidden" name="service[' + number + '][commission]" value="' + element.beautician_pay + '"> \n'+
                                 '   <input type="hidden" name="service[' + number + '][invoice_id]" value="' + invoice_id + '"> \n'+
+                                '   <input type="hidden" name="service[' + number + '][invoice_item_id]" value="' + element.invoice_item_id + '"> \n'+
                                 ' </td> \n'+
                                 ' <td width="10%">\n'+
                                 '   <p>' + package_code+ '</p><br/>\n'+
@@ -311,7 +323,7 @@
                         if (parseFloat(package_value - package_value_used) > 0) {
                             nodes += '<tr class="border-b service"> '
                             nodes += '<td align="center" data-id=""><input type="checkbox" class="checkbox" value="' + number + '">'
-                            nodes += '<input type="hidden" name="service[' + number + '][service_package_id]" value="' + package_id + '"><input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + element.id + '">  <input type="hidden" name="service[' + number + '][service_id]" value="' + element.service_id + '"> <input type="hidden" name="service[' + number + '][service_name]" value="' + element.name + '"> </td>'
+                            nodes += '<input type="hidden" name="service[' + number + '][invoice_id]" value="' + invoice_id + '"><input type="hidden" name="service[' + number + '][invoice_item_id]" value="' + element.invoice_item_id + '"><input type="hidden" name="service[' + number + '][service_package_id]" value="' + package_id + '"><input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + element.id + '">  <input type="hidden" name="service[' + number + '][service_id]" value="' + element.service_id + '"> <input type="hidden" name="service[' + number + '][service_name]" value="' + element.name + '"> </td>'
                             nodes += '<td class="d-flex align-items-center justify-content-between"><select class="form-control time_picker start_time" id="service_start_time_'+number+'" name="service[' + number + '][start_time]" style="display: none; width: 100%;"></select>&nbsp;至 &nbsp;<select class="form-control time_picker end_time" id="service_end_time_'+number+'" name="service[' + number + '][end_time]" style="display: none; width: 100%;"></td>';
                             nodes += '<td> <input type="hidden" name="service[' + number + '][service_package_id]" value="' + package_id + '"><input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + element.id + '"> <p style="margin-bottom:2px">' + package_code+ '</p><p style="margin-bottom:2px">' + element.code + '</p></td>';
                             nodes += '<td><p style="margin-bottom:2px">' + package_name+ '</p><p style="margin-bottom:2px">' + element.name + '</p><p style="margin-bottom:2px">套票值：' + parseFloat(package_value - package_value_used).toFixed(1) + '/' + package_value + package_unit + '</p></td><td><input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;"></td>';
@@ -327,7 +339,8 @@
                     parent.initBeautician(numbers);
                     parent.initWorkingHourse();
 
-                    var start_time =  parent.$("#booking_init_time").val();
+                    let start_time =  parent.$("#booking_init_time").val();
+                    console.log(start_time);
                     $.each(rows, function(index, element){
                         if (parseFloat(package_value - package_value_used) > 0) {
                             let end_time = wh_end_time(start_time)

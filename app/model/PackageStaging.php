@@ -44,7 +44,7 @@ class PackageStaging extends Model
             $whereStore = $where;
             $whereStore[] = ['ps.member_store', '>', 0];
 
-            $store = Db::name('package_staging')->alias('ps')->field('ps.id, ps.id as package_staging_id, ps.ps_no as code, ps.staging_time as udate, ps.total_amount as amount, ps.member_store as item_total')->where($whereStore)->select()->toArray();
+            $store = Db::name('package_staging')->alias('ps')->field('ps.id, ps.id as package_staging_id, ps.code as code, ps.staging_time as udate, ps.total_amount as amount, ps.member_store as item_total')->where($whereStore)->select()->toArray();
 
             $store_amount = Db::name('package_staging')->alias('ps')->where($whereStore)->sum('ps.member_store');
         }
@@ -52,7 +52,7 @@ class PackageStaging extends Model
         if ($cate < 2){
             $where[] = ['sp.code', 'like', '%'.$param['code'].'%'];
 
-            $list = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->field('psi.*, ps.ps_no as code, ps.staging_time as udate, sp.code as item_code, sp.name as item_name, ps.total_amount as amount, psi.current_payment as item_total')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+            $list = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->field('psi.*, ps.code as code, ps.staging_time as udate, sp.code as item_code, sp.name as item_name, ps.total_amount as amount, psi.current_payment as item_total')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
 
             $total = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->count();
 
@@ -94,7 +94,7 @@ class PackageStaging extends Model
         $store = 0.0;
         $reward = 0.0;
 
-        $list = Db::name('package_staging')->alias('ps')->field('ps.id, ps.staging_time as date_time, ps.ps_no as code, ps.member_store, ps.member_reward')->where($where)->select()->toArray();
+        $list = Db::name('package_staging')->alias('ps')->field('ps.id, ps.staging_time as date_time, ps.code as code, ps.member_store, ps.member_reward')->where($where)->select()->toArray();
         foreach ($list as $key => $value) {
             $list[$key]['action'] = '增值';
             $list[$key]['type'] = '套票分期';
@@ -114,7 +114,7 @@ class PackageStaging extends Model
 
         $where[] = ['m.type_id', '=', 'payment_method'];
         $where[] = ['m.name', '=', '儲值'];
-        $list = Db::name('package_staging_payment')->alias('psp')->leftJoin('package_staging ps', 'ps.id = psp.package_staging_id')->leftJoin('mapping m', 'm.id = psp.method')->field('ps.id, ps.staging_time as date_time, ps.ps_no as code, psp.amount as member_store')->where($where)->select()->toArray();
+        $list = Db::name('package_staging_payment')->alias('psp')->leftJoin('package_staging ps', 'ps.id = psp.package_staging_id')->leftJoin('mapping m', 'm.id = psp.method')->field('ps.id, ps.staging_time as date_time, ps.code as code, psp.amount as member_store')->where($where)->select()->toArray();
         foreach ($list as $key => $value) {
             $list[$key]['action'] = '使用';
             $list[$key]['type'] = '套票分期';
@@ -132,7 +132,7 @@ class PackageStaging extends Model
 
         $where[] = ['m.type_id', '=', 'payment_method'];
         $where[] = ['m.name', '=', '獎賞'];
-        $list = Db::name('package_staging_payment')->alias('psp')->leftJoin('package_staging ps', 'ps.id = psp.package_staging_id')->leftJoin('mapping m', 'm.id = psp.method')->field('ps.id, ps.staging_time as date_time, ps.ps_no as code, psp.amount as member_reward')->where($where)->select()->toArray();
+        $list = Db::name('package_staging_payment')->alias('psp')->leftJoin('package_staging ps', 'ps.id = psp.package_staging_id')->leftJoin('mapping m', 'm.id = psp.method')->field('ps.id, ps.staging_time as date_time, ps.code as code, psp.amount as member_reward')->where($where)->select()->toArray();
         foreach ($list as $key => $value) {
             $list[$key]['action'] = '使用';
             $list[$key]['type'] = '套票分期';

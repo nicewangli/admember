@@ -2,6 +2,7 @@
 namespace app\index\controller;
 use app\Application;
 use app\model\Store;
+use app\model\UserDuty;
 use think\facade\Db;
 use think\facade\View;
 use think\facade\Request;
@@ -52,13 +53,16 @@ class Users extends Application
                     return $this->error('用户名已被占用，请重试！');
                 }
 
-
                 $data['password'] = password($data['password']);
                 //编号
-                $data['member_no'] = Users::getConfigNo('employee_data','users');
-                $r = Db::name('users')->insert($data);
+                $data['code'] = Users::getConfigNo('employee_data','users');
+                $model = new User();
+                $userDuty = new UserDuty();
+                $r = $model::create($data);
+                //TODO: 员工多职位
                 if ($r) {
                     addlog('新增用户，用户名：'.$data['user_name'], $this->user['user_name']);
+                    $userDuty->saveDuty($r->id,$data);
                     return $this->success('新增用戶成功！', url('users/index'));
                 }
             } else {//编辑
@@ -104,7 +108,7 @@ class Users extends Application
             ];
         }
 
-        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->whereOr($where)->field('u.uid,u.ugid,u.member_no,u.first_name,u.for_short,u.last_name,u.category,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.uid desc')->paginate(10);
+        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->whereOr($where)->field('u.uid,u.ugid,u.code as member_no,u.first_name,u.for_short,u.last_name,u.category,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.uid desc')->paginate(10);
 //        $list = User::order('for_short asc')->paginate(10);
 
        View::assign([
@@ -145,7 +149,7 @@ class Users extends Application
         $where = [];
 
         if(isset($param['search'])){
-            $where[] = ['member_no', 'like', '%'.$param['search'].'%'];
+            $where[] = ['code', 'like', '%'.$param['search'].'%'];
         }
 
         if(isset($param['filter'])){

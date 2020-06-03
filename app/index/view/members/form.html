@@ -1,4 +1,6 @@
 <!--<script src="../../../../../adsuite/static/js/application.js"></script>-->
+
+
 <form id="itemForm" class="form-horizontal itemForm" action="" method="post"
       enctype="multipart/form-item">
 
@@ -20,6 +22,17 @@
 
     <div class="form-group row pt-2" style="align-items: baseline;">
         <div class="col-xs-12 col-md-4">
+
+            <div class="form-group row">
+                <label class="col-md-3 control-label" for="code">編號</label>
+                <div class="col-md-7">
+                    <input class="form-control" type="text" readonly="true" id="code" name="code"
+                           value="{$item.code|default=''}"
+                           placeholder="auto assign later">
+                </div>
+            </div>
+
+
             <div class="form-group row">
                 <label class="col-md-3 control-label" for="status">狀態</label>
                 <div class="col-md-7">
@@ -35,15 +48,6 @@
                 </div>
             </div>
 
-
-            <div class="form-group row">
-                <label class="col-md-3 control-label" for="member_no">編號</label>
-                <div class="col-md-7">
-                    <input class="form-control" type="text" id="member_no" name="member_no"
-                           value="{$item.member_no|default=''}"
-                           placeholder="A0029">
-                </div>
-            </div>
 
             <div class="form-group row">
                 <label class="col-md-3 control-label"
@@ -252,10 +256,10 @@
             <div class="form-group row">
                 <label class="col-md-3 control-label" for="date_of_accession">加入日期</label>
                 <div class="col-md-7">
-                    <input class="form-control" type="text" id="date_of_accession"
+                    <input class="form-control datetimePicker" type="datetime" id="date_of_accession"
                            name="date_of_accession"
-                           value="{$item.date_of_accession|default=''}"
-                           placeholder="2020-02-11">
+                           value="{$item.time|default=time()|date='Y-m-d H:i:s'}"
+                           placeholder="">
                 </div>
             </div>
 
@@ -290,7 +294,7 @@
 
 
             <div class="form-group row">
-                <label class="col-md-3 control-label" for="register_date">到店時間</label>
+                <label class="col-md-3 control-label" for="register_date">營業員</label>
                 <div class="col-md-7">
                     <select class="form-control select2" type="text" id="register_date" name="register_date">
                         <option value="">&nbsp;</option>
@@ -375,4 +379,41 @@
         </div>
     </div>
 </form>
+<!--
+    </div>
+</section>
+{/block}
+{block name="js"}
+<script type="text/javascript">
+    $(function () {
+        $("#document").change(function () {
+            let file = this.fields[0];
+            $("#url").text(file.name)
+        });
 
+        $("#date_of_accession").daterangepicker({
+            "singleDatePicker": true,
+            "timePicker": true,
+            "timePicker24Hour": true,
+            "timePickerSeconds": true,
+            "startDate": $("#date_of_accession").val() ? $("#date_of_accession").val() : moment().format("YYYY-MM-DD"),
+            "locale": {
+                "format": "YYYY-MM-DD HH:mm:ss",
+            }
+        }).on('apply.daterangepicker', function(ev, picker) {
+            // console.log(picker.startDate.format('YYYY-MM-DD HH:mm:ss'));
+            $("#date_of_accession").val(picker.startDate.format('YYYY-MM-DD'))
+        });
+
+
+        $(".btn-close").click(function(){
+            let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+            parent.layer.close(index);
+        });
+
+    });
+
+
+
+</script>
+{/block}-->

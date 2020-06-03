@@ -37,7 +37,7 @@ class Invoices extends Application
 //            $data = $model->select();
             foreach ($data as $item) {
                 $record = [];
-                $record['invoice_no'] = $item->invoice_no;
+                $record['invoice_no'] = $item->code;
                 $record['store_name'] = $item->store_name;
                 $record['member_name'] = $item->member_name;
                 $record['amount'] = $item->total_amount;
@@ -51,7 +51,7 @@ class Invoices extends Application
         $search = input('get.search');
 
         $data = $model::whereOr([
-            ['invoice_no', 'like', $search . '%'],
+            ['code', 'like', $search . '%'],
 
         ])->paginate();
         //关键词，排序等赋值
@@ -74,13 +74,13 @@ class Invoices extends Application
         $where = [];
 
         if(isset($param['search'])){
-            $where[] = ['invoice_no', 'like', '%'.$param['search'].'%'];
+            $where[] = ['code', 'like', '%'.$param['search'].'%'];
         }
 
         if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
-             if(isset($filter['invoice_no'])){
-                $where[] = ['invoice_no', 'like', '%'.$filter['invoice_no'].'%'];
+             if(isset($filter['code'])){
+                $where[] = ['code', 'like', '%'.$filter['code'].'%'];
             }
 
             if(isset($filter['start_date'])){
@@ -113,7 +113,7 @@ class Invoices extends Application
             $offset = $param['offset'];
 
             $search = input('search');
-            $where[] = ['invoice_no', 'like', $search .'%'];
+            $where[] = ['code', 'like', $search .'%'];
             $items = $model::where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
 
         }else{
@@ -157,7 +157,7 @@ class Invoices extends Application
 
 
     //添加
-    public function add(Request $request, Invoice $model, InvoiceValidate $validate,InvoiceItem $invoiceItem, InvoicePayment $invoicePayment, InvoiceSeller $invoiceSeller)
+    public function add(Request $request, Invoice $model, InvoiceValidate $validate,InvoiceItem $invoiceItem, InvoicePayment $invoicePayment, InvoiceSeller $invoiceSeller, Booking $booking)
     {
         if ($request->isPost()) {
             $param = input('post.');
@@ -170,9 +170,15 @@ class Invoices extends Application
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
             //编号
-            $param['invoice_no'] = Invoices::getConfigNo('invoice','invoice');;
+            $param['code'] = Invoices::getConfigNo('invoice','invoice');;
             $result = $model::create($param);
             $invoice_id = $result->id;
+
+            $find = $booking::find($param['booking_id']);
+            if ($find) {
+                $find->save(['new_member' => 0]);
+            }
+
             if (isset($param['service'])) {
                 $invoiceItem->saveItem($invoice_id, $param['service']);
             }
@@ -270,8 +276,8 @@ class Invoices extends Application
 
     public function find_invoice(Invoice $model)
     {
-        $invoice_no = input('invoice_no');
-        $invoice = $model->where('invoice_no', $invoice_no)->find();
+        $code = input('invoice_no');
+        $invoice = $model->where('code', $code)->find();
         return json(['invoice' => $invoice]);
     }
 
@@ -295,20 +301,22 @@ class Invoices extends Application
         $data['new_customer'] = $data['is_member'] == 1 ? 0 : 1;
         $member_info = $member->findMember(['id' => $data['member_id']]);
 
-        $inv_items['service_packages'] = $item_booking->alias('ib')->leftJoin('service_package sp', 'ib.service_package_id = sp.id')->field('sp.id as service_id, sp.code, sp.name, sp.price, ib.quantity, "0.0" as discount, sp.price * ib.quantity as total, sp.package_value * ib.quantity as package_value, sp.package_value as package_original_value, sp.package_unit, "1" as service_type')->where(['ib.booking_id' => $booking_id])->select();
+//        $inv_items['service_packages'] = $item_booking->alias('ib')->leftJoin('service_package sp', 'ib.service_package_id = sp.id')->field('sp.id as service_id, sp.code, sp.name, sp.price, ib.quantity, "0.0" as discount, sp.price * ib.quantity as total, sp.package_value * ib.quantity as package_value, sp.package_value as package_original_value, sp.package_unit, "1" as service_type')->where(['ib.booking_id' => $booking_id])->select();
+        $inv_items['service_packages'] = [];
+
 
         $total = 0.0;
-        foreach ($inv_items['service_packages'] as $key => $value) {
-            $total += $value['total'];
-            $inv_items['service_packages'][$key]['index'] = $key;
-        }
+//        foreach ($inv_items['service_packages'] as $key => $value) {
+//            $total += $value['total'];
+//            $inv_items['service_packages'][$key]['index'] = $key;
+//        }
 
         $data['final_total'] = $total;
         $data['total_amount'] = $total;
         $data['total'] = $total;
         $data['items_count'] = count($inv_items['service_packages']);
 
-        return view('add',['data' => $data, 'inv_items' => $inv_items, 'member' => $member_info, 'from' => $from]);
+        return view('add',['data' => $data, 'inv_items' => $inv_items, 'member' => $member_info, 'from' => $from, 'booking_id' => $booking_id]);
     }
 
 
@@ -357,11 +365,11 @@ class Invoices extends Application
             $limit = $param['limit'];
             $offset = $param['offset'];
 
-            $list = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.invoice_no, sp.code, sp.name')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+            $list = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.code as invoice_no, sp.code, sp.name')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
 
             $total = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->count();
         }else{
-            $list = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.invoice_no, sp.code, sp.name')->order($sort.' '.$order)->select()->toArray();
+            $list = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.code as invoice_no, sp.code, sp.name')->order($sort.' '.$order)->select()->toArray();
 
             $total = $invoiceItem->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->count();
         }

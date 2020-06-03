@@ -9,49 +9,49 @@
                 <span class="info-box-icon bg-success h-100">
                     <i class="fa fa-plus"></i>
                 </span>
-                <label><input type="radio" name="status" value="1" {if $item.status == 1}checked{/if}>新預約</label>
+                <label><input type="radio" class="status" value="1" {if $item.status == 1}checked{/if} {if $item.is_deduct == 1} disabled {/if} >新預約</label>
             </div>
 
             <div class="info-box flex-column align-items-center mr-auto">
                     <span class="info-box-icon bg-warning h-100">
                         <i class="fa fa-phone"></i>
                     </span>
-                <label><input type="radio" name="status" value="2"  {if $item.status == 2}checked{/if}>已通知</label>
+                <label><input type="radio" class="status" value="2"  {if $item.status == 2}checked{/if} {if $item.is_deduct == 1} disabled {/if} >已通知</label>
             </div>
 
             <div class="info-box flex-column align-items-center mr-auto">
                     <span class="info-box-icon bg-orange h-100">
                         <i class="fa fa-phone" style="color: white;"></i>
                     </span>
-                <label><input type="radio" name="status" value="3"  {if $item.status == 3}checked{/if}>新客已通知</label>
+                <label><input type="radio" class="status" value="3"  {if $item.status == 3}checked{/if} {if $item.is_deduct == 1} disabled {/if} >新客已通知</label>
             </div>
 
             <div class="info-box flex-column align-items-center mr-auto">
                     <span class="info-box-icon bg-danger h-100">
                         <i class="fa fa-phone" style="color: white;"></i>
                     </span>
-                <label><input type="radio" name="status" value="4"  {if $item.status == 4}checked{/if}>未能聯絡</label>
+                <label><input type="radio" class="status" value="4"  {if $item.status == 4}checked{/if} {if $item.is_deduct == 1} disabled {/if} >未能聯絡</label>
             </div>
 
             <div class="info-box flex-column align-items-center mr-auto">
                     <span class="info-box-icon bg-info h-100">
                         <i class="fa fa-check-square-o"></i>
                     </span>
-                <label><input type="radio" name="status" value="5"  {if $item.status == 5}checked{/if}>已到</label>
+                <label><input type="radio" class="status" value="5"  {if $item.status == 5}checked{/if} {if $item.is_deduct == 1} disabled {/if} >已到</label>
             </div>
 
             <div class="info-box flex-column align-items-center mr-auto">
                 <span class="info-box-icon bg-gray h-100">
                     <i class="fa fa-window-close-o"></i>
                 </span>
-                <label><input type="radio" name="status" value="6"  {if $item.status == 6}checked{/if}>缺席</label>
+                <label><input type="radio" class="status" value="6"  {if $item.status == 6}checked{/if} {if $item.is_deduct == 1} disabled {/if} >缺席</label>
             </div>
 
             <div class="info-box flex-column align-items-center mr-auto">
                 <span class="info-box-icon bg-fuchsia h-100">
                     <i class="fa fa-strikethrough"></i>
                 </span>
-                <label><input type="radio" name="status" value="9"  {if $item.status == 9}checked{/if}>已扣除套票</label>
+                <label><input type="radio" id="is_deduct" value="1"  {if $item.is_deduct == 1}checked{/if} disabled>已扣除套票</label>
             </div>
 
         </div>
@@ -60,34 +60,45 @@
             <div class="row pt-4">
                 <div class="col-lg-12" align="center">
                     {if $act == 'edit'}
-                    <button class="btn flat btn-info btn-sm " id="booking-submit">
-                        儲存
-                    </button>
-                    <a class="btn btn-default  btn-sm" href="#" data-id="{$item.id}" id="delete">
-                        删除
-                    </a>
-                    <a class="btn  btn-default btn-sm" href="#">
-                        void
-                    </a>
-                    <a class="btn  btn-default btn-sm" href="#" onclick="wa_info()">
-                        WhatsApps
-                    </a>
-                    <a class="btn btn-default  btn-sm btn-close" href="#">
-                        关闭
-                    </a>
-                    {if $item.status == 5}
-                        <a class="btn btn-default  btn-sm new_invoice" href="#" data-id="{$item.id}">
-                            新增發票
+                        {if $item.status == 5 && $item.new_use_package}
+                            {if $item.is_deduct}
+                                <a class="btn btn-default  btn-sm use_package" href="#" data-use_package_id="{$item.use_package_id}">
+                                    檢視使用套票
+                                </a>
+                            {else /}
+                                <a class="btn btn-default  btn-sm new_use_package" href="#" data-id="{$item.id}">
+                                    新增使用套票
+                                </a>
+                            {/if}
+                        {/if}
+                        <button class="btn flat btn-info btn-sm " id="booking-submit" {if $item.is_deduct == 1} disabled  data-toggle="tooltip" data-placement="bottom" title="你不能修改這個預約，因爲這個預約已有相關使用套票" {/if}}>
+                            儲存
+                        </button>
+                        <a class="btn btn-default  btn-sm" href="#" data-id="{$item.id}" id="delete">
+                            删除
                         </a>
-                    {/if}
+                        <a class="btn  btn-default btn-sm" href="#">
+                            void
+                        </a>
+                        <a class="btn  btn-default btn-sm" href="#" onclick="wa_info()">
+                            WhatsApps
+                        </a>
+                        <a class="btn btn-default  btn-sm btn-close" href="#">
+                            关闭
+                        </a>
+                        {if $item.status == 5 && $item.new_member}
+                            <a class="btn btn-default  btn-sm new_invoice" href="#" data-id="{$item.id}">
+                                新增發票
+                            </a>
+                        {/if}
                     {else /}
-                    <button class="btn flat btn-info btn-sm" id="booking-submit">
-                        儲存
-                    </button>
-                    &nbsp;&nbsp;
-                    <a class="btn btn-default btn-sm btn-close" href="#">
-                        取消
-                    </a>
+                        <button class="btn flat btn-info btn-sm" id="booking-submit">
+                            儲存
+                        </button>
+                        &nbsp;&nbsp;
+                        <a class="btn btn-default btn-sm btn-close" href="#">
+                            取消
+                        </a>
                     {/if}
                 </div>
             </div>
@@ -138,12 +149,11 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <select class="form-control form-control-sm" name="room_id" id="room_id">
+                                <select class="form-control form-control-sm select2" name="room_id[]" id="room_id" multiple="multiple">
                                     <option value=""></option>
                                     {foreach name=":getRooms()" id='val'}
-                                    <option value="{$val.id}" {if isset($item) &&
-                                            $item.room_id==$val.id}selected{/if}>
-                                        {$val.name}
+                                    <option value="{$val.id}" {if isset($item) && isset($item.room) && in_array($val.id, $item.room) }selected{/if}>
+                                    {$val.name}
                                     </option>
                                     {/foreach}
                                 </select>
@@ -158,7 +168,7 @@
 
                         <select class="form-control select2" type="text" id="consultant_id" name="consultant_id">
                             <option value="">&nbsp;</option>
-                            {foreach name=":getUsers()" id='user'}
+                            {foreach name=":getUsersbyTitle('Consultant')" id='user'}
                             <option value="{$user.uid}" {if isset($item) &&
                                     $item.consultant_id==$user.uid}selected{/if}>
                                 {$user.name}
@@ -329,7 +339,7 @@
                     <label class="col-md-2 control-label" for="notes">備注：</label>
                     <div class="col-md-10">
                         <div style="width: 100%; display: flex; align-items: flex-end;">
-                            <textarea class="form-control g-mr-5" name="notes" id="notes" style="width: 80%;">{$item.notes|default=''}</textarea>
+                            <textarea class="form-control g-mr-5" name="remark" id="notes" style="width: 80%;">{$item.remark|default=''}</textarea>
                             <a title="選擇備注" onclick="notes()" class="btn btn-primary btn-xs" href="#">選擇</a>
                         </div>
 
@@ -441,13 +451,14 @@
 
         let name = $("#name").val();
         let phone = $("#phone").val();
+        let booking_id = $("#id").val();
 
         layer.open({
             type: 2,
             title: 'New Member',
             maxmin: true,
             area: ['90%', '80%'],
-            content: url + '&name=' + name + '&phone=' +phone
+            content: url + '&name=' + name + '&phone=' + phone + '&booking_id=' + booking_id
         })
     }
 
@@ -466,6 +477,7 @@
         let width = document.documentElement.clientWidth;
 
         let member_id = $("#member_id").val();
+        let start_time = $("#start_time").val();
         if (member_id) {
 
             layer.open({
@@ -567,7 +579,7 @@
                     if (res.invoice) {
                         let invoice = res.invoice;
                         $("#invoice_id").val(invoice.id);
-                        $("#invoice_no").val(invoice.invoice_no);
+                        $("#invoice_no").val(invoice.code);
                     }
                 }
             })
@@ -659,6 +671,7 @@
         $(".btn-close").click(function () {
             let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
             parent.layer.close(index);
+            parent.location.reload();
         });
 
         $("#delete").click(function () {
@@ -674,7 +687,8 @@
                     layer.msg(res.msg);
 
                     if (res.code == 200) {
-                        parent.calendar.getEventById("{$eventId}").remove();
+                        // parent.calendar.getEventById("{$eventId}").remove();
+                        parent.location.reload();
 
                         let index = parent.layer.getFrameIndex(window.name);
                         parent.layer.close(index);
@@ -708,7 +722,46 @@
             // $("#booking_week").val(moment(picker.startDate).format('dddd'));
             get_week(moment(picker.startDate).format('d'));
         });
-    })
+
+        $(".new_use_package").click(function () {
+            let id = $(this).attr('data-id');
+            // alert(id)
+            layer.open({
+                type: 2,
+                title: '新增使用套票',
+                maxmin: true,
+                area: ['90%', '80%'],
+                content: "{:url('index/use_packages/booking_to_use_package?booking_id=')}" + id + '&from=booking'
+            })
+        });
+
+        $(".use_package").click(function () {
+            let use_package_id = $(this).attr('data-use_package_id');
+            // alert(id)
+            layer.open({
+                type: 2,
+                title: '檢視使用套票',
+                maxmin: true,
+                area: ['90%', '80%'],
+                content: "{:url('index/use_packages/edit?id=')}" + use_package_id
+            })
+        });
+
+        $(".status").change(function () {
+            let status = $(this).val();
+            let id = $("#id").val();
+
+            $.ajax({
+                url: "{:url('change_status')}",
+                data: {id: id, status: status},
+                type: "POST",
+                success(res) {
+                    layer.msg(res.msg);
+                    location.reload();
+                }
+            })
+        })
+    });
 
     function get_week(date) {
         let week_date = '';

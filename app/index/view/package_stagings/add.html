@@ -175,13 +175,11 @@
 
                         <table width="100%">
                             <tr bgcolor="#ced4da">
-                                <td width="8%">
+                                <td colspan="9">
                                     <a title="刪除" onclick="del()" class="btn btn-default btn-sm " href="#">刪除</a>
-                                </td>
-                                <td width="8%">
+
                                     <a title="舊分期" onclick="old_package_item()" class="btn btn-default btn-sm " href="#" id="old_item">舊分期</a>
-                                </td>
-                                <td colspan="8">
+
                                     <a title="服務套票"  onclick="service_packages()" class="btn btn-default btn-sm " href="#" id="package_item">服務套票</a>
 
                                     <input type="hidden" name="total" id="total" value="{$data.total|default='0.0'}">
@@ -221,7 +219,7 @@
                                         <input type="hidden" name="service[{$index}][package_value]" value="{$val.package_value}" class="package_value">
                                         <input type="hidden" name="service[{$index}][package_unit]" value="{$val.package_unit}">
                                     </td>
-                                    <td width="10%">{$val.code}</td>
+                                    <td width="12%">{$val.code}</td>
                                     <td width="20%">{$val.name}</td>
                                     <td width="10%">
                                         <input type="number" min="1" name="service[{$index}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
@@ -544,10 +542,10 @@
     function total_amount(){
         let total_amount = 0.0;
         let final_total = 0.0;
-
-        //可抵扣
-        let store = parseFloat($("#store").val());
-        let reward = parseFloat($("#reward").val());
+        //
+        // //可抵扣
+        // let store = parseFloat($("#store").val());
+        // let reward = parseFloat($("#reward").val());
 
         //需支付
         let total = parseFloat($("#total").val());
@@ -556,24 +554,24 @@
         total_amount = parseFloat(total + member_store);
         final_total = total_amount;
 
-        //獎賞 > 應付
-        if(reward > final_total){
-            final_total = 0.0;
-            reward -= final_total;
-        //獎賞 < 應付
-        }else{
-            final_total -= reward;
-            reward = 0.0;
-            //儲值 > 應付
-            if (store > final_total) {
-                final_total = 0.0;
-                store -= final_total;
-            //儲值 < 應付
-            }else{
-                final_total -= store;
-                store = 0.0;
-            }
-        }
+        // //獎賞 > 應付
+        // if(reward > final_total){
+        //     final_total = 0.0;
+        //     reward -= final_total;
+        // //獎賞 < 應付
+        // }else{
+        //     final_total -= reward;
+        //     reward = 0.0;
+        //     //儲值 > 應付
+        //     if (store > final_total) {
+        //         final_total = 0.0;
+        //         store -= final_total;
+        //     //儲值 < 應付
+        //     }else{
+        //         final_total -= store;
+        //         store = 0.0;
+        //     }
+        // }
         $("#final_total").val(final_total.toFixed(1));
         $("#final_totals").val(final_total.toFixed(1));
         $("#final_total_text").text('應付：$'+final_total.toFixed(1));
@@ -692,7 +690,7 @@
                         // $('#invoice_id').empty();
                         $.each(res.rows,function (index,element) {
                             nodes += '<tr class="border-b service">  \n' +
-                                '    <td width="8%" align="center" data-id="">  \n' +
+                                '    <td width="5%" align="center" data-id="">  \n' +
                                 '       <input type="checkbox" class="checkbox" value="' + index + '">  \n' +
                                 '       <input type="hidden" class="service_packages" value="' + element.id + '">  \n' +
                                 '   </td> <td width="5%">   \n' +
@@ -700,21 +698,21 @@
                                 '       <input type="hidden" name="service[' + index + '][package_value]" value="' + element.package_value + '" class="package_value"> \n' +
                                 '       <input type="hidden" name="service[' + index + '][package_unit]" value="' + element.package_unit + '"> \n' +
                                 '   </td>  \n' +
-                                '   <td width="13%">' + element.code + '</td>   \n' +
-                                '   <td width="15%">' + element.sp_name + '</td>   \n' +
+                                '   <td width="12%">' + element.code + '</td>   \n' +
+                                '   <td width="20%">' + element.sp_name + '</td>   \n' +
                                 '   <td width="10%">  \n' +
                                 '       <input type="number" min="1" name="service[' + index + '][quantity]" value="'+element.quantity+'" class="form-control text-right quantity" style="width: 100%;">  \n' +
                                 '   </td>   \n' +
-                                '   <td width="13%">  \n' +
+                                '   <td width="12%">  \n' +
                                 '       <input type="text" name="service[' + index + '][price]" value="' + element.price + '" class="form-control text-right price" style="width: 100%;">  \n' +
                                 '   </td>   \n' +
-                                '   <td width="10%">  \n' +
+                                '   <td width="12%">  \n' +
                                 '       <input type="text" name="service[' + index + '][discount]" value="0.0" class="form-control text-right discount" style="width: 100%;">  \n' +
                                 '   </td>   \n' +
-                                '   <td width="13%">  \n' +
+                                '   <td width="12%">  \n' +
                                 '       <input type="text" name="service[' + index + '][total]" value="' + element.total + '" class="form-control text-right total" style="width: 100%;" readonly="">  \n' +
                                 '   </td>  \n' +
-                                '   <td width="13%">  \n' +
+                                '   <td width="12%">  \n' +
                                 '       <input type="text" name="service[' + index + '][current_payment]" value="" class="form-control text-right current_payment" style="width: 100%;">  \n' +
                                 '   </td>   \n' +
                                 '   </tr>';
