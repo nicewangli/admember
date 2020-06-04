@@ -209,27 +209,52 @@
 
 
                         <div class="col-xs-12 col-md-4">
-                            <div class="form-group row">
-                                <label class="col-md-3 control-label" for="date_of_accession">加入日期</label>
-                                <div class="col-md-7">
-                                    <input class="form-control" type="text" id="date_of_accession"
-                                           name="date_of_accession"
-                                           value="{$userinfo.date_of_accession ?? ''}"
-                                           >
-                                </div>
-                            </div>
+                            <table width="100%" id="table">
+                                <tr>
+                                    <td colspan="9" class="border-b-double">
+                                        <label>職位信息</label>
+                                    </td>
+                                </tr>
+                                <tr bgcolor="#ced4da">
+                                    <td colspan="9">
+                                        <a title="刪除" onclick="delDuty()" class="btn btn-default btn-sm " href="#">刪除</a>
+
+                                        <a title="新增" onclick="add_duty()" class="btn btn-default btn-sm " href="#" id="old_item">新增</a>
 
 
+                                    </td>
+                                </tr>
 
-                            <div class="form-group row">
-                                <label class="col-md-3 control-label" for="category">職位</label>
-                                <div class="col-md-7">
-                                    <input class="form-control" type="text" id="category"
-                                           name="category"
-                                           value="{$userinfo.category ?? ''}"
-                                           >
-                                </div>
-                            </div>
+                                <tr bgcolor="#e9ecef">
+                                    <th width="5%"></th>
+                                    <th width="5%"></th>
+                                    <!--                                <th width="12%">現時</th>-->
+                                    <th width="20%">日期</th>
+                                    <th width="12%">職位</th>
+                                </tr>
+
+                                <tr class="duty">
+                                    <td width="5%"></td>
+                                    <td width="5%">
+                                        <input type="hidden" name="item[0][user_id]" value="">
+                                    </td>
+                                    <td width="20%">
+                                        <input class="form-control form-control-sm datePicker" type="text"
+                                               name="item[0][entry_date]"
+                                               id="duty0"
+                                               value=""
+                                               style="width: 80%">
+                                    </td>
+                                    <td width="12%">
+                                        <select name="item[0][duty]" class="form-control">
+                                            <option value=""></option>
+                                            {volist name="dutyArr" id="duty"}
+                                            <option value="{$key}">{$duty}</option>
+                                            {/volist}
+                                        </select>
+                                    </td>
+                                </tr>
+                            </table>
 
                             <div class="form-group row">
                                 <label class="col-md-3 control-label" for="shop">狀態</label>
