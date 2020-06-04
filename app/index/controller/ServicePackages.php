@@ -33,7 +33,7 @@ class ServicePackages extends Application
     public function lists(ServicePackage $model, ProductCategory $category)
     {
         $param = input('get.');
-        $sort = isset($param['sort']) ?  $param['sort'] :  'id';
+        $sort = isset($param['sort']) ?  $param['sort'] :  'code';
         $order = isset($param['order']) ?  $param['order'] :  'desc';
         $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
         $where = [];

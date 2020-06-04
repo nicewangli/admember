@@ -132,7 +132,7 @@ class PackageStagings extends Application
             $param['created_time'] = time();
             $param['store_id'] = $store['id'];
             //编号
-            $param['code'] = PackageStagings::getConfigNo('package_staging','package_staging');
+            $param['code'] = $this->getConfigNo('package_staging','package_staging');
             try{
                 $model->startTrans();
                 if(!empty($param['invoice_id'])) {//如果存在发票记录，对发票待付款金额做修改
@@ -141,14 +141,14 @@ class PackageStagings extends Application
                     $i->save();
                 } else{
                     //首次付款  生成发票
-                    $param['code'] = Invoices::getConfigNo('invoice','invoice');
+                    $param['code'] = $this->getConfigNo('invoice','invoice');
                     $total = $param['total'];
                     $total_amount = $param['total_amount'];
                     $param['total'] = $param['invoice_total'];
                     $param['total_amount'] = $param['invoice_total'];
                     $param['final_total'] = $param['total_amount'] - $param['final_total'];
                     $invoiceResult = $invoice::create($param);
-                    $param['code'] = PackageStagings::getConfigNo('package_staging','package_staging');
+                    $param['code'] = $this->getConfigNo('package_staging','package_staging');
                     $param['invoice_id'] = $invoiceResult->id;
                     $param['total'] = $total;
                     $param['total_amount'] = $total_amount;
@@ -179,7 +179,7 @@ class PackageStagings extends Application
                 return json(['code' => 200]);
             } catch (\Exception $e) {
                 $model->rollback();
-                return json(['code' => 0]);
+                return json(['code' => 0, 'msg' => $e->getMessage()]);
             }
 
         }
@@ -241,7 +241,7 @@ class PackageStagings extends Application
         $sellers = $packageStagingSeller->findSellers($id);
 
         $item['items_count'] = $packageStagingItem->where('package_staging_id', $id)->count();
-        return view('add',['data' => $item, 'items' => $items, 'payments' => $payments, 'sellers' => $sellers, 'member' => $member_info,'storeArr'=>$storeArr,'type'=>'edit']);
+        return view('add',['data' => $item, 'items' => $items, 'payments' => $payments, 'sellers' => $sellers, 'member' => $member_info,'storeArr'=>$storeArr,'type'=>'edit', 'consultant' => $sellers['consultant'], 'beautician' => $sellers['beautician']]);
 
     }
 

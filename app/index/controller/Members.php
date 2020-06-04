@@ -121,7 +121,7 @@ class Members extends Application
     }
 
 
-    public function add(Request $request, Member $model, MemberValidate $validate)
+    public function add(Request $request, Member $model, MemberValidate $validate, Booking $booking)
     {
         //临时导入
 //        $daoRu = new Member1();
@@ -129,6 +129,7 @@ class Members extends Application
         //临时导入
 
         $from = input('from', '');
+        $booking_id = input('booking_id', '');
         $item['first_name'] = input('name', '');
         $item['phone_mobile'] = input('phone', '');
         //店铺下拉框
@@ -140,23 +141,29 @@ class Members extends Application
                 return $this->error($validate->getError());
             }
             //编号
-            $param['code'] = Members::getConfigNo('membership','member');
+            $param['code'] = $this->getConfigNo('membership','member');
             $result = $model::create($param);
 
             if (isset($param['from']) && $param['from'] == 'booking') {
                 $id = $result->id;
+                $find = $booking::find($param['booking_id']);
+                if ($find) {
+                    $find->save(['member_id' => $id, 'member_no' => $param['code'], 'is_member' => 1, 'new_member' => 1]);
+                }
                 return json(['code' => 200, 'member' => ['id' => $id, 'name' => $param['first_name'], 'phone' => $param['phone_mobile'], 'code' => $param['code']]]);
             }
 
             return $this->redirect(url("index"));
-        }
+        }else{
+			$item['date_of_accession'] = date("Y-m-d");
+		}
 
         View::assign([
             'storeArr'=>$storeArr,
         ]);
 
         if ($from) {
-            return view('layer_add', ['from' => $from, 'item' => $item]);
+            return view('layer_add', ['from' => $from, 'item' => $item, 'booking_id' => $booking_id]);
         }
         return view('add');
     }

@@ -170,7 +170,7 @@ class Invoices extends Application
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
             //编号
-            $param['code'] = Invoices::getConfigNo('invoice','invoice');;
+            $param['code'] = $this->getConfigNo('invoice','invoice');;
             $result = $model::create($param);
             $invoice_id = $result->id;
 
@@ -240,7 +240,7 @@ class Invoices extends Application
         $inv_sellers = $invoiceSeller->findSellers($id);
 
         $item['items_count'] = $invoiceItem->where('invoice_id', $id)->count();
-        return view('add',['data' => $item, 'inv_items' => $inv_items, 'inv_payments' => $inv_payments, 'inv_sellers' => $inv_sellers, 'member' => $member_info]);
+        return view('add',['data' => $item, 'inv_items' => $inv_items, 'inv_payments' => $inv_payments, 'inv_sellers' => $inv_sellers, 'member' => $member_info, 'consultant' => $inv_sellers['consultant'], 'beautician' => $inv_sellers['beautician']]);
 
     }
 

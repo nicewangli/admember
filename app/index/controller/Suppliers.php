@@ -110,7 +110,7 @@ class Suppliers extends Application
                 return $this->error($validate->getError());
             }
             //编号
-            $param['member_no'] = Suppliers::getConfigNo('supplier_information','suppliers');
+            $param['member_no'] = $this->getConfigNo('supplier_information','suppliers');
             $result = $model::create($param);
             return $this->redirect(url("index"));
         }

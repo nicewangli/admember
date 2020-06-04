@@ -224,8 +224,9 @@ function bookingWin(url){
         fix: true,
         shade: 0,
         resize: true,
-        offset:'auto',
-        area: win_screen() < 2 ? ['190%', '180%'] : ['900px', '650px'],
+        maxmin: true,
+        offset: [72],
+        area: win_screen() < 2 ? ['90%', '80%'] : ['70%', '80%'],
         content: url,
         cancel: function(index, layero){
             location.reload();

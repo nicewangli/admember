@@ -24,7 +24,7 @@ class Services extends Application
     {
         $param = input('get.');
         
-        $sort = isset($param['sort']) ?  $param['sort'] :  'id';
+        $sort = isset($param['sort']) ?  $param['sort'] :  'code';
         $order = isset($param['order']) ?  $param['order'] :  'desc';
         $where = [];
 
@@ -94,7 +94,7 @@ class Services extends Application
             $param['created_time'] = time();
 
             //编号
-            $param['code'] = Services::getConfigNo('serve','service');
+            $param['code'] = $this->getConfigNo('serve','service');
             $result = $model::create($param);
 
             if (isset($param['item'])) {

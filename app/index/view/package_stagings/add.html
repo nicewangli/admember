@@ -102,20 +102,13 @@
 
                         <div class="form-group row">
                             <label class="col-md-3 control-label"></label>
-                            <div class="col-md-7">
-                                <div class="consultant"></div>
-                                <div class="beautician">
-                                    {notempty name="sellers"}
-                                    {volist name="sellers" id="val" key="index"}
-                                        <div class="seller">
-                                            <input type="hidden" class="sellers" value="{$val.seller_id}">
-                                            <input type="hidden" name="seller[{$index}][id]" value="{$val.id}">
-                                            <input type="hidden" name="seller[{$index}][package_staging_id]" value="{$val.package_staging_id}">
-                                            <input type="hidden" name="seller[{$index}][seller_id]" value="{$val.seller_id}">{$val.seller_name}
-                                        </div>
-                                    {/volist}
-                                    {/notempty}
-                                </div>
+                            <div class="col-md-7 beautician">
+                                {notempty name="consultant"}
+                                <p id="consultant">{$consultant|raw}</p>
+                                {/notempty}
+                                {notempty name="beautician"}
+                                <p id="beauty">{$beautician|raw}</p>
+                                {/notempty}
                             </div>
                         </div>
                     </div>
@@ -223,6 +216,7 @@
                                     <td width="20%">{$val.name}</td>
                                     <td width="10%">
                                         <input type="number" min="1" name="service[{$index}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
+                                        <input type="hidden" name="service[{$index}][package_original_value]" class="package_original_value" value="{$val.package_original_value}">
                                     </td>
                                     <td width="12%">
                                         <input type="text" name="service[{$index}][price]" value="{$val.price}" class="form-control text-right price" style="width: 100%;">
@@ -329,7 +323,7 @@
                                 <div class="col-md-7">
                                     <input type="hidden" name="payment[0][id]" value="{$payments[0]['id']|default=''}">
                                     <input type="hidden" name="payment[0][package_staging_id]" value="{$payments[0]['package_staging_id']|default=''}">
-                                    <select class="form-control method1" name="payment[0][method]" style="display: none; width: 100%;">
+                                    <select class="form-control payment_method method1" name="payment[0][method]" style="display: none; width: 100%;">
                                         <option value="{$payments[0]['method']|default=''}">{$payments[0]['payment_method']|default=''}</option>
                                     </select>
                                 </div>
@@ -341,7 +335,7 @@
                                 <div class="col-md-7">
                                     <input type="hidden" name="payment[1][id]" value="{$payments[1]['id']|default=''}">
                                     <input type="hidden" name="payment[1][package_staging_id]" value="{$payments[1]['package_staging_id']|default=''}">
-                                    <select class="form-control method2" name="payment[1][method]" style="display: none; width: 100%;">
+                                    <select class="form-control payment_method method2" name="payment[1][method]" style="display: none; width: 100%;">
                                         <option value="{$payments[1]['method']|default=''}">{$payments[1]['payment_method']|default=''}</option>
                                     </select>
                                 </div>
@@ -353,7 +347,7 @@
                                 <div class="col-md-7">
                                     <input type="hidden" name="payment[2][id]" value="{$payments[2]['id']|default=''}">
                                     <input type="hidden" name="payment[2][package_staging_id]" value="{$payments[2]['package_staging_id']|default=''}">
-                                    <select class="form-control method3" name="payment[2][method]" style="display: none; width: 100%;">
+                                    <select class="form-control payment_method method3" name="payment[2][method]" style="display: none; width: 100%;">
                                         <option value="{$payments[2]['method']|default=''}">{$payments[2]['payment_method']|default=''}</option>
                                     </select>
                                 </div>
@@ -466,7 +460,7 @@
         layer.open({
             type: 2,
             title: '銷售員',
-            area: ['800px', '500px'],
+            area: ['700px', '98%'],
             content: '{:url("users/users?from_panel=invoices&ids=")}' + ids
         })
     }
@@ -515,13 +509,14 @@
         let amount = 0.0;
         let total = 0.0;
         let invoice_total = 0.0;
-        let quantity, price, discount, current_payment;
+        let quantity, price, discount, current_payment, package_value, package_original_value;
         $(".total").each(function () {
 
             quantity = parseFloat($(this).parent().siblings().children('.quantity').val());
             price = parseFloat($(this).parent().siblings().children('.price').val());
             discount = parseFloat($(this).parent().siblings().children('.discount').val());
             current_payment = parseFloat($(this).parent().siblings().children('.current_payment').val());
+            package_original_value = parseFloat($(this).parent().siblings().children('.package_original_value').val());
 
 
             amount = parseFloat(price * quantity - discount);
@@ -530,6 +525,10 @@
             }
             total += parseFloat(current_payment);
             invoice_total += parseFloat(price * quantity - discount);
+
+            package_value = quantity * package_original_value;
+
+            $(this).parent().siblings().children('.package_value').val(package_value);
             $(this).val(amount.toFixed(1));
         });
 
@@ -542,10 +541,6 @@
     function total_amount(){
         let total_amount = 0.0;
         let final_total = 0.0;
-        //
-        // //可抵扣
-        // let store = parseFloat($("#store").val());
-        // let reward = parseFloat($("#reward").val());
 
         //需支付
         let total = parseFloat($("#total").val());
@@ -554,24 +549,6 @@
         total_amount = parseFloat(total + member_store);
         final_total = total_amount;
 
-        // //獎賞 > 應付
-        // if(reward > final_total){
-        //     final_total = 0.0;
-        //     reward -= final_total;
-        // //獎賞 < 應付
-        // }else{
-        //     final_total -= reward;
-        //     reward = 0.0;
-        //     //儲值 > 應付
-        //     if (store > final_total) {
-        //         final_total = 0.0;
-        //         store -= final_total;
-        //     //儲值 < 應付
-        //     }else{
-        //         final_total -= store;
-        //         store = 0.0;
-        //     }
-        // }
         $("#final_total").val(final_total.toFixed(1));
         $("#final_totals").val(final_total.toFixed(1));
         $("#final_total_text").text('應付：$'+final_total.toFixed(1));
@@ -731,7 +708,7 @@
             let member_no = $(this).val();
             $.ajax({
                 url: "{:url('members/find_member')}",
-                data: {member_no: member_no},
+                data: {code: member_no},
                 success(res){
                     if(res.member){
                         let member = res.member;
@@ -779,6 +756,12 @@
         });
 
         $(document).on("input propertychange", "#member_store", function () {
+            total_amount();
+        });
+
+        $(document).on('change', '.payment_method', function () {
+            let final_total = $("#final_total").val();
+            $(this).parent('.col-md-7').siblings('.col-md-5').children(".payment_amount").val(parseFloat(final_total).toFixed(1));
             total_amount();
         });
 

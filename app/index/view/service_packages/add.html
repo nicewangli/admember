@@ -42,7 +42,7 @@
                             <div class="col-md-8">
                                 <input class="form-control" type="text" id="code" name="code"
                                        value="{$data.code|default=''}"
-                                       placeholder="">
+                                       >
                             </div>
                         </div>
 
@@ -51,7 +51,7 @@
                             <div class="col-md-8">
                                 <input class="form-control" type="text" id="part" name="part"
                                        value="{$data.part|default=''}"
-                                       placeholder="">
+                                       >
                             </div>
                         </div>
 
@@ -60,7 +60,7 @@
                             <div class="col-md-8">
                                 <input class="form-control" type="text" id="name" name="name"
                                        value="{$data.name|default=''}"
-                                       placeholder="" required="">
+                                        required="">
                             </div>
                         </div>
 
@@ -127,7 +127,7 @@
                         <div class="form-group row ">
                             <label class="col-md-3 control-label" for="expiration_date">有效期：</label>
                             <div class="col-md-8" style="display: flex; align-items: center;">
-                                <input class="form-control" type="text" id="expiration_date" name="expiration_date" value="{$data.expiration_date|default='0'}" placeholder="" style="width: 30%; text-align: right;">
+                                <input class="form-control" type="text" id="expiration_date" name="expiration_date" value="{$data.expiration_date|default='0'}"  style="width: 30%; text-align: right;">
                                 月(0 為無有效期限制)
                             </div>
                         </div>
@@ -137,7 +137,7 @@
                             <div class="col-md-8" style="display: flex; align-items: center;">
                                 <input class="form-control" type="text" id="package_value" name="package_value"
                                        value="{$data.package_value|default='0.0'}"
-                                       placeholder="" style="width: 68%; text-align: right;">
+                                        style="width: 68%; text-align: right;">
                                 <select class="form-control" id="package_unit" name="package_unit" value="{$data.package_unit|default=''}">
                                     <option value=""></option>
                                     {volist name="package_unit" id="val"}

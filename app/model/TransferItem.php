@@ -21,7 +21,6 @@ class TransferItem extends Model
                 'warehouse' => $param['to_wh_id'],
             ];
         }
-        dump($data);die;
         $this->where('transfer_id', $id)->delete();
         $this->insertAll($data);
         $product->saveAll($updateProduct);

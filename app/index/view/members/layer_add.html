@@ -9,6 +9,7 @@
                 <form id="memberForm">
 
                     <input type="hidden" name="from" value="{$from|default=''}">
+                    <input type="hidden" name="booking_id" value="{$booking_id|default=''}">
 
                     <div class="form-group row">
                         <div class="col-10">
@@ -387,14 +388,16 @@
                 type: "POST",
                 success(res){
                     if(res.code == 200){
-                        parent.$('.member_no').removeClass('hidden');
-                        parent.$('.new_member').addClass('hidden');
-                        parent.$("#name").val(res.member.name).removeAttr("required").attr("readOnly", "true");
-                        parent.$("#phone").val(res.member.phone).removeAttr("required").attr("readOnly", "true");
-                        parent.$("#member_id").val(res.member.id).attr("required", "true");
-                        parent.$("#member_no").val(res.member.member_no).attr("required", "true");
-                        parent.$("#is_member").val(1);
-                        parent.$("#is_member_checkbox").prop('checked', false);
+                        parent.location.reload();
+
+                        // parent.$('.member_no').removeClass('hidden');
+                        // parent.$('.new_member').addClass('hidden');
+                        // parent.$("#name").val(res.member.name).removeAttr("required").attr("readOnly", "true");
+                        // parent.$("#phone").val(res.member.phone).removeAttr("required").attr("readOnly", "true");
+                        // parent.$("#member_id").val(res.member.id).attr("required", "true");
+                        // parent.$("#member_no").val(res.member.member_no).attr("required", "true");
+                        // parent.$("#is_member").val(1);
+                        // parent.$("#is_member_checkbox").prop('checked', false);
                     }else{
 
                     }

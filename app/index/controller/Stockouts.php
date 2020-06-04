@@ -144,7 +144,7 @@ Add standard terms'];
                 return json(['code' => 0,'msg' => $validate->getError()]);
             }
             //编号
-            $param['code'] = Stockouts::getConfigNo('dekura','stockout');
+            $param['code'] = $this->getConfigNo('dekura','stockout');
 
             $result = $model::insertGetId($param);
 

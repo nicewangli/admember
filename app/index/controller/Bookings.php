@@ -191,7 +191,7 @@ class Bookings extends Application
                 return json(['code' => 0, 'msg' => "請選擇服務資料!"]);
             }
             //编号
-            $param['code'] = Bookings::getConfigNo('reservation', 'booking');
+            $param['code'] = $this->getConfigNo('reservation', 'booking');
             $param['status'] = 1;
             $param['room_id'] = empty($param['room_id']) ? '' : implode(',', $param['room_id']);
             $param['created_user_id'] = $this->user->uid;

@@ -125,6 +125,11 @@ function getUsersbyTitle($title){
     return $data;
 }
 
+function getUsersbyCategory($category){
+    $data = Db::name('users')->field("uid, for_short as name")->where('category', $category)->order('for_short asc')->select();
+    return $data;
+}
+
 function flash_messages(){
     $types = ['success','error','info','warning'];
     foreach ($types as $type){
@@ -150,8 +155,7 @@ function getUser(){
 
 
 function getStores(){
-//    $user_id = getUserId();
-//    $store_id = User::where('uid', $user_id)->value('store');
+
     $stores = Db::name('store')->field("id,name")->select();
 
     return $stores;

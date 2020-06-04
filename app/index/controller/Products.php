@@ -93,7 +93,7 @@ class Products extends Application
             $param['created_time'] = time();
 
             //编号
-            $param['code'] = Products::getConfigNo('product','product');
+            $param['code'] = $this->getConfigNo('product','product');
             $result = $model::create($param);
             return json(['code' => 200]);
         }

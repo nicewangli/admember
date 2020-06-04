@@ -373,7 +373,7 @@
 
             $.ajax({
                 url: "{:url('members/find_member')}",
-                data: {member_no: member_no},
+                data: {code: member_no},
                 success(res){
                     if(res.member){
                         let member = res.member;

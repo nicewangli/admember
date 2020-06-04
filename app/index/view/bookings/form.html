@@ -4,50 +4,50 @@
     <form id="bookingsForm">
         {if $act == 'edit'}
         <input type="hidden" id="user_tel" value="{$user_tel}">
-        <div class="row pt-2">
-            <div class="info-box flex-column align-items-center mr-auto">
+        <div class="row pt-2 d-flex justify-content-around">
+            <div class="info-box flex-column align-items-center ">
                 <span class="info-box-icon bg-success h-100">
                     <i class="fa fa-plus"></i>
                 </span>
                 <label><input type="radio" class="status" value="1" {if $item.status == 1}checked{/if} {if $item.is_deduct == 1} disabled {/if} >新預約</label>
             </div>
 
-            <div class="info-box flex-column align-items-center mr-auto">
+            <div class="info-box flex-column align-items-center ">
                     <span class="info-box-icon bg-warning h-100">
                         <i class="fa fa-phone"></i>
                     </span>
                 <label><input type="radio" class="status" value="2"  {if $item.status == 2}checked{/if} {if $item.is_deduct == 1} disabled {/if} >已通知</label>
             </div>
 
-            <div class="info-box flex-column align-items-center mr-auto">
+            <div class="info-box flex-column align-items-center ">
                     <span class="info-box-icon bg-orange h-100">
                         <i class="fa fa-phone" style="color: white;"></i>
                     </span>
                 <label><input type="radio" class="status" value="3"  {if $item.status == 3}checked{/if} {if $item.is_deduct == 1} disabled {/if} >新客已通知</label>
             </div>
 
-            <div class="info-box flex-column align-items-center mr-auto">
+            <div class="info-box flex-column align-items-center ">
                     <span class="info-box-icon bg-danger h-100">
                         <i class="fa fa-phone" style="color: white;"></i>
                     </span>
                 <label><input type="radio" class="status" value="4"  {if $item.status == 4}checked{/if} {if $item.is_deduct == 1} disabled {/if} >未能聯絡</label>
             </div>
 
-            <div class="info-box flex-column align-items-center mr-auto">
+            <div class="info-box flex-column align-items-center ">
                     <span class="info-box-icon bg-info h-100">
                         <i class="fa fa-check-square-o"></i>
                     </span>
                 <label><input type="radio" class="status" value="5"  {if $item.status == 5}checked{/if} {if $item.is_deduct == 1} disabled {/if} >已到</label>
             </div>
 
-            <div class="info-box flex-column align-items-center mr-auto">
+            <div class="info-box flex-column align-items-center ">
                 <span class="info-box-icon bg-gray h-100">
                     <i class="fa fa-window-close-o"></i>
                 </span>
                 <label><input type="radio" class="status" value="6"  {if $item.status == 6}checked{/if} {if $item.is_deduct == 1} disabled {/if} >缺席</label>
             </div>
 
-            <div class="info-box flex-column align-items-center mr-auto">
+            <div class="info-box flex-column align-items-center ">
                 <span class="info-box-icon bg-fuchsia h-100">
                     <i class="fa fa-strikethrough"></i>
                 </span>
@@ -590,7 +590,7 @@
 
             $.ajax({
                 url: "{:url('members/find_member')}",
-                data: {member_no: member_no},
+                data: {code: member_no},
                 success(res) {
                     if (res.member) {
                         let member = res.member;
@@ -657,9 +657,10 @@
                     success(res) {
                         layer.msg(res.msg);
                         if (res.code == 200) {
-                            let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                            parent.layer.close(index);
-                            parent.location.reload();
+                            // let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                            // parent.layer.close(index);
+                            // parent.location.reload();
+                            location.reload();
                         }
                     }
                 })

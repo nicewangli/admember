@@ -249,6 +249,7 @@ $(document).ready( function (){
                             '   <td width="20%">' + element.name + '</td>  \n' +
                             '   <td width="10%"> \n' +
                             '       <input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;"> \n' +
+                            '       <input type="hidden" name="service[' + number + '][package_original_value]" class="package_original_value" value="' + element.package_value + '"> \n' +
                             '   </td> <td width="12%"> \n' +
                             '       <input type="text" name="service[' + number + '][price]" value="' + element.price + '" class="form-control text-right price" style="width: 100%;"> \n' +
                             '   </td>  \n' +

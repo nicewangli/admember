@@ -92,7 +92,7 @@ class Combinations extends Application
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
             //编号
-            $param['code'] = Combinations::getConfigNo('product_mix','combination');
+            $param['code'] = $this->getConfigNo('product_mix','combination');
             $result = $model::create($param);
 
             if (isset($param['item'])) {

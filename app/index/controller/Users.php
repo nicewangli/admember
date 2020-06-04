@@ -15,6 +15,9 @@ class Users extends Application
 
         //店铺下拉框
         $storeArr = Store::select()->toArray();
+        //職務下拉框
+        $dutyArr = getDuty();
+        $model = new User();
         if ($act=='edit') {
             $uid = intval($uid);
             $userinfo = Db::name('users')->where(['uid'=>$uid])->find();
@@ -25,44 +28,55 @@ class Users extends Application
 
             $group = Db::name('teams')->field('id,title')->where(['status'=>1])->select();
             View::assign('group', $group);
-            return View::fetch('add',['storeArr'=>$storeArr]);
+            return View::fetch('add',['storeArr'=>$storeArr,'dutyArr' => $dutyArr]);
         }
 
         if ($act == 'add') {
             $group = Db::name('teams')->field('id,title')->where(['status'=>1])->select();
             View::assign('group', $group);
-            return View::fetch('add',['storeArr'=>$storeArr]);
+            return View::fetch('add',['storeArr'=>$storeArr,'dutyArr' => $dutyArr]);
         }
 
         if ($act == 'update') {
             if (!Request::isPost()) {
                 return $this->error('参数错误，请重试！');
             }
+            $userDuty = new UserDuty();
             $uid = intval($uid);
             $data = input('post.');
-         
+            $items = $data['item'];
+            $updateDuty = array_pop($items);
+            $data['category'] = $updateDuty['duty'];
+            //判断是否设置离职
+            if($data['category'] == 'RESIGNED') {
+                $data['resigned_date'] = $updateDuty['entry_date'];
+                $data['resigned_status'] = 1;
+            } else {
+                $data['date_of_accession'] = $updateDuty['entry_date'];
+            }
+
             if (!isset($data['status'])) {
                 $data['status'] = 0;
             }
             unset($data['store']);
             if (Db::name('users')->where(['uid'=>$uid])->count()==0) {//新增
-			 if ($data['user_name']=='') {
+			 if ($data['username']=='') {
                     return $this->error('用户名不能为空！');
                 }
-             if (Db::name('users')->where(['user_name'=>$data['user_name']])->count()>0) {
+             if (Db::name('users')->where(['username'=>$data['username']])->count()>0) {
                     return $this->error('用户名已被占用，请重试！');
                 }
 
                 $data['password'] = password($data['password']);
                 //编号
-                $data['code'] = Users::getConfigNo('employee_data','users');
-                $model = new User();
-                $userDuty = new UserDuty();
+                $data['code'] = $this->getConfigNo('employee_data','users');
+//                unset($data['item']);
+//                $r = Db::name('users')->insert($data,true);
                 $r = $model::create($data);
-                //TODO: 员工多职位
+                //TODO: 员工多职位 array_pop
                 if ($r) {
-                    addlog('新增用户，用户名：'.$data['user_name'], $this->user['user_name']);
-                    $userDuty->saveDuty($r->id,$data);
+                    addlog('新增用户，用户名：'.$data['username'], $this->user['username']);
+                    $userDuty->saveDuty($r->uid,$data['item']);
                     return $this->success('新增用戶成功！', url('users/index'));
                 }
             } else {//编辑
@@ -71,9 +85,12 @@ class Users extends Application
                 } else {
                     $data['password'] = password($data['password']);
                 }
+                $userDuty->saveDuty($uid,$data['item']);
+                unset($data['item']);
+                //TODO： 修改user表
                 $r = Db::name('users')->where(['uid'=>$uid])->update($data);
                 if ($r) {
-                    addlog('修改用户信息，UID：'.$uid, $this->user['user_name']);
+                    addlog('修改用户信息，UID：'.$uid, $this->user['username']);
                     return $this->success('修改用戶成功！', url('users/index'));
                 }
             }
@@ -159,6 +176,10 @@ class Users extends Application
                 $where[] = ['username', 'like', '%'.$filter['username'].'%'];
             }
 
+        }
+
+        if(isset($param['category'])) {
+            $where[] = ['category', '=', $param['category']];
         }
 
         if (isset($param['limit'])) {
