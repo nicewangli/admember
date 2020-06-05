@@ -1,0 +1,74 @@
+
+                        <div class="row pt-2">
+                            <div class="col-xs-12 col-md-12 ">
+                                <div class="card-body">
+                                    <table id="example1" class="table table-bordered table-striped table-responsive"
+                                           style="height: 400px; overflow-y: auto">   <!--宽高滚动条 -->
+                                        <thead>
+                                        <tr class="btn-info">
+                                            <td></td>
+                                            {volist name="startDays" id="val"}
+                                            <td>{$val.day}</td>
+                                            {/volist}
+                                            <td></td>
+                                        </tr>
+
+                                        <tr class="btn-info">
+                                            <td>美容師</td>
+                                            {volist name="startDays" id="val"}
+                                            <td>{$val.sort_date}</td>
+                                            {/volist}
+                                            <td>美容師</td>
+                                        </tr>
+                                        </thead>
+
+
+                                        <tbody>
+                                        {notempty name="users"}
+                                        {volist name="users" id="val"}
+                                        <tr>
+                                            <td class="btn-info">{$val.first_name}</td>
+
+                                            {volist name="startDays" id="day"}
+
+                                                   <?php  $att = getDayItem($attendances,$val['uid'],$day['date']); ?>
+                                                   {if condition="$att != ''"}
+                                                            <td title="更表" style="cursor:pointer"  onclick="attendance('edit','{$day.date}','{$val.uid}','{$val.first_name}')">
+                                                                {$att}
+                                                            </td>
+                                                   {else/}    <!--判断有没有ID -->
+                                                            <td title="更表" style="cursor:pointer"  onclick="attendance('add','{$day.date}','{$val.uid}','{$val.first_name}')">
+                                                                &nbsp;
+                                                            </td>
+                                                    {/if}
+                                            {/volist}
+
+                                            <td class="btn-info">{$val.first_name}</td>
+                                        </tr>
+                                        {/volist}
+                                        {/notempty}
+                                        </tbody>
+
+
+                                        <tfoot>
+                                        <tr class="btn-info">
+                                            <td>美容師</td>
+                                            {volist name="startDays" id="val"}
+                                            <td>{$val.day}</td>
+                                            {/volist}
+                                            <td>美容師</td>
+                                        </tr>
+
+                                        <tr class="btn-info">
+                                            <td></td>
+                                            {volist name="startDays" id="val"}
+                                            <td>{$val.sort_date}</td>
+                                            {/volist}
+                                            <td></td>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+

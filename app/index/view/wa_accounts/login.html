@@ -1,0 +1,37 @@
+{extend name="public/popup" /}
+{block name='content'}
+{if $status != -2}
+&nbsp;&nbsp;<label>{$logged_num } logged in.</label> &nbsp;&nbsp;&nbsp;
+<a href="{:url('logout')}" class="btn btn-danger" >Logout</a>
+<hr>
+<div><label>Test</label></div>
+<form class="form-inline searchForm" id="searchForm" action="{:url('wa_accounts/send_direct')}" method="post">
+    <input type="hidden" value="{$logged_num}" name="sender_jid">
+    <div class="input-group ">
+       Phone: <input type="text" name="phone" id="phone" class="form-control">
+    </div>
+
+    <div class="input-group ">
+       Content: <input type="text" name="content" id="content" class="form-control">
+    </div>
+
+    <div class="input-group">
+        &nbsp;&nbsp;
+        <button class="btn  btn-primary" type="submit" id="search_btn">
+            Send
+        </button>
+    </div>
+</form>
+<hr>
+
+{else/}
+   {if $error != ""}
+      {$error}
+   {else/}
+        <div align="center">
+            <div>Login Number: <strong> {$logged_num}</strong></div>
+            <img src="data:image/png;base64,{$res}" width="300px" height="300px" />
+        </div>
+   {/if}    
+{/if}
+{/block}

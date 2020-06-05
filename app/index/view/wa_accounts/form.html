@@ -1,0 +1,91 @@
+{extend name='public/popup' /}
+{block name='content'}
+
+<section class="content">
+    <div>
+        <form class="form-horizontal" id="wa_account-form" method="post" action="{$act}">
+
+            <input type="hidden" id="id" name="id" value="{$item.id|default=''}">
+           
+            <div class="row pt-2">
+                <div class="col-xs-12 col-md-12">
+
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="store_id">店鋪</label>
+                        <div class="col-md-7">
+                            <select class="form-control select2" name="store_id" id="store_id">
+                                {foreach name=":getStores()" id='val'}
+                                <option value="{$val.id}" {if isset($item) &&
+                                        $item.store_id==$val.id}selected{/if}>
+                                    {$val.name}
+                                </option>
+                                {/foreach}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="mobile">電話號碼</label>
+                        <div class="col-md-7">
+                            <input class="form-control" type="text" id="mobile" name="mobile"
+                                   value="{$item.mobile|default=''}"
+                                    required>
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group row">
+                        <label class="col-md-3 control-label" for="status">備註</label>
+                        <div class="col-md-7">
+                                  <textarea class="form-control form-control-sm" id="remarks" name="remarks" rows="6">{$item.remarks|default=''}</textarea>
+                        </div>
+                    </div>
+
+
+               </div>
+            </div>
+        </form>
+    </div>
+
+    <hr>
+    <div class="col-md-12" align="center">
+        <button id="wa_account-submit" type="button"
+                class=" far fa-file-alt  btn flat btn-info dataFormSubmit  btn-sm  ">
+            保存
+        </button>
+        &nbsp;
+        <button class="btn btn-sm btn-default layer-close">關閉</button>
+    </div>
+
+</section>
+{/block}
+
+{block name="js"}
+
+<script type="text/javascript">
+
+    $("#wa_account-submit").click(function () {    // 提交按钮触发事件
+        var form_action = $("#wa_account-form").attr("action");    // 获取 表单的 提交地址
+        $.post(form_action, $("#wa_account-form").serialize(), function (data) {
+            layer.msg(data['msg']);
+            if (data['code'] == 200) {
+                parent.layer.closeAll();
+                parent.$('#wa_account-grid').bootstrapTable('refresh')
+            }
+        });
+    });
+
+    $('.layer-close').on('click', function () {
+        parent.layer.closeAll();
+    });
+
+
+
+
+
+
+
+</script>
+{/block}

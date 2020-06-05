@@ -1,0 +1,133 @@
+<div id="stockout-toolbar">
+    <a title="Add" onclick="stockout()" class="btn btn-primary btn-sm " href="#">
+        <i class="fa fa-plus"></i> 新增
+    </a>
+</div>
+
+
+<div class="table-responsive">
+
+    <table id="stockout-grid" class="table-striped">
+
+    </table>
+</div>
+{block name="js"}
+<script type="text/javascript" >
+
+    window.operateEvents={
+        "click .edit" : function(e,value,row,index){stockout(row.id)},
+        "click .del" : function(e,value,row,index){del(row.id)}
+    }
+
+    function operateFormatter(value,row,index){
+        return [
+            '<a class="btn btn-primary btn-xs edit" href="#"><i class="fa fa-pencil"></i></a>',
+            '<a class="btn btn-danger btn-xs del" href="#"><i class="fa fa-trash"></i></a>',
+        ].join('&nbsp;&nbsp;');
+    }
+
+    function stockout(id){
+        if(id){
+            var url = '{:url("stockouts/edit?id=")}'+id
+        }else{
+            var url = '{:url("stockouts/add")}?supplier_id={$supplier_id}'
+        }
+
+        layer.open({
+            type:2,
+            title:'stockouts Detail',
+            area:['800px','450px'],
+            content: url,
+        });
+
+    }
+
+
+    function del(id){
+        // const that = $(this)
+        if(confirm('Are you sure to delete?')==false){
+            return false;
+        }else{
+            $.ajax({
+                url: "{:url('stockouts/del')}",
+                data: {
+                    id: id,
+                },
+                type: "POST",
+                success(res){
+                    if(res.code == 200){
+                        $('#stockout-grid').bootstrapTable('refresh');
+                    }
+                }
+            })
+        }
+    }
+
+    $(function(){
+        $('#stockout-grid').bootstrapTable({
+            url: "{$grid_url}",            //请求后台的URL（*）
+            method: 'get',                                   //请求方式（*）
+            queryParams: function (params) {
+                return {
+                    offset: params.offset,  //页码
+                    limit: params.limit,   //页面大小
+                    search : params.search, //搜索
+                    order : params.order, //排序
+                    ordername : params.sort, //排序
+                    filter: params.filter,
+                };
+            },
+            toolbar: "#stockout-toolbar",                    //工具按钮用哪个容器
+            pagination: true,                                //是否显示分页（*）
+            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            buttonsClass:"btn-sm btn btn-sm btn-default",
+            striped: true,                                   //是否显示行间隔色
+            cookie: true,
+            cookieIdTable: 'package_unit-Grid',
+            showRefresh: true,                               //是否显示刷新按钮
+            showColumns: true,                               //是否显示所有的列
+            stickyHeader: true,
+            stickyHeaderOffsetLeft: '3em',
+            stickyHeaderOffsetRight: '3em',
+            search: true,                                   //显示搜索框
+            pageSize: 10,                                    //每页的记录行数（*）
+            pageList: [50, 100],
+            columns: [{
+                checkbox: true,
+                clickToSelect: true
+            }, {
+                field: 'salesorder_no',
+                title: '次序',
+                searchable: true,
+            }, {
+                field: 'store',
+                title: '編號',
+                searchable: true,
+            },{
+                field: 'created_at',
+                title: '名稱',
+                searchable: true,
+            },{
+                field: 'payment_term',
+                title: '數量',
+                searchable: true,
+            },{
+                field: 'abstract',
+                title: '備註',
+                searchable: true,
+            },{
+                field: 'operate',
+                title: '操作',
+                width: '80px',
+                clickToSelect: false,
+                events: operateEvents,
+                formatter: operateFormatter
+            }, ]
+        });
+    })
+
+
+
+
+</script>
+{/block}
