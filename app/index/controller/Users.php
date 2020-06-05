@@ -24,11 +24,15 @@ class Users extends Application
             if (!$userinfo) {
                 return $this->error('参数错误，请重试！');
             }
+            //写一个user_duty
+
+            $dutyInfo = Db::name('user_duty')->where(['user_id'=>$uid])->order('entry_date','desc')->select()->toArray();
+
             View::assign('userinfo', $userinfo);
 
             $group = Db::name('teams')->field('id,title')->where(['status'=>1])->select();
             View::assign('group', $group);
-            return View::fetch('add',['storeArr'=>$storeArr,'dutyArr' => $dutyArr]);
+            return View::fetch('add',['storeArr'=>$storeArr,'dutyArr' => $dutyArr,'dutyInfo' => $dutyInfo]);
         }
 
         if ($act == 'add') {
@@ -91,7 +95,7 @@ class Users extends Application
                 $r = Db::name('users')->where(['uid'=>$uid])->update($data);
                 if ($r) {
                     addlog('修改用户信息，UID：'.$uid, $this->user['username']);
-                    return $this->success('修改用戶成功！', url('users/index'));
+                    return $this->success('修改用戶成功！', url('users/index',['act'=>'edit','uid'=>$uid]));
                 }
             }
             return $this->error('参数错误，请重试！');
@@ -125,11 +129,22 @@ class Users extends Application
             ];
         }
 
-        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->whereOr($where)->field('u.uid,u.ugid,u.code as member_no,u.first_name,u.for_short,u.last_name,u.category,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.uid desc')->paginate(10);
+        $list = Db::name('users')->alias('u')->join('teams g', 'g.id=u.ugid', 'left')->whereOr($where)->field('u.uid,u.ugid,u.code as member_no,u.first_name,u.for_short,u.last_name,u.category,u.sex,u.birthday,u.identity_card,u.phone_mobile,u.region,u.email,u.grade,g.title')->order('u.code')->paginate(10);
+        $list_copy = $list->toArray();
+
+        foreach ($list_copy['data'] as $key=>$value) {
+            if(array_key_exists($value['category'], $dutyArr)) {
+                $list_copy['data'][$key]['duty'] = $dutyArr[$value['category']];
+            } else {
+                $list_copy['data'][$key]['duty'] = '无';
+            }
+
+        }
 //        $list = User::order('for_short asc')->paginate(10);
 
        View::assign([
             'list'=>$list,
+            'list_copy' => $list_copy['data'],
             'search'=>$search,
         ]);
         return View::fetch();
@@ -153,59 +168,82 @@ class Users extends Application
     public function users()
     {
         $from_panel = input('from_panel');
-        $ids = input('ids');
-        return View::fetch('users', ['from_panel' => $from_panel, 'ids' => $ids]);
+        $consultantId = input('consultantId', '');
+        $beauticianId = input('beauticianId', '');
+        $id = input('id', '');
+        return View::fetch('users', ['from_panel' => $from_panel, 'consultantId' => $consultantId, 'beauticianId' => $beauticianId, 'id' => $id]);
     }
 
-    public function lists()
+    public function lists(User $model)
     {
         $param = input('get.');
         $sort = isset($param['sort']) ?  $param['sort'] :  'for_short';
-        $order = isset($param['order']) ?  $param['order'] :  'desc';
+        $order = isset($param['order']) ?  $param['order'] :  'asc';
         $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
         $where = [];
 
         if(isset($param['search'])){
-            $where[] = ['code', 'like', '%'.$param['search'].'%'];
+            $where[] = ['u.code', 'like', '%'.$param['search'].'%'];
         }
 
         if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
 
             if(isset($filter['username'])){
-                $where[] = ['username', 'like', '%'.$filter['username'].'%'];
+                $where[] = ['u.username', 'like', '%'.$filter['username'].'%'];
             }
 
         }
 
         if(isset($param['category'])) {
-            $where[] = ['category', '=', $param['category']];
+            $where[] = ['u.category', '=', $param['category']];
         }
+
+        $total = $model->alias('u')->where($where)->count();
+
+        $tableName = '';
+        $fieldName = '';
+        if ($param['id']) {
+            if ($param['from_panel'] == 'invoices') {
+                $tableName = 'invoice_seller';
+                $fieldName = 'invoice_id';
+            }
+
+            else if ($param['from_panel'] == 'package_stagings') {
+                $tableName = 'package_staging_seller';
+                $fieldName = 'package_staging_id';
+            }
+        }
+
+        $items = $model->alias('u')->field('u.uid, u.for_short, "" as commission_rate')->where($where);
 
         if (isset($param['limit'])) {
             $limit = $param['limit'];
             $offset = $param['offset'];
 
-            $items = Db::name('users')->field('uid, for_short')->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
-
-        }else{
-            $items = Db::name('users')->field('uid, for_short')->where($where)->order($sort.' '.$order)->select()->toArray();
+            $items->limit($offset, $limit);
         }
+        $list = $items->order($sort.' '.$order)->select()->toArray();
 
-        $total = Db::name('users')->where($where)->count();
 
-        foreach ($items as $key => $value) {
+        foreach ($list as $key => $value) {
+            if ($tableName) {
+                $list[$key]['commission_rate'] = Db::name($tableName)->where([$fieldName => $param['id'], 'seller_id' => $value['uid'], 'seller_type' => $param['type']])->value('commission_rate');
+            }
+
+            $list[$key]['commission_rate'] = $list[$key]['commission_rate'] ? $list[$key]['commission_rate'] : '';
+
             if (!empty($ids)) {
                 if (in_array($value['uid'], $ids)) {
-                    $items[$key]['checked'] = true;
+                    $list[$key]['checked'] = true;
                 }else{
-                    $items[$key]['checked'] = false;
+                    $list[$key]['checked'] = false;
                 }
             }
         }
 
         $data = [
-            'rows' => $items,
+            'rows' => $list,
             'total' => $total,
         ];
         return json($data);

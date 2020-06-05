@@ -37,6 +37,6 @@ class Member extends Model
     public function getSalutationAttr($value)
     {
         $salutation = [0=>'男',1=>'女',2=>'保密'];
-        return $salutation[$value];
+        return $salutation[intval($value)];
     }
 }

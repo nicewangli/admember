@@ -28,6 +28,16 @@
 
                     <div class="form-group row pt-2" style="align-items: baseline;">
                         <div class="col-xs-12 col-md-4">
+
+                            <div class="form-group row">
+                                <label class="col-md-3 control-label" for="member_no">編號</label>
+                                <div class="col-md-7">
+                                    <input class="form-control" type="text" id="member_no" name="member_no"
+                                           value="{$item.member_no|default=''}"
+                                           placeholder="auto assign later" readonly>
+                                </div>
+                            </div>
+
                             <div class="form-group row">
                                 <label class="col-md-3 control-label" for="status">狀態</label>
                                 <div class="col-md-7">
@@ -44,15 +54,6 @@
                                 </div>
                             </div>
 
-
-                            <div class="form-group row">
-                                <label class="col-md-3 control-label" for="member_no">編號</label>
-                                <div class="col-md-7">
-                                    <input class="form-control" type="text" id="member_no" name="member_no"
-                                           value="{$item.member_no|default=''}"
-                                           placeholder="A0029" required>
-                                </div>
-                            </div>
 
                             <div class="form-group row">
                                 <label class="col-md-3 control-label"
@@ -114,7 +115,7 @@
                                 <div class="col-md-7">
                                     <input class="form-control" type="text" id="first_name" name="first_name"
                                            value="{$item.first_name|default=''}"
-                                           placeholder="Leo Wong" required>
+                                           placeholder="" required>
                                 </div>
                             </div>
 
@@ -140,7 +141,7 @@
                                 <div class="col-md-7">
                                     <input class="form-control" type="text" id="date_of_birth" name="date_of_birth"
                                            value="{$item.date_of_birth|default=''}"
-                                           placeholder="年/月/日">
+                                           placeholder="">
                                 </div>
                             </div>
 
@@ -149,7 +150,7 @@
                                 <div class="col-md-7">
                                     <input class="form-control" type="text" id="identity_card" name="identity_card"
                                            value="{$item.identity_card|default=''}"
-                                           placeholder="Y4287">
+                                           placeholder="">
                                 </div>
                             </div>
 
@@ -163,7 +164,7 @@
                                     <input class="form-control" type="text" id="phone_mobile"
                                            name="phone_mobile"
                                            value="{$item.phone_mobile|default=''}"
-                                           placeholder="60803311" required>
+                                           placeholder="" required>
                                 </div>
                             </div>
 
@@ -209,7 +210,7 @@
                                 <label class="col-md-3 control-label" for="address">地址</label>
                                 <div class="col-md-7">
                             <textarea class="form-control" id="address" name="address"
-                                      placeholder="{$item.address|default=''}">{$item.address|default=''}</textarea>
+                                      placeholder="">{$item.address|default=''}</textarea>
                                 </div>
                             </div>
 
@@ -221,7 +222,7 @@
                             <textarea class="form-control" id="remark" name="remark"
                                       size="1"
                                       value=""
-                                      placeholder="{$item.remark|default=''}">{$item.remark|default=''}</textarea>
+                                      placeholder="">{$item.remark|default=''}</textarea>
                                 </div>
                             </div>
 
@@ -231,7 +232,7 @@
                             <textarea class="form-control" id="reservation_remarks" name="reservation_remarks"
                                       size="1"
                                       value=""
-                                      placeholder="{$item.reservation_remarks|default=''}">{$item.reservation_remarks|default=''}</textarea>
+                                      placeholder="">{$item.reservation_remarks|default=''}</textarea>
                                 </div>
                             </div>
 
@@ -245,7 +246,7 @@
                                     <input class="form-control" type="text" id="date_of_accession"
                                            name="date_of_accession"
                                            value="{$item.date_of_accession|default=''}"
-                                           placeholder="2020-02-11">
+                                           placeholder="">
                                 </div>
                             </div>
 
@@ -315,7 +316,7 @@
                             <textarea class="form-control" id="source_notes" name="source_notes"
                                       size="1"
                                       value=""
-                                      placeholder="{$item.source_notes|default=''}">{$item.source_notes|default=''}</textarea>
+                                      placeholder="">{$item.source_notes|default=''}</textarea>
                                 </div>
                             </div>
 
@@ -358,7 +359,7 @@
                             <textarea class="form-control" id="signature" name="signature"
                                       size="1"
                                       value=""
-                                      placeholder="{$item.signature|default=''}"></textarea>
+                                      placeholder="">{$item.signature|default=''}</textarea>
                                 </div>
                             </div>
 

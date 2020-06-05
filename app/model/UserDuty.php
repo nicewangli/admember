@@ -6,15 +6,17 @@ namespace app\model;
 
 class UserDuty extends Model
 {
-    //TODO：插入多职位记录
+    //TODO：插入多职位记录,不删除，修改和新增
     public function saveDuty($uid,$items)
     {
-        //删除旧数据
-        $this->where('user_id',$uid)->delete();
-        foreach ($items as &$item) {
-            $item['user_id'] = $uid;
+        $createArr = [];
+        foreach ($items as $item) {
+            if(!isset($item['id'])) {
+                $item['user_id'] = $uid;
+                $createArr[] = $item;
+            }
         }
-        $data = $items;
-        $this->insertAll($data);
+        $this->insertAll($createArr);
+
     }
 }

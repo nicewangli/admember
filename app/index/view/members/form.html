@@ -39,8 +39,8 @@
                     <select class="form-control select2" type="text" id="status" name="status">
                         <option value="">&nbsp;</option>
                         {foreach name=":getOptions('status')" id='opt'}
-                        <option value="{$opt.id}" {if isset($item) &&
-                                $item.status==$opt.id}selected{/if}>
+                        <option value="{$opt.val}" {if isset($item) &&
+                                $item.status==$opt.val}selected{/if}>
                             {$opt.name}
                         </option>
                         {/foreach}
@@ -245,7 +245,7 @@
                 <div class="col-md-7">
                     <input class="form-control datePicker" type="text" id="date_of_accession"
                            name="date_of_accession"
-                           value="{$item.date_of_accession|default=''}"     >
+                           value="{$item.date_of_accession|default=''}"  >
                 </div>
             </div>
 

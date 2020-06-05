@@ -231,6 +231,9 @@ class Invoices extends Application
             if (isset($param['seller'])) {
                 $invoiceSeller->saveSeller($id, $param['seller']);
             }
+            if (isset($param['delSeller']) && $param['delSeller']) {
+                $invoiceSeller->delSellers($id);
+            }
 
             return json(['code' => 200]);
         }
@@ -240,9 +243,54 @@ class Invoices extends Application
         $inv_sellers = $invoiceSeller->findSellers($id);
 
         $item['items_count'] = $invoiceItem->where('invoice_id', $id)->count();
-        return view('add',['data' => $item, 'inv_items' => $inv_items, 'inv_payments' => $inv_payments, 'inv_sellers' => $inv_sellers, 'member' => $member_info, 'consultant' => $inv_sellers['consultant'], 'beautician' => $inv_sellers['beautician']]);
+        return view('add',['data' => $item, 'inv_items' => $inv_items, 'inv_payments' => $inv_payments, 'inv_sellers' => $inv_sellers, 'member' => $member_info]);
 
     }
+	
+    //打印
+    public function print($id, Request $request, Invoice $model, InvoiceValidate $validate,InvoiceItem $invoiceItem, InvoicePayment $invoicePayment, InvoiceSeller $invoiceSeller, Member $member)
+    {
+        $item=$model->alias('i')->leftJoin('store s','i.store_id = s.id')->field('i.*, s.name as store_name')->find($id);
+
+        $member_info = [];
+        if ($item['member_id']) {
+            $where['id'] = $item['member_id'];
+            $member_info = $member->findMember($where);
+        }
+
+        if ($request->isPost()) {
+            $param = input('post.');
+            $validate_result = $validate->scene('edit')->check($param);
+            if (!$validate_result) {
+                return $this->error($validate->getError());
+            }
+
+            $param['new_customer'] = isset($param['new_customer']) ? isset($param['new_customer']) : 0;
+            $param['updated_user_id'] = getUserId();
+            $param['updated_time'] = time();
+
+            $item->save($param);
+            if (isset($param['service'])) {
+                $invoiceItem->saveItem($id,$param['service']);
+            }
+            if (isset($param['payment'])) {
+                $invoicePayment->savePayment($id, $param['payment']);
+            }
+            if (isset($param['seller'])) {
+                $invoiceSeller->saveSeller($id, $param['seller']);
+            }
+
+            return json(['code' => 200]);
+        }
+
+        $inv_items = $invoiceItem->findItems($id);
+        $inv_payments = $invoicePayment->findPayments($id);
+        $inv_sellers = $invoiceSeller->findSellers($id);
+
+        $item['items_count'] = $invoiceItem->where('invoice_id', $id)->count();
+        return view('print',['data' => $item, 'inv_items' => $inv_items, 'inv_payments' => $inv_payments, 'inv_sellers' => $inv_sellers, 'member' => $member_info, 'consultant' => $inv_sellers['consultant'], 'beautician' => $inv_sellers['beautician']]);
+
+    }	
 
     //删除
     public function del($id, Invoice $model, InvoiceItem $invoiceItem, InvoicePayment $invoicePayment, InvoiceSeller $invoiceSeller)

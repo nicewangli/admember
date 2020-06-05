@@ -232,6 +232,9 @@ class PackageStagings extends Application
             if (isset($param['seller'])) {
                 $packageStagingSeller->saveSeller($id, $param['seller']);
             }
+            if (isset($param['delSeller']) && $param['delSeller']) {
+                $packageStagingSeller->delSellers($id);
+            }
 
             return json(['code' => 200]);
         }
@@ -241,7 +244,7 @@ class PackageStagings extends Application
         $sellers = $packageStagingSeller->findSellers($id);
 
         $item['items_count'] = $packageStagingItem->where('package_staging_id', $id)->count();
-        return view('add',['data' => $item, 'items' => $items, 'payments' => $payments, 'sellers' => $sellers, 'member' => $member_info,'storeArr'=>$storeArr,'type'=>'edit', 'consultant' => $sellers['consultant'], 'beautician' => $sellers['beautician']]);
+        return view('add',['data' => $item, 'items' => $items, 'payments' => $payments, 'sellers' => $sellers, 'member' => $member_info,'storeArr'=>$storeArr,'type'=>'edit']);
 
     }
 

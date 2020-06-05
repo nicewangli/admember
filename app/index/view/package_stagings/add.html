@@ -96,18 +96,18 @@
                         <div class="form-group row">
                             <label class="col-md-3 control-label">銷售員：</label>
                             <div class="col-md-7">
-                                <a title="選擇銷售員" onclick="sellers()" class="btn btn-primary btn-sm " href="#">選擇</a>
+                                <a title="選擇銷售員" onclick="sellers('{$sellers.consultantId|default=\'\'}', '{$sellers.beauticianId|default=\'\'}')" class="btn btn-primary btn-sm " href="#">選擇</a>
                             </div>
                         </div>
 
                         <div class="form-group row">
                             <label class="col-md-3 control-label"></label>
                             <div class="col-md-7 beautician">
-                                {notempty name="consultant"}
-                                <p id="consultant">{$consultant|raw}</p>
+                                {notempty name="sellers.consultant"}
+                                <p id="consultant">{$sellers.consultant|raw}</p>
                                 {/notempty}
-                                {notempty name="beautician"}
-                                <p id="beauty">{$beautician|raw}</p>
+                                {notempty name="sellers.beautician"}
+                                <p id="beauty">{$sellers.beautician|raw}</p>
                                 {/notempty}
                             </div>
                         </div>
@@ -451,17 +451,15 @@
         parent.location.href = url;
     }
 
-    function sellers(){
-        let ids = [];
-        $(".sellers").each(function(){
-            ids.push($(this).val());
-        });
+    function sellers(consultantId, beauticianId){
+
+        let id = $("#id").val();
 
         layer.open({
             type: 2,
             title: '銷售員',
             area: ['700px', '98%'],
-            content: '{:url("users/users?from_panel=invoices&ids=")}' + ids
+            content: '{:url("users/users?from_panel=package_stagings&consultantId=")}' + consultantId + '&beauticianId=' + beauticianId + '&id=' + id
         })
     }
 

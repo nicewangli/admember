@@ -657,10 +657,13 @@
                     success(res) {
                         layer.msg(res.msg);
                         if (res.code == 200) {
-                            // let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                            // parent.layer.close(index);
-                            // parent.location.reload();
-                            location.reload();
+                            if (id) {
+                                location.reload();
+                            } else {
+                                let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                                parent.layer.close(index);
+                                parent.location.reload();
+                            }
                         }
                     }
                 })

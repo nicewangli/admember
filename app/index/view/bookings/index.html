@@ -36,7 +36,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body table-responsive"  style="overflow-y: auto">
+                <div class="card-body" >
                     <form role="form" id="booking_form">
                         <input type="hidden" name="oblation">
                         <div class="row">
@@ -212,7 +212,7 @@
                     {volist name="dayArr" id="dateWeek"}
                     <div class="row">
 
-                        <table class="table table-bordered table-responsive" id="bea">
+                        <table class="table table-bordered table-sm" id="bea">
                             <thead>
                                 <tr class="bg-info disabled color-palette" style="height: 20px">
                                     <td>日期</td>
@@ -235,7 +235,7 @@
                                         <td class="bg-info disabled color-palette">({$dateWeek.week})<br>{$dateWeek.date}</td>
                                         <td>{$shijian.text}</td>
                                         {volist name="beauticianArr" id="bea"}
-                                        <td class="get_tooltip" data-bea="{$bea.id}" data-placement="right">{volist name="bookingItems" id="bi"}{if condition="$bi.booking_date eq $dateWeek.date  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}<font color="white">{$bi.m_name}<br/>{$bi.start_time}--{$bi.end_time}<br/>{$bi.phone_mobile}<br />({$bi.r_name})<br/>(顧問：{$bi.cu_name})</font><input type="hidden" value="{$bi.bc}" data-is_deduct="{$bi.is_deduct}" data-id="{$bi.bid}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$dateWeek.date}" data-type="bi" data-start_time="{$bi.start_time}" data-end_time="{$bi.end_time}" data-bea_name="{$bi.u_name}" data-r_name="{$bi.r_name}" data-m_name="{$bi.m_name}" data-m_phone="{$bi.phone_mobile}" data-service_name="{$bi.service_name}" data-status_name="{$bi.status_name}"><i class="test_tooltip" data-toggle="tooltip" data-placement="top" style="position: absolute;" data-html="true"></i>{/if}{/volist}{volist name="adArr" id="ad"}{if condition='$ad.vdate eq $dateWeek.date && $ad.user_id eq $bea.id && ($ad.end_time > $shijian.id&&$shijian.id>=$ad.start_time)'}{$ad.item}<input type="hidden" data-type="ad">{/if}{/volist}</td>{/volist}
+                                        <td class="get_tooltip" data-bea="{$bea.id}" data-placement="right">{volist name="bookingItems" id="bi"}{if condition="$bi.booking_date eq $dateWeek.date  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}<font color="white">{$bi.m_name}<br/>{$bi.start_time}--{$bi.end_time}<br/>{$bi.phone_mobile}<br />({$bi.r_name})<br/>(顧問：{$bi.cu_name})</font><input type="hidden" value="{$bi.bc}" data-is_deduct="{$bi.is_deduct}" data-id="{$bi.bid}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$dateWeek.date}" data-type="bi" data-start_time="{$bi.start_time}" data-end_time="{$bi.end_time}" data-bea_name="{$bi.u_name}" data-r_name="{$bi.r_name}" data-m_name="{$bi.m_name}" data-m_phone="{$bi.phone_mobile}" data-service_name="{$bi.service_name}" data-status_name="{$bi.status_name}" data-remark="{$bi.remark}"><i class="test_tooltip" data-toggle="tooltip" data-placement="top" style="position: absolute;" data-html="true"></i>{/if}{/volist}{volist name="adArr" id="ad"}{if condition='$ad.vdate eq $dateWeek.date && $ad.user_id eq $bea.id && ($ad.end_time > $shijian.id&&$shijian.id>=$ad.start_time)'}{$ad.item}<input type="hidden" data-type="ad">{/if}{/volist}</td>{/volist}
                                         <td>{$shijian.text}</td>
                                         <td class="bg-info disabled color-palette">{$dateWeek.date}</td>
                                     </tr>
@@ -270,7 +270,7 @@
     // var calendar;
     $(function () {
         $("[data-toggle='tooltip']").tooltip({html : true });
-        $("#bea tr").each(function(rowIndex) {
+        $("#bea tr:first-child td").each(function(rowIndex) {
             _w_table_rowspan("#bea",rowIndex);
         });
         // _w_table_rowspan("#bea",5);
@@ -378,6 +378,7 @@
             let bea = _w_table_firsttd.find('input').attr('data-bea_name');
             let service = _w_table_firsttd.find('input').attr('data-service_name');
             let status = _w_table_firsttd.find('input').attr('data-status_name');
+            let remark = _w_table_firsttd.find('input').attr('data-remark');
             _w_table_firsttd.attr("onClick","show_booking("+b_id+','+beautician1+','+bi_id+");");
             //TODO:差显示排版
             let title = '<div class="card">\n' +
@@ -392,7 +393,7 @@
                 '        <span>美容师:<span class="text-blue">'+bea+'</span></span><br/>' +
                 '        <span>服务:<span class="text-blue">'+service+'</span></span><br/>' +
                 '        <hr>\n' +
-                '        <span>备注：</span>\n' +
+                '        <span>备注：<span class="text-blue">'+remark+'</span></span>\n' +
                 '    </div>' +
                 '</div>';
             _w_table_firsttd.find('i').attr("data-original-title",title);

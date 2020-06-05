@@ -82,6 +82,7 @@ class Application extends BaseController
             'list',
             'lists',
             'panel',
+            'print',
             'qsearch',
             'typefilter',
             'userfilter',
@@ -210,10 +211,11 @@ class Application extends BaseController
     {
         $str = '';
         //查询最大编号
-        $count = Db::query('SELECT MAX(code) as max_no FROM '.$dbName.' limit 1');
-        foreach ($count as $value) {
-            $str = $value['max_no'];
-        }
+        //$count = Db::query('SELECT MAX(code) as max_no FROM '.$dbName.' limit 1');
+        //foreach ($count as $value) {
+        //    $str = $value['max_no'];
+        //}
+		$str = Db::table($dbName)->max('code',false);
         //正则去掉编号中的字母
         $str = preg_replace('|[a-zA-Z/]+|', '', $str);
         //最大编号加一

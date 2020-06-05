@@ -54,7 +54,6 @@ class Members extends Application
                 }
 
 
-
             }
 
         }
@@ -128,10 +127,6 @@ class Members extends Application
 //        $daoRu->daoRU();
         //临时导入
 
-        $from = input('from', '');
-        $booking_id = input('booking_id', '');
-        $item['first_name'] = input('name', '');
-        $item['phone_mobile'] = input('phone', '');
         //店铺下拉框
         $storeArr = Store::select()->toArray();
         if ($request::isPost()) {
@@ -155,6 +150,11 @@ class Members extends Application
 
             return $this->redirect(url("index"));
         }else{
+			$item = new Member;
+			$from = input('from', '');
+			$booking_id = input('booking_id', '');
+			$item['first_name'] = input('name', '');
+			$item['phone_mobile'] = input('phone', '');
 			$item['date_of_accession'] = date("Y-m-d");
 		}
 
@@ -165,7 +165,7 @@ class Members extends Application
         if ($from) {
             return view('layer_add', ['from' => $from, 'item' => $item, 'booking_id' => $booking_id]);
         }
-        return view('add');
+        return view('add',['item' => $item]);
     }
 
 

@@ -38,7 +38,9 @@
 <body>
     <div class="container-fluid">
         <input type="hidden" id="from_panel" value="{$from_panel}">
-        <input type="hidden" id="ids" value="{$ids}">
+        <input type="hidden" id="consultantId" value="{$consultantId|default=''}">
+        <input type="hidden" id="beauticianId" value="{$beauticianId|default=''}">
+        <input type="hidden" id="id" value="{$id|default=''}">
         <div class="card-body">
             <div class="row pt-2">
                 
@@ -79,7 +81,7 @@
 
     function usersInput(value, row, index) {
         return [
-            '<input class="form-control form-control-sm" type="text" id="' + row.uid + '" value="">'
+            '<input class="form-control form-control-sm" type="text" id="' + row.uid + '" value="' + row.commission_rate + '">'
         ].join("");
     }
 
@@ -97,11 +99,15 @@
                 order : params.order, //排序
                 ordername : params.sort, //排序
                 filter: params.filter,
-                ids: ids,
-                category: '顧問'
+                ids: $("#consultantId").val(),
+                type: 1,
+                id: $("#id").val(),
+                from_panel: $("#from_panel").val(),
+                category: 'CONSULTANT'
             };
         },
         contentType: 'text/html',
+        classes: 'table table-bordered table-hover table-sm',
         // toolbar: "#users-toolbar",                    //工具按钮用哪个容器
         pagination: false,                                //是否显示分页（*）
         sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
@@ -164,11 +170,15 @@
                 order : params.order, //排序
                 ordername : params.sort, //排序
                 filter: params.filter,
-                ids: ids,
-                category: '顧問 / 美容師'
+                ids: $("#beauticianId").val(),
+                type: 2,
+                id: $("#id").val(),
+                from_panel: $("#from_panel").val(),
+                category: 'COSMETOLOGIST'
             };
         },
         contentType: 'text/html',
+        classes: 'table table-bordered table-hover table-sm',
         // toolbar: "#users-toolbar",                    //工具按钮用哪个容器
         pagination: false,                                //是否显示分页（*）
         sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
@@ -228,7 +238,7 @@
         //     return;
         // }else {
             let nodes = '';
-            if (from_panel == 'invoices') {
+            // if (from_panel == 'invoices') {
                 parent.$(".beautician").empty();
 
                 // let number = parent.$(".seller").length;
@@ -252,7 +262,7 @@
                     nodes += '</p>';
                 }
 
-                if (conLen > 0) {
+                if (beaLen > 0) {
                     nodes += '<p id="beauty">';
                     $.each(beauty, function (index, element) {
 
@@ -266,8 +276,12 @@
                     nodes += '</p>';
                 }
 
+                if (conLen == 0 && beaLen ==0) {
+                    nodes += '<input type="hidden" name="delSeller" value="1">';
+                }
+
                 parent.$(".beautician").append(nodes);
-            }
+            // };
             
 
             //注意：parent 是 JS 自带的全局对象，可用于操作父页面

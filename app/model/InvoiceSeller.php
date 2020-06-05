@@ -43,7 +43,10 @@ class InvoiceSeller extends Model
         $consultant = empty($consultant) ? '' : mb_substr($consultant, 0, mb_strlen($consultant)-2);
         $beautician = empty($beautician) ? '' : mb_substr($beautician, 0, mb_strlen($beautician)-2);
 
-        return ['result' => $result, 'consultant' => $consultant, 'beautician' => $beautician];
+        $consultantId = $this->where(['invoice_id' => $id, 'seller_type' => 1])->column('seller_id');
+        $beauticianId = $this->where(['invoice_id' => $id, 'seller_type' => 2])->column('seller_id');
+
+        return ['result' => $result, 'consultant' => $consultant, 'beautician' => $beautician, 'consultantId' => implode(',', $consultantId), 'beauticianId' => implode(',', $beauticianId)];
     }
 
     public function delSellers($id)
