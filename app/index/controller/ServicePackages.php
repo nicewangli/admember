@@ -230,8 +230,12 @@ class ServicePackages extends Application
         if ($service_package_id) {
             if ($service_type == 2) {
                 $items = $packageItem->alias('spi')->leftJoin('invoice_item it', 'spi.service_package_id = it.service_id')->leftJoin('service s', 'spi.service_id = s.id')->field('spi.*, s.code, s.name, s.beautician_pay, s.price, it.id as invoice_item_id')->where(['spi.service_package_id' => $service_package_id, 'it.invoice_id' => $invoice_id])->order($sort.' '.$order)->select()->toArray();
-            } else {
-                $items = Service::where('status', '可用')->field('id as service_id, code, name, beautician_pay, price as deduct_val') ->select()->toArray();
+
+            }
+
+            if ($service_type == 1 || empty($items)) {
+                $items = Service::where('status', '發售中')->field('id as service_id, code, name, beautician_pay, price as deduct_val')->order($sort.' '.$order)->select()->toArray();
+
             }
 
         }else{

@@ -424,7 +424,7 @@ class Invoices extends Application
 
 
         foreach ($list as $key => $value) {
-            $avg = $value['total'] / $value['package_value'];
+            $avg = $value['package_value'] ? $value['total'] / $value['package_value'] : 0;
             $used = $avg * $value['package_value_used'];
             $list[$key]['avg'] = sprintf('%.1f', $avg);
             $list[$key]['used'] = sprintf('%.1f', $used);

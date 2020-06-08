@@ -42,6 +42,7 @@ class Members extends Application
         $limit = $param['limit'];
         $offset = $param['offset'];
         $sort = isset($param['sort']) ?  $param['sort'] :  'code';
+//        $sort = 'code';
         $order = $param['order'];
         $where = [];
           if(isset($param['filter'])){
@@ -50,18 +51,14 @@ class Members extends Application
             $query_fields = ['code','first_name','last_name','phone_mobile','phone_work','email1'];
             foreach ($query_fields as $field){
                 if(isset($filter[$field])) {
-                    $where[] = ['m.'.$field, 'like', $filter[$field] . '%'];
+                    $where[] = ['m.'.$field, 'like', '%'.$filter[$field].'%'];
                 }
-
-
             }
-
         }
-
-
-
-
+//          $model = new Member();
         $items = Member::alias('m')->leftJoin('mapping mp', 'm.opt = mp.id')->field('m.*, mp.val as opt')->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
+//        dump($model->getLastSql());die;
+//        dump($items);die;
         $total = Member::alias('m')->where($where)->count();
         $data = [
             'rows' => $items,

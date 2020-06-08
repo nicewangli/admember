@@ -168,3 +168,7 @@ label:not(.form-check-label):not(.custom-file-label) {
 .fc-resource-cell{
     font-size: 0.85em;
 }
+
+.click-search {
+    cursor: pointer;
+}

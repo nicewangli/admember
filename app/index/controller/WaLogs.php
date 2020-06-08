@@ -22,7 +22,14 @@ class WaLogs extends Application
         $user = getUser();
         $user_tel = $user->tel;
         $phone = input('phone');
+        $search = input('search');
         $from_me = input('from_me');
+        if(!empty($search)) {
+            $where = [];
+            $where[] = ['m.code','like','%'.$search.'%'];
+            $where[] = ['m.first_name','like','%'.$search.'%'];
+            $where[] = ['m.phone_mobile','like','%'.$search.'%'];
+        }
         if (!empty($phone)) {
             $member = Member::where('phone_mobile', $phone)->find();
             View::assign(['phone' => $phone]);

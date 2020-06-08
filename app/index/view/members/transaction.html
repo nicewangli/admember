@@ -112,10 +112,9 @@
                                 </div>
 
                                 <div class="form-group row ">
-                                    <label class="col-md-3 control-label" for="code">項目編號</label>
+                                    <label class="col-md-3 control-label" for="codeNum">項目編號</label>
                                     <div class="col-md-6">
-                                        <input class="form-control to-search" type="text" id="code" name="code"
-                                               value="{$data.code|default=''}"
+                                        <input class="form-control to-search" type="text" id="codeNum" name="codeNum"
                                                placeholder="">
                                     </div>
                                 </div>
@@ -161,7 +160,7 @@
                     end_date: $("#end_date").val(),
                     type: $("#type").val(),
                     cate: $("#cate").val(),
-                    code: $("#code").val(),
+                    code: $("#codeNum").val(),
                 };
             },
             toolbar: "#transaction-toolbar",                    //工具按钮用哪个容器

@@ -78,6 +78,7 @@ class Bookings extends Application
             $item['bc'] = $colorArr[$item['status']];
             $item['status_name'] = array_search($item['status'],$statusArr);
         }
+//        dump($booking_item);die;
         return View::fetch('index', ['date_start' => $date_start, 'date_end' => $date_end, 'beauticianArr' => $result, 'bookingItems' => $booking_item, 'time' => $time, 'dayArr' => $dayArr,'search'=>$search,'adArr'=>$adArr]);
     }
 

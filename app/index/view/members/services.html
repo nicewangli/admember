@@ -95,10 +95,9 @@
                             </div>
 
                             <div class="form-group row">
-                                <label class="col-sm-2 control-label " for="code"> 服務編號 </label>
+                                <label class="col-sm-2 control-label " for="serviceCode"> 服務編號 </label>
                                 <div class="col-xs-12 col-md-4">
-                                    <input class="form-control to-search" type="text" id="code" name="code"
-                                           value="{$data.code|default=''}"
+                                    <input class="form-control to-search" type="text" id="serviceCode" name="serviceCode"
                                            placeholder="">
                                 </div>
                             </div>
@@ -169,7 +168,7 @@
                     beautician: $("#beautician").val(),
                     start_date: $("#services_start_date").val(),
                     end_date: $("#services_end_date").val(),
-                    code: $("#code").val()
+                    code: $("#serviceCode").val()
                 };
             },
             pagination: true,                                //是否显示分页（*）
@@ -213,7 +212,7 @@
                     beautician: $("#beautician").val(),
                     start_date: $("#services_start_date").val(),
                     end_date: $("#services_end_date").val(),
-                    code: $("#code").val()
+                    code: $("#serviceCode").val()
                 };
             },
             pagination: true,                                //是否显示分页（*）

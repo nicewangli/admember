@@ -274,6 +274,7 @@ function getDuty(){
         'COSMETOLOGIST' => '顧問 / 美容師',
         'STAFF' => '職員',
         'RESIGNED' => '離職',
+        '无' => '无'
     ];
 }
 

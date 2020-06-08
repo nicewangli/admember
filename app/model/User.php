@@ -23,11 +23,11 @@ class User extends Model
         return $this->hasOne('Team', 'id', 'ugid');
     }
 
-    public function getSexAttr($value)
-    {
-        $sex = [0=>'保密',1=>'男',2=>'女'];
-        return $sex[$value];
-    }
+//    public function getSexAttr($value)
+//    {
+//        $sex = [0=>'保密',1=>'男',2=>'女'];
+//        return $sex[$value];
+//    }
 
     public function getTeamTitleAttr($value, $data)
     {

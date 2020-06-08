@@ -77,7 +77,7 @@
     </div>
 </body>   
 <script type="text/javascript">
-    let package_id, package_code, package_name, package_value, package_value_used, package_unit;
+    let package_id, package_code, package_name, package_value, package_value_used, package_unit, selections = [], selectionIds = [], data, selectRow;
 
     function services(service_package_id, invoice_id, member_id, service_type){
 
@@ -100,8 +100,9 @@
             },
             contentType: 'text/html',
             // toolbar: "#service_packages-toolbar",                    //工具按钮用哪个容器
-            pagination: false,                                //是否显示分页（*）
-            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            pagination: true,                                 //是否显示分页（*）
+            sidePagination: 'client',                         //分页方式：client客户端分页，server服务端分页（*）
+            maintainMetaData: true,                           //设置true为在更改页面和搜索上维护以下元数据： 选定的行,隐藏的行
             buttonsClass:"btn-sm btn btn-sm btn-default",
             striped: true,                                   //是否显示行间隔色
             cookie: true,
@@ -141,6 +142,7 @@
         });
 
     }
+
     function wh_end_time(start_time){
         let st_strs = start_time.split(":")
         let time = Number(st_strs[0])
@@ -153,6 +155,7 @@
         }
         return st_strs.join(":")
     }
+
     $(document).ready( function (){
         let member_id = $("#member_id").val();
 
@@ -173,7 +176,7 @@
             contentType: 'text/html',
             // toolbar: "#service_packages-toolbar",                    //工具按钮用哪个容器
             pagination: false,                                //是否显示分页（*）
-            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            sidePagination:'client',                         //分页方式：client客户端分页，server服务端分页（*）
             buttonsClass:"btn-sm btn btn-sm btn-default",
             striped: true,                                   //是否显示行间隔色
             cookie: true,
@@ -233,6 +236,10 @@
                 package_unit = row.package_unit;
                 invoice_id = row.invoice_id;
                 member_id = row.member_id;
+                selectRow = row;
+
+                getAllSelections(selectRow);
+
                 $('#services-grid').bootstrapTable('destroy');
                 services(package_id, invoice_id, member_id, row.service_type);
             },
@@ -240,7 +247,12 @@
 
         $(".submit").click(function(){
             let from_panel = $("#from_panel").val();
-            let rows= $("#services-grid").bootstrapTable('getAllSelections');
+
+            data = selectRow;
+            getAllSelections(selectRow);
+
+            // let rows = selections.slice(1);
+            let rows = selections;
             if(rows.length<=0){
                 alert("请选择一行");
                 return;
@@ -261,7 +273,7 @@
                             service_package_item_id = element.id;
                         }
 
-                        if (parseFloat(package_value - package_value_used) > 0) {
+                        if (parseFloat(element.package_value - element.package_value_used) > 0) {
 
                             nodes += '<tr class="border-b service">\n'+
                                 ' <td width="5%" align="center" data-id="">\n'+
@@ -269,22 +281,22 @@
                                 '   <input type="hidden" class="service_packages" value="' + element.id + '">\n'+
                                 ' </td> \n'+
                                 ' <td width="5%"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][service_package_id]" value="' + package_id + '">\n'+
+                                '   <input type="hidden" name="service[' + number + '][service_package_id]" value="' + element.package_id + '">\n'+
                                 '   <input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + service_package_item_id + '">\n'+
                                 '   <input type="hidden" name="service[' + number + '][service_id]" value="' + element.service_id + '">\n'+
                                 '   <input type="hidden" name="service[' + number + '][commission]" value="' + element.beautician_pay + '"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][invoice_id]" value="' + invoice_id + '"> \n'+
+                                '   <input type="hidden" name="service[' + number + '][invoice_id]" value="' + element.invoice_id + '"> \n'+
                                 '   <input type="hidden" name="service[' + number + '][invoice_item_id]" value="' + element.invoice_item_id + '"> \n'+
                                 ' </td> \n'+
                                 ' <td width="10%">\n'+
-                                '   <p>' + package_code+ '</p><br/>\n'+
+                                '   <p>' + element.package_code+ '</p><br/>\n'+
                                 '   <p>' + element.code + '</p>\n'+
                                 '   <p>&emsp;</p>\n'+
                                 ' </td> \n'+
                                 ' <td width="20%">\n'+
-                                '   <p>' + package_name+ '</p><br/>\n'+
+                                '   <p>' + element.package_name+ '</p><br/>\n'+
                                 '   <p>' + element.name + '</p>\n'+
-                                '   <p>套票值：' + parseFloat(package_value - package_value_used).toFixed(1) + '/' + package_value + package_unit + '</p>\n'+
+                                '   <p>套票值：' + parseFloat(element.package_value - element.package_value_used).toFixed(1) + '/' + element.package_value + element.package_unit + '</p>\n'+
                                 ' </td> \n'+
                                 ' <td width="15%">\n'+
                                 '   <select class="form-control beautician beautician1' + number + '" name="service[' + number + '][beautician1]" style="display: none; width: 100%;">\n'+
@@ -320,20 +332,20 @@
                     let number = idx = parseInt(parent.$(".items_count").val());
                     // ids = ids.split(",");
                     $.each(rows, function(index, element){
-                        if (parseFloat(package_value - package_value_used) > 0) {
+                        if (parseFloat(element.package_value - element.package_value_used) > 0) {
                             nodes += '<tr class="border-b service"> '
                             nodes += '<td align="center" data-id=""><input type="checkbox" class="checkbox" value="' + number + '">'
-                            nodes += '<input type="hidden" name="service[' + number + '][invoice_id]" value="' + invoice_id + '"><input type="hidden" name="service[' + number + '][invoice_item_id]" value="' + element.invoice_item_id + '"><input type="hidden" name="service[' + number + '][service_package_id]" value="' + package_id + '"><input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + element.id + '">  <input type="hidden" name="service[' + number + '][service_id]" value="' + element.service_id + '"> <input type="hidden" name="service[' + number + '][service_name]" value="' + element.name + '"> </td>'
+                            nodes += '<input type="hidden" name="service[' + number + '][invoice_id]" value="' + element.invoice_id + '"><input type="hidden" name="service[' + number + '][invoice_item_id]" value="' + element.invoice_item_id + '"><input type="hidden" name="service[' + number + '][service_package_id]" value="' +element. element.package_id + '"><input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + element.id + '">  <input type="hidden" name="service[' + number + '][service_id]" value="' + element.service_id + '"> <input type="hidden" name="service[' + number + '][service_name]" value="' + element.name + '"> </td>'
                             nodes += '<td class="d-flex align-items-center justify-content-between"><select class="form-control time_picker start_time" id="service_start_time_'+number+'" name="service[' + number + '][start_time]" style="display: none; width: 100%;"></select>&nbsp;至 &nbsp;<select class="form-control time_picker end_time" id="service_end_time_'+number+'" name="service[' + number + '][end_time]" style="display: none; width: 100%;"></td>';
-                            nodes += '<td> <input type="hidden" name="service[' + number + '][service_package_id]" value="' + package_id + '"><input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + element.id + '"> <p style="margin-bottom:2px">' + package_code+ '</p><p style="margin-bottom:2px">' + element.code + '</p></td>';
-                            nodes += '<td><p style="margin-bottom:2px">' + package_name+ '</p><p style="margin-bottom:2px">' + element.name + '</p><p style="margin-bottom:2px">套票值：' + parseFloat(package_value - package_value_used).toFixed(1) + '/' + package_value + package_unit + '</p></td><td><input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;"></td>';
+                            nodes += '<td> <input type="hidden" name="service[' + number + '][service_package_id]" value="' + element.package_id + '"><input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + element.id + '"> <p style="margin-bottom:2px">' + element.package_code+ '</p><p style="margin-bottom:2px">' + element.code + '</p></td>';
+                            nodes += '<td><p style="margin-bottom:2px">' + element.package_name+ '</p><p style="margin-bottom:2px">' + element.name + '</p><p style="margin-bottom:2px">套票值：' + parseFloat(element.package_value - element.package_value_used).toFixed(1) + '/' + element.package_value + element.package_unit + '</p></td><td><input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;"></td>';
                             nodes += '<td><select class="form-control beautician beautician1" id="service_beautician1_'+number+'"  name="service[' + number + '][beautician1]" style="display: none; width: 100%;"></select></td>';
                             nodes += '<td><select class="form-control beautician beautician2" name="service[' + number + '][beautician2]" id="service_beautician2_'+number+'" style="display: none; width: 100%;"></select></td>';
                             nodes += '</tr>';
-                            numbers.push(number)
+                            numbers.push(number);
                             number++;
                         }
-                    })
+                    });
                     parent.$("#bookings").append(nodes);
                     parent.$(".items_count").val(number);
                     parent.initBeautician(numbers);
@@ -342,14 +354,14 @@
                     let start_time =  parent.$("#booking_init_time").val();
                     console.log(start_time);
                     $.each(rows, function(index, element){
-                        if (parseFloat(package_value - package_value_used) > 0) {
+                        if (parseFloat(element.package_value - element.package_value_used) > 0) {
                             let end_time = wh_end_time(start_time)
                             parent.$('#service_start_time_'+idx).val(start_time).trigger('change');
                             parent.$('#service_end_time_'+idx).val(end_time).trigger('change');
                             start_time = end_time;
                             idx++
                         }
-                    })
+                    });
                     parent.$("#booking_init_time").val(start_time);
 
                 }
@@ -366,7 +378,28 @@
             parent.layer.close(index);
         });
 
+    });
 
-    })
+    function getAllSelections(row) {
+        let rows = $("#services-grid").bootstrapTable('getAllSelections');
+
+        if (rows.length > 0) {
+            $.each(rows, function(index, element){
+                if (data && selectionIds.indexOf(data.invoice_id + '-' + element.service_id) == -1) {
+                    element['package_id'] = data.id;
+                    element['invoice_id'] = data.invoice_id;
+                    element['package_code'] = data.code;
+                    element['package_name'] = data.name;
+                    element['package_value'] = data.package_value;
+                    element['package_value_used'] = data.package_value_used;
+                    element['package_unit'] = data.package_unit;
+                    element['package_unit'] = data.package_unit;
+                    selectionIds.push(data.invoice_id + '-' + element.service_id);
+                    selections.push(element);
+                }
+            })
+        }
+        data = row;
+    }
 </script>
 </html>

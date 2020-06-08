@@ -53,13 +53,25 @@
                                 </button>
                             </div>
                         </div>
+                        <div class="card-footer">
+                            <div class="input-group">
+                                <input type="text" name="content"  placeholder="Search ..."
+                                       class="form-control">
+                                <span class="input-group-append">
+                                        <button type="button"  class="btn btn-sm btn-primary">搜索</button>
+                        </span>
+                            </div>
+                        </div>
                         <div class="card-body p-0">
                             <ul class="nav nav-pills flex-column">
                                 {volist name="members" id="value"}
                                 <li class="nav-item">
                                     <a href="{:url('index',['phone'=>$value.phone_mobile])}" class="nav-link">
                                         <i class="far fa-circle text-danger"></i>
-                                        {$value.first_name} （{$value.phone_mobile}）
+                                        {$value.first_name}({$value.code})
+                                        <span style="float: right ">
+                                        （{$value.phone_mobile}）
+                                        </span>
                                     </a>
                                 </li>
                                 {/volist}
