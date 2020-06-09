@@ -16,14 +16,14 @@ class Invoice extends Model
     //消費記錄list
     public function transactionList($param)
     {
-        $sort = isset($param['sort']) ?  $param['sort'] :  'invoice_id';
-        $order = isset($param['order']) ?  $param['order'] :  'desc';
-        $limit = isset($param['limit']) ?  $param['limit'] : 10;
-        $offset = isset($param['offset']) ?  $param['offset'] : 0;
+        $sort = 'invoice_date';
+        $order = 'desc';
+//        $limit = isset($param['limit']) ?  $param['limit'] : 10;
+//        $offset = isset($param['offset']) ?  $param['offset'] : 0;
         $cate = isset($param['cate']) ? $param['cate'] : '';  //項目分類 1-服務套票, 2-產品, 3-產品組合, 4-儲值增值
         $where = [];
         $list = [];
-        $total = 0;
+//        $total = 0;
         $total_amount = 0.0;
         $store = [];
         $store_amount = 0.0;
@@ -35,9 +35,9 @@ class Invoice extends Model
             $where[] = ['it.service_type', '=', $cate];
         }
 
-        $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->field('it.*, i.invoice_date as udate, i.code as code, i.total_amount as amount')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+        $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->field('it.*, i.invoice_date as udate, i.code as code, i.total_amount as amount')->order($sort.' '.$order)->select()->toArray();
 
-        $total = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->count();
+//        $total = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->count();
 
         $total_amount = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->sum('it.total');
 
@@ -83,7 +83,7 @@ class Invoice extends Model
 
                 if($param['code'] && stripos($item['code'], $param['code']) === false){
                     unset($list[$key]);
-                    $total--;
+//                    $total--;
                     $total_amount -= $value['total'];
                     continue;
                 }
@@ -97,10 +97,10 @@ class Invoice extends Model
         $ids = array_column($list, 'invoice_id');
         array_multisort($ids, SORT_DESC , $list);
 
-        $total += count($store);
+//        $total += count($store);, 'total' => $total
         $total_amount += $store_amount;
 
-        return ['list' => $list, 'total' => $total, 'total_amount' => $total_amount];
+        return ['list' => $list, 'total_amount' => $total_amount];
     }
 
     //套票記錄list
@@ -176,8 +176,8 @@ class Invoice extends Model
         $total_amount = 0.0;
 
         foreach ($list as $key => $value) {
-            $list[$key]['beautician1_name'] = Db::name('users')->where('uid', $value['beautician1'])->value('username');
-            $list[$key]['beautician2_name'] = Db::name('users')->where('uid', $value['beautician2'])->value('username');
+            $list[$key]['beautician1_name'] = Db::name('users')->where('uid', $value['beautician1'])->value('for_short');
+            $list[$key]['beautician2_name'] = Db::name('users')->where('uid', $value['beautician2'])->value('for_short');
             $list[$key]['service_code_name'] = $value['service_code'].'<br>'.$value['service_name'];
             $list[$key]['amount'] = number_format(($value['total'] / $value['package_value'] * $value['total_deduction']), 1);
             $list[$key]['deduction'] = $value['total_deduction'] . $value['package_unit'];

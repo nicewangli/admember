@@ -24,12 +24,12 @@ class WaLogs extends Application
         $phone = input('phone');
         $search = input('search');
         $from_me = input('from_me');
-        if(!empty($search)) {
-            $where = [];
-            $where[] = ['m.code','like','%'.$search.'%'];
-            $where[] = ['m.first_name','like','%'.$search.'%'];
-            $where[] = ['m.phone_mobile','like','%'.$search.'%'];
-        }
+//        if(!empty($search)) {
+//            $where = [];
+//            $where[] = ['m.code','like','%'.$search.'%'];
+//            $where[] = ['m.first_name','like','%'.$search.'%'];
+//            $where[] = ['m.phone_mobile','like','%'.$search.'%'];
+//        }
         if (!empty($phone)) {
             $member = Member::where('phone_mobile', $phone)->find();
             View::assign(['phone' => $phone]);
@@ -43,7 +43,7 @@ class WaLogs extends Application
         } else {
             View::assign(['type' => 'nav-all-tab']);
         }
-        $needData = $this->getNeedData($phone, $type, $from_me);
+        $needData = $this->getNeedData($phone, $type, $from_me,$search);
         $param = $request->param();
         $model = $model->scope('where', $param);
         if (isset($param['export_data']) && $param['export_data'] == 1) {
@@ -112,7 +112,7 @@ class WaLogs extends Application
     }
 
     //显示member
-    public function getNeedData($phone = '', $type = '', $from_me = '')
+    public function getNeedData($phone = '', $type = '', $from_me = '',$search = '')
     {
 
         $typeArr = [
@@ -124,10 +124,16 @@ class WaLogs extends Application
         $member = new Member();
         $waLog = new WaLog();
         $memberWhere = [];
+        $memberWhereOr = [];
         $waWhere = [];
         $waInfoWhere = [];
         if (isset($from_me)) {
             $waWhere[] = ['from_me', '=', $from_me];
+        }
+        if (isset($search)) {
+            $memberWhereOr[] = ['code','like','%'.$search.'%'];
+            $memberWhereOr[] = ['first_name','like','%'.$search.'%'];
+            $memberWhereOr[] = ['phone_mobile','like','%'.$search.'%'];
         }
         if (!empty($phone)) {
             $to_phone = wa_phone_format($phone);
@@ -139,7 +145,7 @@ class WaLogs extends Application
         } else {
             $waLogInfoArr = [];
         }
-        $memberArr = $member->where($memberWhere)->paginate([
+        $memberArr = $member->where($memberWhere)->whereOr($memberWhereOr)->paginate([
             'list_rows' => 10,
             'var_page' => 'member_page',
             'query' => request()->param(),

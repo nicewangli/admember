@@ -135,39 +135,41 @@ class PackageStagings extends Application
             $param['code'] = $this->getConfigNo('package_staging','package_staging');
             try{
                 $model->startTrans();
-                if(!empty($param['invoice_id'])) {//如果存在发票记录，对发票待付款金额做修改
-                    $i = $invoice->find($param['invoice_id']);
-                    $i->final_total = $i->final_total - $param['final_total'];
-                    $i->save();
-                } else{
+                //旧分期选的是psi的数据 ，psi.ps_id
+//                if(!empty($param['invoice_id'])) {//如果存在发票记录，对发票待付款金额做修改
+//                    $i = $invoice->find($param['invoice_id']);
+//                    $i->final_total = $i->final_total - $param['final_total'];
+//                    $i->save();
+//                } else{
                     //首次付款  生成发票
-                    $param['code'] = $this->getConfigNo('invoice','invoice');
-                    $total = $param['total'];
-                    $total_amount = $param['total_amount'];
-                    $param['total'] = $param['invoice_total'];
-                    $param['total_amount'] = $param['invoice_total'];
-                    $param['final_total'] = $param['total_amount'] - $param['final_total'];
-                    $invoiceResult = $invoice::create($param);
+//                    $param['code'] = $this->getConfigNo('invoice','invoice');
+//                    $total = $param['total'];
+//                    $total_amount = $param['total_amount'];
+//                    $param['total'] = $param['invoice_total'];
+//                    $param['total_amount'] = $param['invoice_total'];
+                    $param['final_total'] = $param['all_total'] - $param['total_amount'];
+//                    $invoiceResult = $invoice::create($param);
                     $param['code'] = $this->getConfigNo('package_staging','package_staging');
-                    $param['invoice_id'] = $invoiceResult->id;
-                    $param['total'] = $total;
-                    $param['total_amount'] = $total_amount;
-                    if (isset($param['service'])) {
-                        //TODO: add invoice_item
-                        $invoiceItemData = $param['service'];
-                        foreach ($invoiceItemData as &$value) {
-                            $value['service_type'] = 1;//类型为服务套票
-                            $value['service_id'] = $value['service_package_id']; //invoice_item对应的字段名为service_id
-                            unset($value['service_package_id']);
-                            unset($value['current_payment']);
-                        }
-                        $invoiceItem->saveItem($invoiceResult->id, $invoiceItemData);
-                    }
-                }
+//                    $param['invoice_id'] = $invoiceResult->id;
+//                    $param['total'] = $total;
+//                    $param['total_amount'] = $total_amount;
+//                    if (isset($param['service'])) {
+//                        //TODO: add invoice_item
+//                        $invoiceItemData = $param['service'];
+//                        foreach ($invoiceItemData as &$value) {
+//                            $value['service_type'] = 1;//类型为服务套票
+//                            $value['service_id'] = $value['service_package_id']; //invoice_item对应的字段名为service_id
+//                            unset($value['service_package_id']);
+//                            unset($value['current_payment']);
+//                        }
+//                        $invoiceItem->saveItem($invoiceResult->id, $invoiceItemData);
+//                    }
+//                }
+
                 $result = $model::create($param);
                 $package_staging_id = $result->id;
                 if (isset($param['service'])) {
-                    $packageStagingItem->saveItem($package_staging_id, $param['service'],$param['invoice_id']);
+                    $packageStagingItem->saveItem($package_staging_id, $param);
                 }
                 if (isset($param['payment'])) {
                     $packageStagingPayment->savePayment($package_staging_id, $param['payment']);

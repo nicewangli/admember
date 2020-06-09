@@ -23,16 +23,16 @@ class PackageStaging extends Model
 
     public function transactionList($param)
     {
-        $sort = isset($param['sort']) ?  $param['sort'] :  'package_staging_id';
-        $order = isset($param['order']) ?  $param['order'] :  'desc';
-        $limit = isset($param['limit']) ?  $param['limit'] : 10;
-        $offset = isset($param['offset']) ?  $param['offset'] : 0;
+        $sort = 'staging_time';
+        $order = 'desc';
+//        $limit = isset($param['limit']) ?  $param['limit'] : 10;
+//        $offset = isset($param['offset']) ?  $param['offset'] : 0;
         $cate = isset($param['cate']) ? $param['cate'] : '';  //項目分類 1-服務套票, 2-產品, 3-產品組合, 4-儲值增值
         $where = [];
         $whereStore = [];
 
         $list = [];
-        $total = 0;
+//        $total = 0;
         $total_amount = 0.0;
         $store = [];
         $store_amount = 0.0;
@@ -52,9 +52,9 @@ class PackageStaging extends Model
         if ($cate < 2){
             $where[] = ['sp.code', 'like', '%'.$param['code'].'%'];
 
-            $list = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->field('psi.*, ps.code as code, ps.staging_time as udate, sp.code as item_code, sp.name as item_name, ps.total_amount as amount, psi.current_payment as item_total')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+            $list = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->field('psi.*, ps.code as code, ps.staging_time as udate, sp.code as item_code, sp.name as item_name, ps.total_amount as amount, psi.current_payment as item_total')->order($sort.' '.$order)->select()->toArray();
 
-            $total = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->count();
+//            $total = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->count();
 
             $total_amount = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->sum('psi.current_payment');
 
@@ -83,10 +83,10 @@ class PackageStaging extends Model
         $ids = array_column($list, 'package_staging_id');
         array_multisort($ids, SORT_DESC , $list);
 
-        $total += count($store);
+//        $total += count($store);, 'total' => $total
         $total_amount += $store_amount;
 
-        return ['list' => $list, 'total' => $total, 'total_amount' => $total_amount];
+        return ['list' => $list, 'total_amount' => $total_amount];
     }
 
     public function stagingStore($where)

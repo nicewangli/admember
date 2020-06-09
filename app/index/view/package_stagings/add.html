@@ -53,6 +53,8 @@
         <form id="stagingForm">
             <input type="hidden" name="id" id="id" value="{$data.id|default=''}">
             <input type="hidden" name="type" id="type" value="{$type|default=''}">
+            <input type="hidden" name="is_first" id="is_first" value="">
+            <input type="hidden" name="all_total" id="all_total" value="">
             <input type="hidden" name="invoice_total" id="invoice_total" value="">
             <div class="card-body">
                 <div class="row pt-2">
@@ -395,6 +397,7 @@
                     parent.$("#staging_title").text('首次分期');
                     $('#invoice_id').attr('disabled',true);
                     $('#old_item').hide();
+                    $("#is_first").val(1);
                     layer.close(layer.index);
                 }
                 ,btn2: function(index, layero){
@@ -403,6 +406,7 @@
                     parent.layer.title('付款', index);
                     parent.$("#staging_title").text('付款');
                     $('#package_item').hide();
+                    $("#is_first").val(0);
                     layer.close(layer.index);
                     //return false 开启该代码可禁止点击该按钮关闭
                 }
@@ -507,13 +511,15 @@
         let amount = 0.0;
         let total = 0.0;
         let invoice_total = 0.0;
-        let quantity, price, discount, current_payment, package_value, package_original_value;
+        let all_total = 0.0;
+        let quantity, price, discount, current_payment, package_value, package_original_value,a_total;
         $(".total").each(function () {
 
             quantity = parseFloat($(this).parent().siblings().children('.quantity').val());
             price = parseFloat($(this).parent().siblings().children('.price').val());
             discount = parseFloat($(this).parent().siblings().children('.discount').val());
             current_payment = parseFloat($(this).parent().siblings().children('.current_payment').val());
+            a_total = parseFloat($(this).val());
             package_original_value = parseFloat($(this).parent().siblings().children('.package_original_value').val());
 
 
@@ -522,6 +528,7 @@
                 current_payment = 0.0;
             }
             total += parseFloat(current_payment);
+            all_total += parseFloat(a_total);
             invoice_total += parseFloat(price * quantity - discount);
 
             package_value = quantity * package_original_value;
@@ -531,6 +538,7 @@
         });
 
         $("#total").val(total.toFixed(1));
+        $("#all_total").val(all_total.toFixed(1));
         $("#invoice_total").val(invoice_total.toFixed(1));
         total_amount();
     }

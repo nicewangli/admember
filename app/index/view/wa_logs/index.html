@@ -55,10 +55,10 @@
                         </div>
                         <div class="card-footer">
                             <div class="input-group">
-                                <input type="text" name="content"  placeholder="Search ..."
+                                <input type="text" name="content" id="search"  placeholder="Search ..."
                                        class="form-control">
                                 <span class="input-group-append">
-                                        <button type="button"  class="btn btn-sm btn-primary">搜索</button>
+                                        <button type="button"  class="btn btn-sm btn-primary search">搜索</button>
                         </span>
                             </div>
                         </div>
@@ -345,6 +345,11 @@
             closeBtn:0,
         })
     }
+    $(".search").click(function () {
+        let search = $('#search').val();
+        window.location.href = '{:url("index")}?search='+search;
+        // location.reload() = '{:url()}?search'
+    });
     $(".submit").click(function () {
         let node = '';
         let url = '{:url("wa_logs/send_msg")}';
@@ -361,7 +366,7 @@
                         '                                        <span class="direct-chat-timestamp float-left">\n' +res.time+
                         '                                                            ' +
                         '                                        </span>\n' +
-                        '                                    </div>\n' +
+                        '                                     </div>\n' +
                         '                                    <!-- /.direct-chat-infos -->\n' +
                         '                                    <img class="direct-chat-img" src="/static/images/avatar2.png" alt="Message User Image">\n' +
                         '                                    <!-- /.direct-chat-img -->\n' +

@@ -272,7 +272,7 @@ class Members extends Application
             $data = $invoice->transactionList($param);
 
             $items = $data['list'];
-            $total = $data['total'];
+//            $total = $data['total'];
             $total_amount = $data['total_amount'];
         }
         elseif ($param['type'] == 2) {  //套票分期
@@ -280,7 +280,7 @@ class Members extends Application
             $data = $packageStaging->transactionList($param);
 
             $items = $data['list'];
-            $total = $data['total'];
+//            $total = $data['total'];
             $total_amount = $data['total_amount'];
 
         }
@@ -293,7 +293,7 @@ class Members extends Application
 
             $items = array_merge($invoices['list'], $packageStagings['list']);
 
-            $total = $invoices['total'] + $packageStagings['total'];
+//            $total = $invoices['total'] + $packageStagings['total'];
             $total_amount = $invoices['total_amount'] + $packageStagings['total_amount'];
 
         }
@@ -303,7 +303,7 @@ class Members extends Application
 
         $data = [
             'rows' => $items,
-            'total' => $total,
+//            'total' => $total,
             'total_amount' => number_format($total_amount, 1)
         ];
         return json($data);
@@ -420,7 +420,7 @@ class Members extends Application
             ->alias('u')
             ->leftJoin('use_package_item upi', 'u.uid = upi.beautician1')
             ->leftJoin('use_package up', 'upi.use_package_id = up.id')
-            ->field('u.uid, u.username, count(u.uid) as count')
+            ->field('u.uid, u.for_short, count(u.uid) as count')
             ->where($where)
             ->group('u.uid')
             ->order('uid')
