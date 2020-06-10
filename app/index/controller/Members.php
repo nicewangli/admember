@@ -153,7 +153,8 @@ class Members extends Application
 			$item['first_name'] = input('name', '');
 			$item['phone_mobile'] = input('phone', '');
 			$item['date_of_accession'] = date("Y-m-d");
-		}
+            $item['salutation'] = input('salutation', '');
+        }
 
         View::assign([
             'storeArr'=>$storeArr,
@@ -320,19 +321,14 @@ class Members extends Application
     }
 
     //套票記錄list
-    public function treatment_list(Invoice $invoice, InvoiceItem $invoiceItem)
+    public function treatment_list(Invoice $invoice, InvoiceItem $invoiceItem, PackageStaging $packageStaging)
     {
         $param = input('post.');
-        $sort = isset($param['sort']) ?  $param['sort'] :  'id';
-        $order = isset($param['order']) ?  $param['order'] :  'desc';
-        $limit = isset($param['limit']) ?  $param['limit'] : 10;
-        $offset = isset($param['offset']) ?  $param['offset'] : 0;
 
         $list = [];
         $where = [];
         $whereOr = [];
 
-        $where[] = ['it.service_type', '=', 1];
         $where[] = ['i.member_id', '=', $param['member_id']];
 
         if ($param['package_used'] != '') {  //套票值
@@ -361,10 +357,14 @@ class Members extends Application
 
         }
 
-        $list = $invoice->treatmentList($where, $whereOr, $offset, $limit, $sort, $order);
-//        echo $invoice::getLastSql();
+        $invoiceList = $invoice->treatmentList($where, $whereOr);
+        $stagingList = $packageStaging->treatmentList($where, $whereOr);
 
-        return json($list);
+        $list = array_merge($invoiceList, $stagingList);
+        $udate = array_column($list, 'invoice_date');
+        array_multisort($udate, SORT_DESC , $list);
+
+        return json(['rows' => $list]);
     }
 
 
@@ -388,13 +388,34 @@ class Members extends Application
     }
 
     //服務記錄list
-    public function service_list(Invoice $invoice)
+    public function service_list(Invoice $invoice, PackageStaging $packageStaging)
     {
         $param = input('post.');
 
-        $list = $invoice->serviceList($param);
+        $where[] = ['up.use_time', 'between', [$param['start_date'] . ' 00:00:00', $param['end_date'] . ' 23:59:59']];
 
-        return json($list);
+        $where[] = ['up.member_id', '=', $param['member_id']];
+
+        if ($param['beautician']) {
+            $where[] = ['upi.beautician1|upi.beautician2', '=', $param['beautician']];
+        }
+
+        if ($param['code']) {
+            $service_id = Db::name('service')->where('code', 'like', '%' . $param['code'] . '%')->column('id');
+            $where[] = ['upi.service_id', 'in', $service_id];
+        }
+
+
+        $invoiceList = $invoice->serviceList($where);
+        $stagingList = $packageStaging->serviceList($where);
+
+        $list = array_merge($invoiceList['rows'], $stagingList['rows']);
+        $udate = array_column($list, 'use_time');
+        array_multisort($udate, SORT_DESC , $list);
+
+        $total_amount = $invoiceList['total_amount'] + $stagingList['total_amount'];
+
+        return json(['rows' => $list, 'total_amount' => number_format($total_amount, 1)]);
     }
 
     //beautician list

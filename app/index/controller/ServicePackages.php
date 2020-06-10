@@ -197,11 +197,13 @@ class ServicePackages extends Application
         $member_id = isset($param['member_id']) ? $param['member_id'] : 0;
 
         $service_package_id = isset($param['service_package_id']) ? $param['service_package_id'] : 0;
-        $invoice_id = isset($param['invoice_id']) ? $param['invoice_id'] : 0;
+        $parent_id = isset($param['parent_id']) ? $param['parent_id'] : 0;
+        $type = isset($param['type']) ? $param['type'] : 1;
         $service_type = isset($param['service_type']) ? $param['service_type'] : 1;
 
         $where = [];
         $whereOr = [];
+        $stagingWhere = [];
 
         if(isset($param['search'])){
             $where[] = ['sp.name', 'like', '%'.$param['search'].'%'];
@@ -216,6 +218,8 @@ class ServicePackages extends Application
                 $where[] = ['sp.name', 'like', '%'.$filter['name'].'%'];
             }
         }
+        $stagingWhere = $where;
+        $stagingWhere[] = ['ps.is_first', '=', 1];
 
         $where[] = ['it.service_type', '=', 1];
         $where[] = ['it.used_up', '=', 0];

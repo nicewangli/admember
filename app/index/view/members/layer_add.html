@@ -125,13 +125,8 @@
                                 <div class="col-md-7">
                                     <select class="form-control" id="salutation" name="salutation" size="1"
                                             value="{$item.salutation|default=''}">
-                                        <option value="0"  {if isset($item) && isset($item.salutation) && $item.salutation==0}selected{/if}>男</option>
-                                        <option value="1"  {if isset($item) && isset($item.salutation) && $item.salutation==1}selected{/if}>女</option>
-                                        <!--                        <option value="2">Mrs.</option>-->
-                                        <!--                        <option value="3">Miss</option>-->
-                                        <!--                        <option value="4">Dr.</option>-->
-                                        <!--                        <option value="5">Prof.</option>-->
-                                        <!--                        <option value="6">Capt.</option>-->
+                                        <option value="0" {if isset($item) && ($item.salutation == "0" || $item.salutation == "男")}selected{/if}>男</option>
+                                        <option value="1" {if isset($item) && ($item.salutation == "1" || $item.salutation == "女")}selected{/if}>女</option>
                                     </select>
                                 </div>
                             </div>

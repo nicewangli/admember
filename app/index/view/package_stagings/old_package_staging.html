@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta charset="utf-8"/>
     <title>Service Packages</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
     {include file="public:head" /}
     <!-- Theme style -->
     {css href="__CSS__/adminlte.min.css" /}
@@ -32,7 +32,7 @@
 
     <!-- 加载 Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.full.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/css/select2.min.css" rel="stylesheet"/>
 
 </head>
 <body>
@@ -40,6 +40,7 @@
     <input type="hidden" id="invoice_id" value="{$invoice_id}">
     <input type="hidden" id="member_id" value="{$member_id}">
     <input type="hidden" id="type" value="{$type}">
+    <input type="hidden" id="ids" value="">
     <div class="card-body">
         <div class="row pt-2">
 
@@ -48,16 +49,31 @@
 
                 </table>
             </div>
+            <div class="col-xs-12 col-md-12 pt-2">
+                <div class="row">
+                    <div class="col-lg-12" align="center">
+                        <button class="btn flat btn-info btn-sm submit">
+                            <i class=" fa fa-file-alt"></i>
+                            Submit
+                        </button>
+
+                        <button class="btn btn-default btn-sm">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 </body>
 <script type="text/javascript">
-    $(document).ready( function (){
+
+    $(document).ready(function () {
         let type = $("#type").val();
         let member_id = $("#member_id").val();
         let invoice_id = $("#invoice_id").val();
-
+        let ids = $("#ids").val();
         $('#service_packages-grid').bootstrapTable({
             url: '/index/package_stagings/get_package',            //请求后台的URL（*）
             method: 'get',                                   //请求方式（*）
@@ -65,20 +81,20 @@
                 return {
                     offset: params.offset,  //页码
                     limit: params.limit,   //页面大小
-                    search : params.search, //搜索
-                    order : params.order, //排序
-                    ordername : params.sort, //排序
+                    search: params.search, //搜索
+                    order: params.order, //排序
+                    ordername: params.sort, //排序
                     filter: params.filter,
                     member_id: member_id,
-                    invoice_id:invoice_id,
-                    type:type,
+                    invoice_id: invoice_id,
+                    type: type,
                 };
             },
             contentType: 'text/html',
             // toolbar: "#service_packages-toolbar",                    //工具按钮用哪个容器
             pagination: false,                                //是否显示分页（*）
-            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
-            buttonsClass:"btn-sm btn btn-sm btn-default",
+            sidePagination: 'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            buttonsClass: "btn-sm btn btn-sm btn-default",
             striped: true,                                   //是否显示行间隔色
             cookie: true,
             cookieIdTable: 'service_packages-Grid',
@@ -94,13 +110,10 @@
             pageSize: 10,                                    //每页的记录行数（*）
             pageList: [10, 20, 50, 100],
             singleSelect: false,                              //开启单选,想要获取被选中的行数据必须要有该参数
-            columns: [ {
-                field: 'invoice_no',
-                title: '發票',
-                width: "120px",
-                clickToSelect: true,                        //是否在单击行时选择复选框或radiobox
-                sortable: true,                              //是否允许列可以排序
-                filterControl: 'input'
+            columns: [{
+                field: 'checked',
+                checkbox: true,
+                clickToSelect: true
             }, {
                 field: 'ps_no',
                 title: '套票編號',
@@ -115,7 +128,7 @@
                 title: '套票金額',
                 filterControl: 'select'
             }, {
-                field: 'current_payment',
+                field: 'payment',
                 title: '已付金額',
                 sortable: true
             }, {
@@ -123,14 +136,75 @@
                 title: '使用金額',
                 filterControl: 'select',
                 sortable: true
-            }, ],
+            },],
         });
 
 
-        $(".btn-default").click(function(){
+        $(".btn-default").click(function () {
             let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
             parent.layer.close(index);
         });
+        $(".submit").click(function () {
+            let rows = $("#service_packages-grid").bootstrapTable('getAllSelections');
+            if (rows.length <= 0) {
+                alert("请选择一行");
+                return;
+            } else {
+                let nodes = '';
+
+                let number = parseInt(parent.$(".items_count").val());
+                ids = ids.split(",");
+
+                $.each(rows, function (index, element) {
+
+                    if (ids.indexOf(element.id.toString()) == -1) {
+
+                        nodes += '<tr class="border-b service">\n' +
+                            '    <td width="8%" align="center" data-id="">\n' +
+                            '      <input type="checkbox" class="checkbox" value="' + number + '">\n' +
+                            '      <input type="hidden" class="service_packages" name="service['+number+'][service_package_id]" value="' + element.sp_id + '">\n' +
+                            '   </td> \n' +
+                            '   <td width="5%"> \n' +
+                            '      <input type="hidden" name="service[' + number + '][psi_id]" value="' + element.id + '"> \n' +
+                            '      <input type="hidden" name="service[' + number + '][service_type]" value="1"> \n' +
+                            '      <input type="hidden" name="service[' + number + '][package_value]" value="' + element.package_value + '" class="package_value"> \n' +
+                            '      <input type="hidden" name="service[' + number + '][first_psi_id]" value="' + element.id + '" class="package_value"> \n' +
+                            '      <input type="hidden" name="service[' + number + '][package_unit]" value="' + element.package_unit + '"> \n' +
+                            '   </td> \n' +
+                            '   <td width="13%">' + element.code + '</td> \n' +
+                            '   <td width="14%">' + element.sp_name + '</td> \n' +
+                            '   <td width="10%">\n' +
+                            '      <input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;" readonly="readonly">\n' +
+                            '      <input type="hidden" name="service[' + number + '][package_original_value]" class="package_original_value" value="' + element.package_value + '"> \n' +
+                            '   </td> \n' +
+                            '   <td width="13%">\n' +
+                            '      <input type="text" name="service[' + number + '][price]" value="' + element.price + '" class="form-control text-right price" style="width: 100%;" readonly="readonly">\n' +
+                            '   </td> \n' +
+                            '   <td width="10%">\n' +
+                            '      <input type="text" name="service[' + number + '][discount]" value="'+element.discount+'" class="form-control text-right discount" style="width: 100%;" readonly="readonly">\n' +
+                            '   </td> \n' +
+                            '   <td width="13%">\n' +
+                            '      <input type="text" name="service[' + number + '][total]" value="' + element.total + '" class="form-control text-right total" style="width: 100%;" readonly="readonly">\n' +
+                            '   </td> \n' +
+                            '   <td width="14%">' +
+                            '   <input type="text" name="service['+number+'][current_payment]" value="" class="form-control text-right current_payment">' +
+                            '</td>'
+                            '</tr> \n'
+                        number++;
+                    }
+                })
+                parent.$("#service_package").removeClass('hidden');
+                parent.$("#member").before(nodes);
+                parent.$(".items_count").val(number);
+                parent.total();
+
+
+                //注意：parent 是 JS 自带的全局对象，可用于操作父页面
+                let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                parent.layer.close(index);
+            }
+        });
+
 
     })
 </script>

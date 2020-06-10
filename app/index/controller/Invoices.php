@@ -329,12 +329,15 @@ class Invoices extends Application
         return json(['invoice' => $invoice]);
     }
 
-    public function expiration_date(InvoiceItem $invoiceItem){
+    public function expiration_date(InvoiceItem $invoiceItem)
+    {
         $param = input('post.');
         $find = $invoiceItem::find($param['id']);
         if ($find) {
             $find::update($param);
             return json(['code' => 200]);
+        } else {
+            return json(['code' => 0]);
         }
     }
 

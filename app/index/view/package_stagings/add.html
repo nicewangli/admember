@@ -211,6 +211,7 @@
                                         <input type="hidden" name="service[{$index}][id]" value="{$val.id}">
                                         <input type="hidden" name="service[{$index}][package_staging_id]" value="{$val.package_staging_id}">
                                         <input type="hidden" name="service[{$index}][service_package_id]" value="{$val.service_package_id}">
+                                        <input type="hidden" name="service[{$index}][temp_current_payment]" value="{$val.current_payment}">
                                         <input type="hidden" name="service[{$index}][package_value]" value="{$val.package_value}" class="package_value">
                                         <input type="hidden" name="service[{$index}][package_unit]" value="{$val.package_unit}">
                                     </td>
@@ -422,28 +423,29 @@
 
     function del(){
         let id = 0;
-        let list = [];
+        // let list = [];
         $(".checkbox:checked").each(function(){
             id = $(this).parent('td').attr('data-id');
 
-            if(id){
-                list.push(id);
-            }
+            // if(id){
+            //     list.push(id);
+            // }
 
             $(this).parents('tr').remove();
 
-        })
-        if(list.length > 0){
-            $.ajax({
-                url: "{:url('del_item')}",
-                data: {ids: list},
-                type: "POST",
-                success(res){
-
-                    total();
-                }
-            })
-        }
+        });
+        total();
+        // if(list.length > 0){
+        //     $.ajax({
+        //         url: "{:url('del_item')}",
+        //         data: {ids: list},
+        //         type: "POST",
+        //         success(res){
+        //
+        //             total();
+        //         }
+        //     })
+        // }
     }
 
     function new_member(){

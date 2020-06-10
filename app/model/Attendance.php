@@ -4,10 +4,14 @@
 */
 
 namespace app\model;
+use think\model\concern\SoftDelete;
 
 
 class Attendance extends Model
 {
+    use SoftDelete;
+    protected $deleteTime = 'delete_time';
+    protected $defaultSoftDelete = 0;
 
     public static function attendanceType()
     {

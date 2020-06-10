@@ -264,8 +264,7 @@ class Bookings extends Application
             $item['new_use_package'] = 0;
             $findWhere = [
                 ['booking_id', '=', $id],
-                ['invoice_id', '>', 0],
-                ['invoice_item_id', '>', 0]
+                ['parent_id', '>', 0]
             ];
             $find = $item_model->where($findWhere)->find();
             if ($find) {
