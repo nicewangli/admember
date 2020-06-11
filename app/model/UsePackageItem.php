@@ -26,18 +26,33 @@ class UsePackageItem extends Model
                 $this->insert($data[$key]);
             }
 
-            $total_deduction = $this::withTrashed()->where(['service_package_id' => $value['service_package_id'], 'invoice_id' => $value['invoice_id']])->sum('total_deduction');
+            $total_deduction = $this::withTrashed()->where(['service_package_id' => $value['service_package_id'], 'package_type' => $value['package_type'], 'parent_id' => $value['parent_id']])->sum('total_deduction');
 
-            $invoice_item = Db::name('invoice_item')->alias('it')->rightJoin('invoice i', 'i.id = it.invoice_id')->where(['it.invoice_id' => $value['invoice_id'], 'it.service_id' => $value['service_package_id'], 'it.service_type' => 1, 'i.member_id' => $member_id])->field('it.id, it.package_value')->find(); 
+            if ($value['package_type'] == 1) {   //發票
 
-            if ($invoice_item['package_value'] == $total_deduction){
-                $up['used_up'] = 1;
-            } else {
-                $up['used_up'] = 0;
+                $invoice_item = Db::name('invoice_item')->alias('it')->rightJoin('invoice i', 'i.id = it.invoice_id')->where(['it.invoice_id' => $value['parent_id'], 'it.service_id' => $value['service_package_id'], 'it.service_type' => 1, 'i.member_id' => $member_id])->field('it.id, it.package_value')->find();
+
+                if ($invoice_item['package_value'] > $total_deduction){
+                    $up['used_up'] = 0;
+                } else {
+                    $up['used_up'] = 1;
+                }
+                $up['package_value_used'] = $total_deduction;
+
+                Db::name('invoice_item')->where('id', $invoice_item['id'])->update($up);
             }
-            $up['package_value_used'] = $total_deduction;
-            
-            Db::name('invoice_item')->where('id', $invoice_item['id'])->update($up);
+            elseif ($value['package_type'] == 2) {   //套票分期
+                $staging_item = Db::name('package_staging_item')->alias('it')->rightJoin('package_staging i', 'i.id = it.package_staging_id')->where(['it.package_staging_id' => $value['parent_id'], 'it.service_package_id' => $value['service_package_id'], 'i.member_id' => $member_id])->field('it.id, it.package_value')->find();
+
+                if ($staging_item['package_value'] > $total_deduction){
+                    $up['used_up'] = 0;
+                } else {
+                    $up['used_up'] = 1;
+                }
+                $up['package_value_used'] = $total_deduction;
+
+                Db::name('package_staging_item')->where('id', $staging_item['id'])->update($up);
+            }
         }
     }
 

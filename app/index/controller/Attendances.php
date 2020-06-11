@@ -24,9 +24,14 @@ class Attendances extends Application
         $start_date = $params["start_date"] ?? date('Y-m-01');
         $end_date = $params["end_date"] ?? date('Y-m-t');
 
+        $user_id = $params['user_id'] ?? '';
+        $store_id = $params['store_id'] ?? '';
+        $store = getStoreArr();
+
         $days = getDays($start_date, $end_date);
         $attendances = $attendance->select();
-        $users = $user->field("uid,first_name")->select()->toArray();
+        
+        $users = $user->field("uid,for_short")->order('for_short', 'asc')->select()->toArray();
         foreach ($users as $key => $value) {
             $where = ['user_id' => $value['uid'], 'vdate' => 'vdate'];
             $users[$key]['attendance'] = $attendance::where($where)->select()->toArray();
@@ -42,6 +47,12 @@ class Attendances extends Application
             'attendances' => $attendances,
             'start_date' => $start_date,
             'end_date' => $end_date,
+            'types' => input('types', 0),
+            'weeks' => input('weeks', []),
+            'vacation_item' => input('vacation_item', ''),
+            'start_time' => input('start_time', ''),
+            'end_time' => input('end_time',''),
+            'terms' => input('terms',''),
         ]);
         return View::fetch();
     }
@@ -86,7 +97,7 @@ class Attendances extends Application
     public function add(Request $request, Attendance $model, AttendanceValidate $validate, User $user)
     {
         $item = [];
-        $item['users'] = $user->field("uid,first_name")->select();
+        $item['users'] = $user->field("uid,for_short")->order('for_short', 'asc')->select();
         if ($request->isPost()) {
             $param = $request->param();
             $validate_result = $validate->scene('add')->check($param);
@@ -97,7 +108,12 @@ class Attendances extends Application
             foreach ($items as $key => $value) {
                 $items[$key]['user_id'] = $param['user_id'];
                 $items[$key]['vdate'] = $param['vdate'];
-                $items[$key]['id'] = $param['id'];
+
+                $items[$key]['created_user_id'] = $this->user->uid;
+                $items[$key]['create_time'] = time();
+
+                $items[$key]['updated_user_id'] = $this->user->uid;
+                $items[$key]['update_time'] = time();
 //                $result = $model::create($items[$key]);
             }
             $result = $model::insertAll($items);
@@ -124,9 +140,29 @@ class Attendances extends Application
     {
 
         if ($request->isPost()) {
-            $item = input('post.');
-            $pur_items = $item['item'];
-            $result = $model->saveAll($pur_items);
+            $param = input('post.');
+            $items = $param['item'];
+            foreach ($items as $key => $value) {
+
+                if ($value['id']) {
+                    $items[$key]['updated_user_id'] = $this->user->uid;
+                    $items[$key]['update_time'] = time();
+                } else {
+                    unset($items[$key]['id']);
+                    $items[$key]['user_id'] = $param['user_id'];
+                    $items[$key]['vdate'] = $param['vdate'];
+
+                    $items[$key]['created_user_id'] = $this->user->uid;
+                    $items[$key]['create_time'] = time();
+
+                    $items[$key]['updated_user_id'] = $this->user->uid;
+                    $items[$key]['update_time'] = time();
+                }
+
+//                $result = $model::create($items[$key]);
+            }
+//            var_dump($items);
+            $result = $model->saveAll($items);
             if ($result) {
                 return json(['code' => 200, 'msg' => ' successfully.']);
             } else {
@@ -151,8 +187,35 @@ class Attendances extends Application
             $result = $model->whereIn('id', $id)->delete();
         }
 
-        return $this->redirect(url("index"));
+        if ($result) {
+            return json(['code' => 200, 'msg' => 'delete successful']);
+        } else {
+            return json(['code' => 0, 'msg' => 'delete failed']);
+        }
     }
 
+    public function del_fast(Attendance $model)
+    {
+        $param = input('post.');
 
+        $where = [
+            ['user_id', '=', $param['user_id']],
+            ['vdate', '=', $param['vdate']],
+            ['item', '=', $param['vacation_item']],
+        ];
+
+        if ($model->softDelete) {
+            $result = $model->where($where)->useSoftDelete('delete_time', time())->delete();
+        } else {
+            $result = $model->where($where)->delete();
+        }
+
+        $vacation_item = $model->where(['user_id' => $param['user_id'], 'vdate' => $param['vdate']])->column('item');
+
+        if ($result) {
+            return json(['code' => 200, 'msg' => 'delete successful', 'vacation_item' => implode('', $vacation_item)]);
+        } else {
+            return json(['code' => 0, 'msg' => 'delete failed']);
+        }
+    }
 }

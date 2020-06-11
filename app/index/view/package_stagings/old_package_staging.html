@@ -40,7 +40,7 @@
     <input type="hidden" id="invoice_id" value="{$invoice_id}">
     <input type="hidden" id="member_id" value="{$member_id}">
     <input type="hidden" id="type" value="{$type}">
-    <input type="hidden" id="ids" value="">
+    <input type="hidden" id="ids" value="{$ids}">
     <div class="card-body">
         <div class="row pt-2">
 
@@ -68,7 +68,6 @@
 </div>
 </body>
 <script type="text/javascript">
-
     $(document).ready(function () {
         let type = $("#type").val();
         let member_id = $("#member_id").val();

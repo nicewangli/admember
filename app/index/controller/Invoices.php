@@ -461,4 +461,9 @@ class Invoices extends Application
         //     return json(['code' => 200]);
         // }
     }
+
+    public function print_page()
+    {
+        return view('print');
+    }
 }

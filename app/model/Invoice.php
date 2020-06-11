@@ -16,14 +16,9 @@ class Invoice extends Model
     //消費記錄list
     public function transactionList($param)
     {
-        $sort = 'invoice_date';
-        $order = 'desc';
-//        $limit = isset($param['limit']) ?  $param['limit'] : 10;
-//        $offset = isset($param['offset']) ?  $param['offset'] : 0;
         $cate = isset($param['cate']) ? $param['cate'] : '';  //項目分類 1-服務套票, 2-產品, 3-產品組合, 4-儲值增值
         $where = [];
         $list = [];
-//        $total = 0;
         $total_amount = 0.0;
         $store = [];
         $store_amount = 0.0;
@@ -35,9 +30,7 @@ class Invoice extends Model
             $where[] = ['it.service_type', '=', $cate];
         }
 
-        $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->field('it.*, i.invoice_date as udate, i.code as code, i.total_amount as amount')->order($sort.' '.$order)->select()->toArray();
-
-//        $total = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->count();
+        $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->field('it.*, i.invoice_date as udate, i.code as code, i.total_amount as amount')->order('invoice_date', 'desc')->select()->toArray();
 
         $total_amount = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->sum('it.total');
 
@@ -83,7 +76,6 @@ class Invoice extends Model
 
                 if($param['code'] && stripos($item['code'], $param['code']) === false){
                     unset($list[$key]);
-//                    $total--;
                     $total_amount -= $value['total'];
                     continue;
                 }
@@ -97,24 +89,21 @@ class Invoice extends Model
         $ids = array_column($list, 'invoice_id');
         array_multisort($ids, SORT_DESC , $list);
 
-//        $total += count($store);, 'total' => $total
         $total_amount += $store_amount;
 
         return ['list' => $list, 'total_amount' => $total_amount];
     }
 
     //套票記錄list
-    public function treatmentList($where, $whereOr, $offset, $limit, $sort, $order)
+    public function treatmentList($where, $whereOr)
     {
-        if (!empty($whereOr)) {
-            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->field('it.*, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type as package_type, sp.deducted_percent')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
+        $where[] = ['it.service_type', '=', 1];
 
-            $total = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->count();
+        if (!empty($whereOr)) {
+            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->field('it.*, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type, sp.deducted_percent')->order('invoice_date', 'desc')->select()->toArray();
 
         }else{
-            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type as package_type, sp.deducted_percent')->limit($offset, $limit)->order($sort.' '.$order)->select()->toArray();
-
-            $total = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->count();
+            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type, sp.deducted_percent')->order('invoice_date', 'desc')->select()->toArray();
 
         }
 
@@ -130,46 +119,43 @@ class Invoice extends Model
             $list[$key]['package_unit'] = $unit;
 
             //套票使用item
-            $items = Db::name('use_package_item')->alias('upi')->leftJoin('use_package up', 'up.id = upi.use_package_id')->field('up.id, up.use_time, upi.total_deduction, up.code, "使用" as action, "使用套票" as type')->where(['upi.invoice_id' => $value['invoice_id'], 'up.store_id' => $value['store_id'], 'up.member_id' => $value['member_id'], 'upi.service_package_id' => $value['service_id']])->select()->toArray();
+            $itemWhere = [
+                ['upi.parent_id', '=', $value['parent_id']],
+                ['up.store_id', '=', $value['store_id']],
+                ['up.member_id', '=', $value['member_id']],
+                ['upi.service_package_id', '=', $value['service_id']],
+                ['upi.package_type', '=', 1]
+            ];
+            $items = Db::name('use_package_item')->alias('upi')->leftJoin('use_package up', 'up.id = upi.use_package_id')->field('up.id, up.use_time, upi.total_deduction, up.code, "使用" as action, "使用套票" as type')->where($itemWhere)->select()->toArray();
 
             $transfers = Db::name('invoice_transfer')->alias('it')->leftJoin('invoice i', 'it.new_invoice_id = i.id')->field('i.id, i.invoice_date as use_time, it.transfer_value as total_deduction, i.code as code, "轉套票" as action, "發票" as type')->where(['it.old_invoice_id' => $value['invoice_id'], 'i.store_id' => $value['store_id'], 'i.member_id' => $value['member_id'], 'it.old_invoice_item_id' => $value['id']])->select()->toArray();
 
             $list[$key]['items'] = array_merge($items, $transfers);
 
-            if ($value['package_type'] == 2) {
+            if ($value['service_type'] == 2) {
                 $services = Db::name('service_package_item')->alias('spi')->leftJoin('service s', 's.id = spi.service_id')->field('spi.service_id, spi.deduct_val, s.code, s.name, s.price')->where('service_package_id', $value['service_id'])->select();
                 $list[$key]['services'] = $services;
             }
 
         }
 
-        return ['rows' => $list, 'total' => $total];
+        return $list;
     }
 
     //服務記錄list
-    public function serviceList($param)
+    public function serviceList($where)
     {
-        $where[] = ['up.use_time', 'between', [$param['start_date'] . ' 00:00:00', $param['end_date'] . ' 23:59:59']];
-
-        $where[] = ['up.member_id', '=', $param['member_id']];
-
-        if ($param['beautician']) {
-            $where[] = ['upi.beautician1|upi.beautician2', '=', $param['beautician']];
-        }
-
-        if ($param['code']) {
-            $service_id = Db::name('service')->where('code', 'like', '%' . $param['code'] . '%')->column('id');
-            $where[] = ['upi.service_id', 'in', $service_id];
-        }
+        $where[] = ['upi.package_type', '=', 1];
 
         $list = Db::name('use_package_item')
             ->alias('upi')
             ->leftJoin('use_package up', 'upi.use_package_id = up.id')
             ->leftJoin('service s', 'upi.service_id = s.id')
-            ->leftJoin('invoice_item it', 'it.invoice_id = upi.invoice_id and it.service_id = upi.service_package_id and it.service_type = 1')
+            ->leftJoin('invoice_item it', 'it.invoice_id = upi.parent_id and it.service_id = upi.service_package_id and it.service_type = 1')
             ->leftJoin('mapping m', 'm.id = it.package_unit')
             ->field('upi.*, up.code, up.use_time, up.signature, s.code as service_code, s.name as service_name, it.total, it.package_value, m.val as package_unit')
             ->where($where)
+            ->order('use_time', 'desc')
             ->select()
             ->toArray();
 
@@ -185,7 +171,7 @@ class Invoice extends Model
             $total_amount += $value['total'] / $value['package_value'] * $value['total_deduction'];
         }
 
-        return ['rows' => $list, 'total' => count($list), 'total_amount' => number_format($total_amount, 1)];
+        return ['rows' => $list, 'total_amount' => $total_amount];
     }
 
     public function invoiceStore($where)

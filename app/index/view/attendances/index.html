@@ -29,13 +29,13 @@
                                     </div>
                                     <div class="col-xs-12 col-md-3">
                                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                            <label class="btn btn-default btn-sm">
-                                                <a class="fa fa-chevron-left click-search" aria-hidden="true"
-                                                   id="pre_month"></a>
+                                            <label class="btn btn-default btn-sm click-search" id="pre_month">
+                                                <a class="fa fa-chevron-left"
+                                                   aria-hidden="true"></a>
                                             </label>
                                             <button type="submit" id="current_month"> 月</button>
-                                            <label class="btn btn-default btn-sm">
-                                                <a class="fa fa-chevron-right click-search" id="next_month"
+                                            <label class="btn btn-default btn-sm click-search" id="next_month">
+                                                <a class="fa fa-chevron-right"
                                                    aria-hidden="true"> </a>
                                             </label>
                                         </div>
@@ -43,15 +43,15 @@
 
                                     <div class="col-xs-12 col-md-3">
                                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                            <label class="btn btn-default btn-sm ">
-                                                <a class="fa fa-chevron-left click-search" aria-hidden="true"
-                                                   id="pre_day"></a>
+                                            <label class="btn btn-default btn-sm  click-search" id="pre_day">
+                                                <a class="fa fa-chevron-left"
+                                                   aria-hidden="true"></a>
                                             </label>
 
                                             <button type="submit" id="current_day">日</button>
 
-                                            <label class="btn btn-default btn-sm">
-                                                <a class="fa fa-chevron-right click-search" id="next_day"
+                                            <label class="btn btn-default btn-sm click-search" id="next_day">
+                                                <a class="fa fa-chevron-right"
                                                    aria-hidden="true"></a>
                                             </label>
                                         </div>
@@ -59,14 +59,14 @@
 
                                     <div class="col-xs-12 col-md-4">
                                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                            <label class="btn btn-default  btn-sm">
-                                                <a class="fa fa-chevron-left" aria-hidden="true" id="pre_week"></a>
+                                            <label class="btn btn-default  btn-sm click-search" id="pre_week">
+                                                <a class="fa fa-chevron-left" aria-hidden="true"></a>
                                             </label>
 
                                             <button type="submit" id="current_week">星期</button>
 
-                                            <label class="btn btn-default btn-sm">
-                                                <a class="fa fa-chevron-right" id="next_week"
+                                            <label class="btn btn-default btn-sm click-search" id="next_week">
+                                                <a class="fa fa-chevron-right"
                                                    aria-hidden="true"></a>
                                             </label>
                                         </div>
@@ -98,7 +98,7 @@
                                             <option value="0">(以下所有)</option>
                                             {notempty name="users"}
                                             {volist name="users" id="val"}
-                                            <option>{$val.first_name}</option>
+                                            <option>{$val.for_short}</option>
                                             {/volist}
                                             {/notempty}
                                         </select>
@@ -135,24 +135,24 @@
                                     {notempty name="users"}
                                     {volist name="users" id="val"}
                                     <tr>
-                                        <td class="bg-purple disabled color-palette">{$val.first_name}</td>
+                                        <td class="bg-purple disabled color-palette">{$val.for_short}</td>
                                         {volist name="days" id="day"}
 
                                         <?php  $att = getDayItem($attendances,$val['uid'],$day['date']); ?>
                                         {if condition="$att != ''"}
                                         <td title="更表" style="cursor:pointer"
-                                            onclick="attendance('edit','{$day.date}','{$val.uid}','{$val.first_name}')">
+                                            onclick="attendance(this, 'edit','{$day.date}','{$val.uid}','{$val.for_short}')">
                                             {$att}
                                         </td>
                                         {else/}    <!--判断有没有ID -->
                                         <td title="更表" style="cursor:pointer"
-                                            onclick="attendance('add','{$day.date}','{$val.uid}','{$val.first_name}')">
+                                            onclick="attendance(this, 'add','{$day.date}','{$val.uid}','{$val.for_short}')">
                                             &nbsp;
                                         </td>
                                         {/if}
                                         {/volist}
 
-                                        <td class="bg-purple disabled color-palette">{$val.first_name}</td>
+                                        <td class="bg-purple disabled color-palette">{$val.for_short}</td>
                                     </tr>
                                     {/volist}
                                     {/notempty}
@@ -187,11 +187,11 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 control-label " for="types"> 設定方式 </label>
                                     <div class="col-sm-3">
-                                        <select class="form-control" id="types" name="shops" size="1">
-                                            <option value="0">(編假/取消)</option>
-                                            <option value="1">單日編假</option>
-                                            <option value="2">重複編假</option>
-                                            <option value="3">單日取消</option>
+                                        <select class="form-control" id="types" name="types" size="1">
+                                            <option value="0" {eq name="types" value="0"}selected{/eq}>(編假/取消)</option>
+                                            <option value="1" {eq name="types" value="1"}selected{/eq}>單日編假</option>
+                                            <option value="2" {eq name="types" value="2"}selected{/eq}>重複編假</option>
+                                            <option value="3" {eq name="types" value="3"}selected{/eq}>單日取消</option>
                                         </select>
                                     </div>
                                 </div>
@@ -199,7 +199,7 @@
                                 <div class="form-group row text-danger hidden" id="attention">
                                     <label class="col-sm-2  control-label" for="attention"> 注意：</label>
                                     <div class="col-sm-10">
-                                        <h6><a>以下設定只會應用在上面的時間表所顯示的日期和美容師</a></h6>
+                                        <h6><a class="bg-danger disabled ">以下設定只會應用在上面的時間表所顯示的日期和美容師</a></h6>
                                     </div>
                                 </div>
 
@@ -208,41 +208,41 @@
                                     <label class="col-sm-2 control-label " for="week"> 星期：</label>
                                     <div class="col-sm-10">
                                         <div class="d-flex align-items-center">
-                                            <input class="mr-1" type="checkbox">
+                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="0" {if in_array(0, $weeks)}checked{/if}>
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期日</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            <input class="mr-1" type="checkbox">
+                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="1" {if in_array(1, $weeks)}checked{/if}>
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期一</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            <input class="mr-1" type="checkbox">
+                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="2" {if in_array(2, $weeks)}checked{/if}>
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期二</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            <input class="mr-1" type="checkbox">
+                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="3" {if in_array(3, $weeks)}checked{/if}>
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期三</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            <input class="mr-1" type="checkbox">
+                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="4" {if in_array(4, $weeks)}checked{/if}>
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期四</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <input class="mr-1" type="checkbox">
+                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="5" {if in_array(5, $weeks)}checked{/if}>
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期五</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <input class="mr-1" type="checkbox">
+                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="6" {if in_array(6, $weeks)}checked{/if}>
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期六</trans>
                                             </label>
@@ -256,21 +256,21 @@
                                     <div class="col-sm-3">
                                         <select class="form-control" id="vacation_item" name="vacation_item" size="1">
                                             <option value=""></option>
-                                            <option value="O">Day Off</option>
-                                            <option value="AF">年假</option>
-                                            <option value="*">补假</option>
-                                            <option value="PL">事假</option>
-                                            <option value="SL">病假</option>
-                                            <option value="B">工作时间B</option>
-                                            <option value="D">工作时间D</option>
-                                            <option value="E">工作时间E</option>
-                                            <option value="NP">无休假</option>
-                                            <option value="OT">超时工作</option>
-                                            <option value="X">未到/已过办公时间</option>
-                                            <option value="OF">不在公司</option>
-                                            <option value="ER">补公</option>
-                                            <option value="MT">Meeting</option>
-                                            <option value="TR">Training</option>
+                                            <option value="O" {eq name="vacation_item" value="O"}selected{/eq}>Day Off</option>
+                                            <option value="AF" {eq name="vacation_item" value="AF"}selected{/eq}>年假</option>
+                                            <option value="*" {eq name="vacation_item" value="*"}selected{/eq}>补假</option>
+                                            <option value="PL" {eq name="vacation_item" value="PL"}selected{/eq}>事假</option>
+                                            <option value="SL" {eq name="vacation_item" value="SL"}selected{/eq}>病假</option>
+                                            <option value="B" {eq name="vacation_item" value="B"}selected{/eq}>工作时间B</option>
+                                            <option value="D" {eq name="vacation_item" value="D"}selected{/eq}>工作时间D</option>
+                                            <option value="E" {eq name="vacation_item" value="E"}selected{/eq}>工作时间E</option>
+                                            <option value="NP" {eq name="vacation_item" value="NP"}selected{/eq}>无休假</option>
+                                            <option value="OT" {eq name="vacation_item" value="OT"}selected{/eq}>超时工作</option>
+                                            <option value="X" {eq name="vacation_item" value="X"}selected{/eq}>未到/已过办公时间</option>
+                                            <option value="OF" {eq name="vacation_item" value="OF"}selected{/eq}>不在公司</option>
+                                            <option value="ER" {eq name="vacation_item" value="ER"}selected{/eq}>补公</option>
+                                            <option value="MT" {eq name="vacation_item" value="MT"}selected{/eq}>Meeting</option>
+                                            <option value="TR" {eq name="vacation_item" value="TR"}selected{/eq}>Training</option>
                                         </select>
 
                                     </div>
@@ -280,19 +280,19 @@
                                 <div class="form-group row hidden" id="time">
                                     <label class="col-sm-2 control-label " for="time"> 時間 </label>
                                     <div class="col-sm-2">
-                                        <select class="form-control" id="start_time" name="shops" size="1">
+                                        <select class="form-control" id="start_time" name="start_time" size="1">
                                             <option value=""></option>
                                             {volist name=":attendanceHours()" id="att"}
-                                            <option value="{$att.id}">{$att.text}</option>
+                                            <option value="{$att.id}" {eq name="start_time" value="$att.id"}selected{/eq}>{$att.text}</option>
                                             {/volist}
                                         </select>
                                     </div>
                                     至
                                     <div class="col-sm-2">
-                                        <select class="form-control" id="end_time" name="shops" size="1">
+                                        <select class="form-control" id="end_time" name="end_time" size="1">
                                             <option value=""></option>
                                             {volist name=":attendanceHours()" id="att"}
-                                            <option value="{$att.id}">{$att.text}</option>
+                                            <option value="{$att.id}" {eq name="end_time" value="$att.id"}selected{/eq}>{$att.text}</option>
                                             {/volist}
                                         </select>
                                     </div>
@@ -302,10 +302,8 @@
                                 <div class="form-group row hidden" id="remark">
                                     <label class="col-sm-2 control-label " for="remark"> 備註 </label>
                                     <div class="col-sm-6">
-                                        <input class="form-control" type="text" id="terms"
-                                               name="terms"
-                                               value="{$data.terms|default=''}"
-                                               placeholder="">
+                                        <textarea class="form-control" type="text" id="terms"
+                                                  name="terms" placeholder="">{$terms|default=''}</textarea>
 
                                     </div>
                                 </div>
@@ -380,99 +378,106 @@
         });
 
 
-        $("#pre_month").click(function () {
+        $("#current_month").click(function () {
             let date = $("#start_date").val();
-            let start_date = moment(date, "YYYY-MM-DD").subtract(1, 'months');
-            let end_date = moment(date, "YYYY-MM-DD").subtract(1, 'M');
-            let futureMonthEnd = moment(end_date, "YYYY-MM-DD").endOf('month');
-            if (start_date.date() != end_date.date() && end_date.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-                end_date = end_date.add(1, 'd');
-            }
+            let start_date = moment(date).startOf("month");
+            let end_date = moment(date).endOf("month");
+
             document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
-            console.log(moment(start_date).format("YYYY-MM-DD"))
-            console.log(moment(end_date).format("YYYY-MM-DD"))
-            console.log(moment().subtract(1, 'months'))
+
+        });
+
+        $("#pre_month").click(function () {
+            let date = $("#start_date").val();
+            date = moment(date, "YYYY-MM-DD").subtract(1, 'M');
+            let start_date = moment(date).startOf("month");
+            let end_date = moment(date).endOf("month");
+
+            document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
+            document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
+
         });
 
 
         $("#next_month").click(function () {
             let date = $("#start_date").val();
-            let start_date = moment(date, "YYYY-MM-DD").add(1, 'months');
-            let end_date = moment(date, "YYYY-MM-DD").add(1, 'M');
-            let futureMonthEnd = moment(end_date, "YYYY-MM-DD").endOf('month');
-            if (start_date.date() != end_date.date() && end_date.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-                end_date = end_date.add(1, 'd');
-            }
+            date = moment(date, "YYYY-MM-DD").add(1, 'M');
+            let start_date = moment(date).startOf("month");
+            let end_date = moment(date).endOf("month");
+
             document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
-            console.log(moment(start_date).format("YYYY-MM-DD"))
-            console.log(moment(end_date).format("YYYY-MM-DD"))
-            console.log(moment().add(1, 'months'))
+
+        });
+
+        $("#current_day").click(function () {
+            let date = $("#start_date").val();
+            let start_date = moment(date).startOf("day");
+            let end_date = moment(date).endOf("day");
+
+            document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
+            document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
+
+            $('#services-grid').bootstrapTable('refresh');
+            $('#users-grid').bootstrapTable('refresh');
         });
 
 
         $("#pre_day").click(function () {
             let date = $("#start_date").val();
-            let start_date = moment(date, "YYYY-MM-DD").subtract(1, 'd');
-            let end_date = moment(date, "YYYY-MM-DD").subtract(1, 'D');
-            let futureMonthEnd = moment(end_date, "YYYY-MM-DD").endOf('month');
-            if (start_date.date() != end_date.date() && end_date.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-                end_date = end_date.add(1, 'd');
-            }
+            date = moment(date, "YYYY-MM-DD").subtract(1, 'd');
+            let start_date = moment(date).startOf("day");
+            let end_date = moment(date).endOf("day");
+
             document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
-            console.log(moment(start_date).format("YYYY-MM-DD"))
-            console.log(moment(end_date).format("YYYY-MM-DD"))
-            console.log(moment().subtract(1, 'months'))
+
         });
 
 
         $("#next_day").click(function () {
             let date = $("#start_date").val();
-            let start_date = moment(date, "YYYY-MM-DD").add(1, 'd');
-            let end_date = moment(date, "YYYY-MM-DD").add(1, 'D');
-            let futureMonthEnd = moment(end_date, "YYYY-MM-DD").endOf('month');
-            if (start_date.date() != end_date.date() && end_date.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-                end_date = end_date.add(1, 'd');
-            }
+            date = moment(date, "YYYY-MM-DD").add(1, 'd');
+            let start_date = moment(date).startOf("day");
+            let end_date = moment(date).endOf("day");
+
             document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
-            console.log(moment(start_date).format("YYYY-MM-DD"))
-            console.log(moment(end_date).format("YYYY-MM-DD"))
-            console.log(moment().subtract(1, 'months'))
+
         });
 
+        $("#current_week").click(function () {
+            let date = $("#start_date").val();
+            let start_date = moment(date).startOf("week");
+            let end_date = moment(date).endOf("week");
+
+            document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
+            document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
+
+            $('#services-grid').bootstrapTable('refresh');
+            $('#users-grid').bootstrapTable('refresh');
+        });
 
         $("#pre_week").click(function () {
             let date = $("#start_date").val();
-            let start_date = moment(date, "YYYY-MM-DD").subtract(7, 'd');
-            let end_date = moment(date, "YYYY-MM-DD").subtract(1, 'D');
-            let futureMonthEnd = moment(end_date, "YYYY-MM-DD").endOf('month');
-            if (start_date.date() != end_date.date() && end_date.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-                end_date = end_date.add(1, 'd');
-            }
+            let start_date = moment(date).subtract(1, 'w');
+            let end_date = moment(date).subtract(1, 'd');
+
             document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
-            console.log(moment(start_date).format("YYYY-MM-DD"))
-            console.log(moment(end_date).format("YYYY-MM-DD"))
-            console.log(moment().subtract(1, 'months'))
+
         });
 
 
         $("#next_week").click(function () {
             let date = $("#start_date").val();
-            let start_date = moment(date, "YYYY-MM-DD").add(7, 'd');
-            let end_date = moment(date, "YYYY-MM-DD").add(1, 'D');
-            let futureMonthEnd = moment(end_date, "YYYY-MM-DD").endOf('month');
-            if (start_date.date() != end_date.date() && end_date.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
-                end_date = end_date.add(1, 'd');
-            }
+            let start_date = moment(date, "YYYY-MM-DD").add(1, 'd');
+            let end_date = moment(date, "YYYY-MM-DD").add(1, 'w');
+
             document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
-            console.log(moment(start_date).format("YYYY-MM-DD"))
-            console.log(moment(end_date).format("YYYY-MM-DD"))
-            console.log(moment().subtract(1, 'months'))
+
         });
 
 
@@ -519,22 +524,84 @@
     })
 
 
-    function attendance(act, vdate, user_id, user_name) {
-        if (act == 'edit') {
-            var url = '{:url("attendances/edit")}'
-        } else {
-            var url = '{:url("attendances/add")}'
+    function attendance(obj, act, vdate, user_id, user_name) {
+        console.log(this);
+
+        let that = $(this);
+        let type = $("#types").val();
+        let start_time = $("#start_time").val();
+        let end_time = $("#end_time").val();
+        let vacation_item = $("#vacation_item").val();
+        let weeks = $(".weeks:checked").val();
+        let terms = $("#terms").val();
+        let param = {}, item = [], temp = {};
+
+        if (type == 1) {  //單日編假
+            param['id'] = '';
+            param['user_id'] = user_id;
+            param['vdate'] = vdate;
+
+            temp['id'] = '';
+            temp['start_time'] = start_time;
+            temp['end_time'] = end_time;
+            temp['item'] = vacation_item;
+            temp['remarks'] = terms;
+
+            item.push(temp);
+            param['item'] = item;
+
+            // console.log(param)
+            $.ajax({
+                url: "{:url('add')}",
+                data: param,
+                type: "POST",
+                success(res) {
+                    if (res.code == 200) {
+                        layer.msg(res.msg);
+                        let text = $(obj).text().replace(/^\s+|\s+$/g,"");
+                        $(obj).text(text + vacation_item)
+                    }
+                }
+            })
         }
+        else if (type == 2) {  //重複編假
 
-        url += '?vdate=' + vdate + '&user_id=' + user_id + '&user_name=' + user_name;
+        }
+        else if (type == 3) {   //單日取消
+            param['user_id'] = user_id;
+            param['vdate'] = vdate;
+            param['vacation_item'] = vacation_item;
 
-        layer.open({
-            type: 2,
-            title: '更表',
-            maxmin: true,
-            area: ['50%', '50%'],
-            content: url,
-        });
+            $.ajax({
+                url: "{:url('del_fast')}",
+                data: param,
+                type: "POST",
+                success(res) {
+                    layer.msg(res.msg);
+                    if (res.code == 200) {
+                        $(obj).text(res.vacation_item)
+                    }
+                }
+            })
+        }
+        else {
+
+            if (act == 'edit') {
+                var url = '{:url("attendances/edit")}'
+            } else {
+                var url = '{:url("attendances/add")}'
+            }
+
+            url += '?vdate=' + vdate + '&user_id=' + user_id + '&user_name=' + user_name;
+
+            layer.open({
+                type: 2,
+                title: '更表',
+                maxmin: true,
+                area: ['50%', '50%'],
+                content: url,
+            });
+        }
     }
 
 

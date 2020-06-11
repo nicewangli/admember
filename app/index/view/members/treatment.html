@@ -128,6 +128,11 @@
 
 <script type="text/javascript">
     function expiration(expiration_date, id) {
+        let url = "{:url('invoices/expiration_date')}";
+        if (package_type == 2) {
+            url = "{:url('package_stagings/expiration_date')}"
+        }
+
         $("#expiration_time").daterangepicker({
             autoUpdateInput:false,
             "singleDatePicker": true,
@@ -145,7 +150,7 @@
             $("#expiration_time").val(expiration_date);
 
             $.ajax({
-                url: "{:url('invoices/expiration_date')}",
+                url: url,
                 data: {id: id, expiration_date: expiration_date},
                 type: 'POST',
                 success(res){
@@ -157,7 +162,7 @@
         }).on('cancel.daterangepicker', function(ev, picker) {
             $("#expiration_time").val('');
             $.ajax({
-                url: "{:url('invoices/expiration_date')}",
+                url: url,
                 data: {id: id, expiration_date: ''},
                 type: 'POST',
                 success(res){
@@ -176,11 +181,11 @@
             method: 'post',                                   //请求方式（*）
             queryParams: function (params) {
                 return {
-                    offset: params.offset,  //页码
-                    limit: params.limit,   //页面大小
+                    // offset: params.offset,  //页码
+                    // limit: params.limit,   //页面大小
                     search : params.search, //搜索
-                    order : params.order, //排序
-                    sort : params.sort, //排序
+                    // order : params.order, //排序
+                    // sort : params.sort, //排序
                     member_id: $("#member_id").val(),
                     package_used: $("#package_used").val(),
                     expiration_date: $("#expiration_date").val(),
@@ -190,7 +195,7 @@
             },
             toolbar: "#treatment-toolbar",                    //工具按钮用哪个容器
             pagination: true,                                //是否显示分页（*）
-            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            sidePagination:'client',                         //分页方式：client客户端分页，server服务端分页（*）
             buttonsClass:"btn-sm btn btn-sm btn-default",
             striped: true,                                   //是否显示行间隔色
             cookie: true,
@@ -218,7 +223,7 @@
                 class: 'text-right',
             },],
             onLoadSuccess: function (data) {
-                $("#number").children('input').val(data.total);
+                $("#number").children('input').val(data.rows.length);
             },
             onClickRow:function (row, e) {
                 // console.log(row);
@@ -231,7 +236,7 @@
                 member_id = row.member_id;
 
                 $("#expiration_time").val('');
-                expiration(row.expiration_date, row.id);
+                expiration(row.expiration_date, row.item_id, row.package_type);
 
                 $("#detail").children('.table').find('tr').not('#detail-title').remove();
                 $("#list").children('.table').find('tr').not("#list-title, #foot").remove();
@@ -258,9 +263,14 @@
                 use_list = '<tr>\n'+
                         '<td>' + row.invoice_date + '</td>\n'+
                         '<td>購買</td>\n'+
-                        '<td class="text-right">' + row.package_value + '</td>\n'+
-                        '<td>發票</td>\n'+
-                        '<td>' + row.invoice_no + '</td>\n'+
+                        '<td class="text-right">' + row.package_value + '</td>\n';
+                if (row.package_type == 1) {
+                    use_list += '<td>發票</td>\n';
+                }
+                else if (row.package_type == 2) {
+                    use_list += '<td>套票分期</td>\n';
+                }
+                use_list += '<td>' + row.invoice_no + '</td>\n'+
                         '<td class="text-right">' + row.total + '</td>\n'+
                         '</tr>';
 
@@ -283,11 +293,11 @@
                      
                 }
 
-                if (row.package_type == 1) {
+                if (row.service_type == 1) {
                     $("#service").removeClass('hidden');
                     $("#service").find('p').after('<p>所有服務以價值減 ' + parseFloat(row.deducted_percent).toFixed(1) + '% 後之優惠價扣套票值</p>')
                 }
-                else if(row.package_type == 2) {
+                else if(row.service_type == 2) {
                     let services = row.services;
 
                     if (services.length > 0) {

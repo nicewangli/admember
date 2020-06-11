@@ -203,11 +203,11 @@
             method: 'post',                                   //请求方式（*）
             queryParams: function (params) {
                 return {
-                    offset: params.offset,  //页码
-                    limit: params.limit,   //页面大小
+                    // offset: params.offset,  //页码
+                    // limit: params.limit,   //页面大小
                     search : params.search, //搜索
-                    order : params.order, //排序
-                    sort : params.sort, //排序
+                    // order : params.order, //排序
+                    // sort : params.sort, //排序
                     filter: params.filter,
                     member_id: $("#member_id").val(),
                     beautician: $("#beautician").val(),
@@ -217,7 +217,7 @@
                 };
             },
             pagination: true,                                //是否显示分页（*）
-            sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            sidePagination:'client',                         //分页方式：client客户端分页，server服务端分页（*）
             buttonsClass:"btn-sm btn btn-sm btn-default",
             striped: true,                                   //是否显示行间隔色
             cookie: true,

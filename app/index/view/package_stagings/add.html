@@ -3,6 +3,9 @@
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta charset="utf-8" />
+    <meta name="referrer" content="no-referrer" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
     <title>發票</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     {include file="public:head" /}
@@ -53,7 +56,7 @@
         <form id="stagingForm">
             <input type="hidden" name="id" id="id" value="{$data.id|default=''}">
             <input type="hidden" name="type" id="type" value="{$type|default=''}">
-            <input type="hidden" name="is_first" id="is_first" value="">
+            <input type="hidden" name="is_first" id="is_first" value="{$data.is_first|default=0}">
             <input type="hidden" name="all_total" id="all_total" value="">
             <input type="hidden" name="invoice_total" id="invoice_total" value="">
             <div class="card-body">
@@ -204,34 +207,34 @@
                             {volist name="items" id="val" key="index"}
                                 <tr class="border-b service">
                                     <td width="5%" align="center" data-id="{$val.id}">
-                                        <input type="checkbox" class="checkbox" value="{$index}">
+                                        <input type="checkbox" class="checkbox" value="{$index-1}">
                                         <input type="hidden" class="service_packages" value="{$val.service_package_id}">
                                     </td>
                                     <td width="5%">
-                                        <input type="hidden" name="service[{$index}][id]" value="{$val.id}">
-                                        <input type="hidden" name="service[{$index}][package_staging_id]" value="{$val.package_staging_id}">
-                                        <input type="hidden" name="service[{$index}][service_package_id]" value="{$val.service_package_id}">
-                                        <input type="hidden" name="service[{$index}][temp_current_payment]" value="{$val.current_payment}">
-                                        <input type="hidden" name="service[{$index}][package_value]" value="{$val.package_value}" class="package_value">
-                                        <input type="hidden" name="service[{$index}][package_unit]" value="{$val.package_unit}">
+                                        <input type="hidden" name="service[{$index-1}][id]" value="{$val.id}">
+                                        <input type="hidden" name="service[{$index-1}][package_staging_id]" value="{$val.package_staging_id}">
+                                        <input type="hidden" name="service[{$index-1}][service_package_id]" value="{$val.service_package_id}">
+                                        <input type="hidden" name="service[{$index-1}][temp_current_payment]" value="{$val.current_payment}">
+                                        <input type="hidden" name="service[{$index-1}][package_value]" value="{$val.package_value}" class="package_value">
+                                        <input type="hidden" name="service[{$index-1}][package_unit]" value="{$val.package_unit}">
                                     </td>
                                     <td width="12%">{$val.code}</td>
                                     <td width="20%">{$val.name}</td>
                                     <td width="10%">
-                                        <input type="number" min="1" name="service[{$index}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
-                                        <input type="hidden" name="service[{$index}][package_original_value]" class="package_original_value" value="{$val.package_original_value}">
+                                        <input type="number" min="1" name="service[{$index-1}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
+                                        <input type="hidden" name="service[{$index-1}][package_original_value]" class="package_original_value" value="{$val.package_original_value}">
                                     </td>
                                     <td width="12%">
-                                        <input type="text" name="service[{$index}][price]" value="{$val.price}" class="form-control text-right price" style="width: 100%;">
+                                        <input type="text" name="service[{$index-1}][price]" value="{$val.price}" class="form-control text-right price" style="width: 100%;">
                                     </td>
                                     <td width="12%">
-                                        <input type="text" name="service[{$index}][discount]" value="{$val.discount}" class="form-control text-right discount" style="width: 100%;">
+                                        <input type="text" name="service[{$index-1}][discount]" value="{$val.discount}" class="form-control text-right discount" style="width: 100%;">
                                     </td>
                                     <td width="12%">
-                                        <input type="text" name="service[{$index}][total]" value="{$val.total}" class="form-control text-right total" style="width: 100%;" readonly="">
+                                        <input type="text" name="service[{$index-1}][total]" value="{$val.total}" class="form-control text-right total" style="width: 100%;" readonly="">
                                     </td>
                                     <td width="12%">
-                                        <input type="text" name="service[{$index}][current_payment]" value="{$val.current_payment}" class="form-control text-right current_payment" style="width: 100%;">
+                                        <input type="text" name="service[{$index-1}][current_payment]" value="{$val.current_payment}" class="form-control text-right current_payment" style="width: 100%;">
                                     </td>
                                 </tr>
                             {/volist}
@@ -398,7 +401,7 @@
                     parent.$("#staging_title").text('首次分期');
                     $('#invoice_id').attr('disabled',true);
                     $('#old_item').hide();
-                    $("#is_first").val(1);
+                    $('#is_first').val(1);
                     layer.close(layer.index);
                 }
                 ,btn2: function(index, layero){
@@ -614,8 +617,13 @@
 
     $(document).ready( function (){
         let type = $("#type").val();
+        let is_first = $("#is_first").val();
         if(type === 'edit') {
-            $('#package_item').hide();
+            if(is_first=='0'){
+                $('#package_item').hide();
+            } else {
+                $('#old_item').hide();
+            }
         }
         initPaymentMethod();
         function initPaymentMethod(){
@@ -779,6 +787,9 @@
             if (final_totals > 0) {
                 layer.msg('請付清賬單！');
                 return false;
+            } else if(final_totals < 0){
+                layer.msg('请选择至少一个服务套票或增加会员储值、奖赏');
+                return false;
             }
 
             let url = '{:url("packageStagings/add")}';
@@ -798,9 +809,18 @@
                     if(res.code == 200){
                         parent.$('#package_stagings-grid').bootstrapTable('refresh');
                         //注意：parent 是 JS 自带的全局对象，可用于操作父页面
+
                         let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                         parent.layer.close(index);
+                        //打印弹窗
+                        layer.open({
+                            type: 2,
+                            title: '打印存根',
+                            area: ['700px', '98%'],
+                            content: '{:url("invoices/print_page")}'
+                        });
                     }
+
                 }
             })
         });

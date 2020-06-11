@@ -82,4 +82,31 @@ class InvoiceItem extends Model
     {
         $this->where('invoice_id', $id)->delete();
     }
+
+    //查詢會員所購買的套票信息
+    public function service_package($where, $whereOr)
+    {
+        $items = $this->alias('it')
+            ->leftJoin('invoice i', 'i.id = it.invoice_id')
+            ->leftJoin('service_package sp', 'sp.id = it.service_id')
+            ->leftJoin('mapping m', 'm.id = it.package_unit')
+            ->field('it.invoice_id as parent_id, it.total, i.member_id, sp.id, sp.code, sp.name, sp.price, sp.expiration_date as expiration_month, it.package_value, sp.service_type, m.val as package_unit, it.expiration_date, it.package_value_used, 1 as type')
+            ->whereOr([$where, $whereOr])
+            ->order('id', 'desc')
+            ->select()
+            ->toArray();
+
+        foreach ($items as $key => $value) {
+            $items[$key]['package_value_unit'] = $value['package_value'] . $value['package_unit'];
+            $items[$key]['arrears'] = 0.0;
+            $items[$key]['avg_price'] = $value['package_value'] ? $value['total'] / $value['package_value'] : 0;
+
+            if ($value['expiration_month'] == 0) {
+                $items[$key]['expiration_date'] = '';
+            }
+        }
+
+        return $items;
+    }
+
 }

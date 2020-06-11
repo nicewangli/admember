@@ -153,7 +153,7 @@ $(document).ready( function (){
             alert("请选择一行");
             return;
         }else {
-            let nodes = '';
+            let nodes = '', expiration_date;
             if (from_panel == 'invoices') {
                 let number = parseInt(parent.$(".items_count").val());
                 ids = ids.split(",");
@@ -161,7 +161,7 @@ $(document).ready( function (){
                 $.each(rows, function(index, element){
 
                     if (ids.indexOf(element.id.toString()) == -1) {
-                        let expiration_date = element.expiration_date;
+                        expiration_date = element.expiration_date;
                         if (expiration_date > 0) {
                             expiration_date = moment().add(expiration_date, 'M').format("YYYY-MM-DD HH:mm:ss");
                         }
@@ -223,7 +223,8 @@ $(document).ready( function (){
                             '   </tr>';
                         number++;
                     }
-                })
+                });
+
                 parent.$("#service_package").removeClass('hidden');
                 parent.$("#product").before(nodes);
                 parent.$(".items_count").val(number);
@@ -234,6 +235,10 @@ $(document).ready( function (){
                 $.each(rows, function(index, element){
 
                     if (ids.indexOf(element.id.toString()) == -1) {
+                        expiration_date = element.expiration_date;
+                        if (expiration_date > 0) {
+                            expiration_date = moment().add(expiration_date, 'M').format("YYYY-MM-DD HH:mm:ss");
+                        }
 
                         nodes += '<tr>  \n' +
                             '   <td width="5%">  \n' +
@@ -242,6 +247,7 @@ $(document).ready( function (){
                             '   </td>  \n' +
                             '   <td width="5%">  \n' +
                             '       <input type="hidden" name="service[' + number + '][service_package_id]" value="' + element.id + '">  \n' +
+                            '       <input type="hidden" name="service[' + number + '][expiration_date]" value="' + expiration_date + '"> \n' +
                             '       <input type="hidden" name="service[' + number + '][package_value]" value="' + element.package_value + '" class="package_value"> \n' +
                             '       <input type="hidden" name="service[' + number + '][package_unit]" value="' + element.package_unit + '"> \n' +
                             '   </td>  \n' +
@@ -265,7 +271,8 @@ $(document).ready( function (){
                             '   </tr>';
                         number++;
                     }
-                })
+                });
+
                 parent.$("#service_package").removeClass('hidden');
                 parent.$("#member").before(nodes);
                 parent.$(".items_count").val(number);

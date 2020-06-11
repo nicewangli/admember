@@ -188,7 +188,7 @@ class ServicePackages extends Application
     }
 
 
-    public function service_lists(ServicePackage $model, ServicePackageItem $packageItem)
+    public function service_lists(ServicePackage $model, ServicePackageItem $packageItem, InvoiceItem $invoiceItem, PackageStagingItem $packageStagingItem)
     {
         $param = input('get.');
         $sort = isset($param['sort']) ?  $param['sort'] :  'id';
@@ -220,6 +220,7 @@ class ServicePackages extends Application
         }
         $stagingWhere = $where;
         $stagingWhere[] = ['ps.is_first', '=', 1];
+        $stagingWhere[] = ['psi.used_up', '=', 0];
 
         $where[] = ['it.service_type', '=', 1];
         $where[] = ['it.used_up', '=', 0];
@@ -232,15 +233,8 @@ class ServicePackages extends Application
 //
 //        }else{
         if ($service_package_id) {
-            if ($service_type == 2) {
-                $items = $packageItem->alias('spi')->leftJoin('invoice_item it', 'spi.service_package_id = it.service_id')->leftJoin('service s', 'spi.service_id = s.id')->field('spi.*, s.code, s.name, s.beautician_pay, s.price, it.id as invoice_item_id')->where(['spi.service_package_id' => $service_package_id, 'it.invoice_id' => $invoice_id])->order($sort.' '.$order)->select()->toArray();
 
-            }
-
-            if ($service_type == 1 || empty($items)) {
-                $items = Service::where('status', '發售中')->field('id as service_id, code, name, beautician_pay, price as deduct_val')->order($sort.' '.$order)->select()->toArray();
-
-            }
+            $items = $packageItem->service($service_type, $service_package_id, $parent_id, $type);
 
         }else{
             $where[] = ['i.member_id', '=', $member_id];
@@ -251,19 +245,10 @@ class ServicePackages extends Application
 
             $whereOr[] = ['it.expiration_date', '>', date('Y-m-d H:i:s', time())];
 
-            $items = InvoiceItem::alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->leftJoin('mapping m', 'm.id = it.package_unit')->field('it.invoice_id, it.total, i.member_id, sp.id, sp.code, sp.name, sp.price, sp.expiration_date as expiration_month, it.package_value, sp.service_type, m.val as package_unit, it.expiration_date, it.package_value_used')->whereOr([$where, $whereOr])->order($sort.' '.$order)->select()->toArray();
-
-            // file_put_contents('aarry.txt', "\n\n".InvoiceItem::getLastSql(), FILE_APPEND);
-
-            foreach ($items as $key => $value) {
-                $items[$key]['package_value_unit'] = $value['package_value'] . $value['package_unit'];
-                $items[$key]['arrears'] = 0.0;
-                $items[$key]['avg_price'] = $value['package_value'] ? $value['total'] / $value['package_value'] : 0;
-
-                if ($value['expiration_month'] == 0) {
-                    $items[$key]['expiration_date'] = '';
-                }
-            }
+            $invoiceItems = $invoiceItem->service_package($where, $whereOr);
+            $stagingItems = $packageStagingItem->service_package($stagingWhere);
+//            var_dump($stagingItems);
+            $items = array_merge($invoiceItems, $stagingItems);
         }
 //        }
 

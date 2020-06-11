@@ -164,7 +164,7 @@ z{extend name='public/layer_base' /}
                         <td>
                             <a class="u-link-v5 g-color-gray-light-v6 g-color-secondary--hover g-text-underline--none--hover"
                                href="#">
-                                <i class="fa fa-minus"></i>
+                                <i class="fa fa-minus" data-id="{$items.id}"></i>
                             </a>
                         </td>
                     </tr>
@@ -197,16 +197,17 @@ z{extend name='public/layer_base' /}
     $("#Attendance-submit").click(function () {    // 提交按钮触发事件
         var form_action = $("#Attendance-form").attr("action");    // 获取 表单的 提交地址
         $.post(form_action, $("#Attendance-form").serialize(), function (data) {
-            // layer.msg(data['msg']);
+            layer.msg(data['msg']);
             if (data['code'] == 200) {
                 parent.location.reload();
                 parent.layer.closeAll();
-                parent.$('#Attendance-grid').bootstrapTable('refresh')
+                // parent.$('#Attendance-grid').bootstrapTable('refresh')
             }
         });
     });
 
     $('.layer-close').on('click', function () {
+        parent.location.reload();
         parent.layer.closeAll();
     });
 
@@ -218,7 +219,7 @@ z{extend name='public/layer_base' /}
             '<input class="form-control" type="text" name="item[' + index + '][end_time]"  value="' + date + '"></td><td>' +
             '<input class="form-control" type="text" name="item[' + index + '][item]" value="' + name + '"></td><td>' +
             '<input class="form-control remarks" type="text" name="item[' + index + '][remarks]"></td><td>' +
-            '<a class="u-link-v5 g-color-gray-light-v6 g-color-secondary--hover g-text-underline--none--hover" href="#"><i class="fa fa-minus"></i></a></td></tr>';
+            '<a class="u-link-v5 g-color-gray-light-v6 g-color-secondary--hover g-text-underline--none--hover" href="#"><i class="fa fa-minus" data-id="0"></i></a></td></tr>';
         $('.table').children('tbody').append(node);
     }
 
@@ -237,10 +238,31 @@ z{extend name='public/layer_base' /}
 
 
     $(document).on("click", '.fa-minus', function () {
-        let len = 0;
-        len = $('.table').children('tbody').children('tr').length;
-        if (len > 1) {
-            $(this).parents('tr').remove();
+        // let len = 0;
+        // len = $('.table').find('tr').length;
+        // if (len > 1) {
+        $(this).parents('tr').remove();
+        // }
+
+        let id = $(this).attr('data-id');
+        if (id > 0) {
+            $.ajax({
+                url: "{:url('del')}",
+                data: {id: id},
+                type: "GET",
+                success(res) {
+                    if (res.code == 200) {
+                        let len = $('.table').find('tr').length;
+                        if (len == 1){
+                            parent.location.reload();
+                            parent.layer.closeAll();
+                            parent.layer.msg(res.msg);
+                        } else {
+                            layer.msg(res.msg);
+                        }
+                    }
+                }
+            })
         }
     })
 

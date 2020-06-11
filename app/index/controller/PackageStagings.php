@@ -225,7 +225,7 @@ class PackageStagings extends Application
             //总款减去支付
 //            $i->final_total = floatval($i->total_amount) - floatval($param['total_amount']);
 //            $i->save();
-//            $item->save($param);
+            $item->save($param);
             if (isset($param['service'])) {
                 $packageStagingItem->saveItem($id,$param,'edit');
             }
@@ -238,7 +238,6 @@ class PackageStagings extends Application
             if (isset($param['delSeller']) && $param['delSeller']) {
                 $packageStagingSeller->delSellers($id);
             }
-
             return json(['code' => 200]);
         }
 

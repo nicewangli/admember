@@ -31,7 +31,7 @@ class BookingItem extends Model
     {
         $where = [
             ['booking_id', '=', $booking_id],
-            ['invoice_id', '>', 0]
+            ['parent_id', '>', 0]
         ];
         $items = $this->where($where)->order('id ASC')->select()->toArray();
 
@@ -43,12 +43,23 @@ class BookingItem extends Model
             $items[$key]['beautician1_name'] = Db::name('users')->where('uid', $value['beautician1'])->value('for_short');
             $items[$key]['beautician2_name'] = Db::name('users')->where('uid', $value['beautician2'])->value('for_short');
 
-            $items[$key]['service_package'] = Db::name('invoice_item')->alias('it')
-                ->leftJoin('service_package sp', 'sp.id = it.service_id')
+            $packageWhere = ['sp.id' => $value['service_package_id'], 'it.id' => $value['item_id']];
+            if ($value['package_type'] == 1) {  //發票
+                $package = Db::name('invoice_item')->alias('it')
+                    ->leftJoin('service_package sp', 'sp.id = it.service_id');
+
+                $packageWhere['it.service_type'] = 1;
+
+            }
+            elseif ($value['package_type'] == 2) {  //套票分期
+                $package = Db::name('package_staging_item')->alias('it')
+                    ->leftJoin('service_package sp', 'sp.id = it.service_package_id');
+            }
+            $items[$key]['service_package'] = $package
                 ->leftJoin('service_package_item spi', 'spi.service_package_id = sp.id')
                 ->leftJoin('mapping m', 'm.id = it.package_unit')
                 ->field('sp.code, sp.name, it.package_value, it.package_value_used, m.val as package_unit, spi.deduct_val')
-                ->where(['sp.id' => $value['service_package_id'], 'it.service_type' => 1, 'it.invoice_id' => $value['invoice_id'], 'it.id' => $value['invoice_item_id']])
+                ->where($packageWhere)
                 ->find();
 
             $items[$key]['service'] = Db::name('service')->field('code, name, package_deduction')->find($value['service_id']);

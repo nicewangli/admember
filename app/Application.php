@@ -72,6 +72,7 @@ class Application extends BaseController
 
 
         $no_need_to_check_action = [
+            'print_page',
             'get_booking_item',
             'all_info',
             'wa_info',

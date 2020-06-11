@@ -204,7 +204,7 @@ class UsePackages extends Application
     }
 
     //booking 新增使用套票
-    public function booking_to_use_package(Booking $booking, BookingItem $item_booking, UsePackageItem $usePackageItem, Member $member)
+    public function booking_to_use_package(Booking $booking, BookingItem $bookingItem, UsePackageItem $usePackageItem, Member $member)
     {
         $booking_id = input('booking_id', 0);
         $from = input('from', '');
@@ -214,7 +214,7 @@ class UsePackages extends Application
             $where['id'] = $data['member_id'];
             $member_info = $member->findMember($where);
         }
-        $use_package_items = $item_booking->findItems($booking_id);
+        $use_package_items = $bookingItem->findItems($booking_id);
 //        dump($use_package_items);
         return view('add', ['data' => $data, 'use_package_items' => $use_package_items, 'member' => $member_info, 'from' => $from, 'booking_id' => $booking_id]);
 
