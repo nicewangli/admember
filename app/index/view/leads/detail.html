@@ -92,6 +92,9 @@
                     </div>
 
                     <div class="col-md-4" align="right">
+                        <button type="button" class="btn btn-default" onclick="wa_info()" item-toggle="modal" item-target="#modal-sm">
+                            <i class="fa fa-whatsapp"></i>  WhatsApp
+                        </button>
                         <button type="button" class="btn btn-default" item-toggle="modal" item-target="#modal-sm">
                             跟隨
                         </button>
@@ -238,4 +241,20 @@
     </div><!--/. container-fluid -->
 </section>
 
+{/block}
+{block name="js"}
+<script>
+    function wa_info(){
+        let phone =   "{$item.phone_mobile}"
+        let senderId = "{$item.wa_acc}"
+        let url = '{:url("wa_logs/wa_info?phone=")}'+phone+'&sender_jid='+senderId;
+        layer.open({
+            type: 2,
+            title: false,
+            area: ['800px', '446px'],
+            content: url,
+            closeBtn:0,
+        })
+    }
+</script>
 {/block}

@@ -119,10 +119,13 @@ class WaAccounts extends Application
 
         $params = input("get.");
         $data = $model::find($id);
-        View::assign('data', $data);
-        $data->delete();
-        View::assign('page', $data);
-        return redirect(url('index'));
+        $result = $data->delete();
+        if ($result) {
+            return json(['code' => 200,'msg'=> 'Success']);
+        } else {
+            return json(['code' => 0,'msg'=> 'Failed!']);
+
+        }
     }
 
 

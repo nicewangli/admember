@@ -212,5 +212,16 @@
                 }, ],
             });
         })
+
+        function layer_print()
+        {
+            //打印弹窗
+            layer.open({
+                type: 2,
+                title: '打印存根',
+                area: ['700px', '98%'],
+                content: '{:url("print_page")}'
+            });
+        }
     </script>
 {/block}

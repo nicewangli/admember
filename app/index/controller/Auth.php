@@ -67,6 +67,7 @@ class Auth extends Application
                 Session::set('auth', $auth);
             }
             Session::set('uid', $user->uid);
+            Session::set('username',$user->username);
             addlog('Login success', $user->username);
             return redirect(url('index/index'))->with("flash_info","Login Success");
         } else {

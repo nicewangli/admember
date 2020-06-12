@@ -61,6 +61,7 @@ class Bookings extends Application
         }
         $biWhere[] = ['booking_date', 'between', [$date_start, $date_end]];
 
+        $beaWhere[] = ['category', '=', 'COSMETOLOGIST'];
         $result = User::field('uid as id, for_short as title')->order("for_short asc")->where($beaWhere)->select()->toArray();
         $time = workingHours();
         $colorArr = Booking::event_colors();
@@ -72,7 +73,9 @@ class Bookings extends Application
         $booking_item = $item->where($biWhere)->select()->toArray();
         $adArr = Attendance::field('user_id,vdate,start_time,end_time,item')->select()->toArray();
         foreach ($adArr as &$ad) {
-            $ad['item'] = $ads[$ad['item']];
+            if(array_search($ad['item'],$ads)!==false) {
+                $ad['item'] = $ads[$ad['item']];
+            }
         }
         foreach ($booking_item as &$item) {
             $item['bc'] = $colorArr[$item['status']];

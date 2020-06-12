@@ -7,7 +7,7 @@
                     <div class="row pt-2">
 
                         <div class="col-xs-12 col-md-5">
-                                <p class="text-primary">套票記錄</p>
+                            <p class="text-primary">套票記錄</p>
                             <div class="form-group row">
                                 <label class="col-sm-2 col-md-2 control-label " for="package_used"> 套票值 </label>
                                 <div class="col-xs-12 col-md-4">
@@ -127,7 +127,7 @@
 {js href="__JS__/application.js" /}
 
 <script type="text/javascript">
-    function expiration(expiration_date, id) {
+    function expiration(expiration_date, id, package_type) {
         let url = "{:url('invoices/expiration_date')}";
         if (package_type == 2) {
             url = "{:url('package_stagings/expiration_date')}"
@@ -251,19 +251,19 @@
                     lave = row.total,
                     package_lave = row.package_value;
                 detail = '<tr>\n'+
-                        '<td>' + parseFloat(row.total / row.package_value).toFixed(1) + '/' + row.package_unit + '</td>\n'+
-                        '<td>' + row.package_value + row.package_unit + '</td>\n'+
-                        '<td>' + row.package_value_used  + row.package_unit + '</td>\n'+
-                        '<td>' + row.package_value_lave + '</td>\n'+
-                        '<td>' + row.total + '</td>\n'+
+                    '<td>' + parseFloat(row.total / row.package_value).toFixed(1) + '/' + row.package_unit + '</td>\n'+
+                    '<td>' + row.package_value + row.package_unit + '</td>\n'+
+                    '<td>' + row.package_value_used  + row.package_unit + '</td>\n'+
+                    '<td>' + row.package_value_lave + '</td>\n'+
+                    '<td>' + row.total + '</td>\n'+
                     '<td>' + parseFloat(row.total / row.package_value * row.package_value_used).toFixed(1) + '</td>\n'+
                     '<td>' + parseFloat(row.total - row.total / row.package_value * row.package_value_used).toFixed(1) + '</td>\n'+
-                        '</tr>';
+                    '</tr>';
 
                 use_list = '<tr>\n'+
-                        '<td>' + row.invoice_date + '</td>\n'+
-                        '<td>購買</td>\n'+
-                        '<td class="text-right">' + row.package_value + '</td>\n';
+                    '<td>' + row.invoice_date + '</td>\n'+
+                    '<td>購買</td>\n'+
+                    '<td class="text-right">' + row.package_value + '</td>\n';
                 if (row.package_type == 1) {
                     use_list += '<td>發票</td>\n';
                 }
@@ -271,8 +271,8 @@
                     use_list += '<td>套票分期</td>\n';
                 }
                 use_list += '<td>' + row.invoice_no + '</td>\n'+
-                        '<td class="text-right">' + row.total + '</td>\n'+
-                        '</tr>';
+                    '<td class="text-right">' + row.total + '</td>\n'+
+                    '</tr>';
 
                 let items = row.items;
 
@@ -284,13 +284,13 @@
                             '<td class="text-right">' + '-' + parseFloat(element.total_deduction).toFixed(1) + '</td>\n'+
                             '<td>' + element.type + '</td>\n'+
                             '<td>' + element.code + '</td>\n'+
-                                '<td class="text-right">' + '-' + parseFloat(element.total_deduction * (row.total / row.package_value)).toFixed(1) + '</td>\n'+
+                            '<td class="text-right">' + '-' + parseFloat(element.total_deduction * (row.total / row.package_value)).toFixed(1) + '</td>\n'+
                             '</tr>';
 
                         package_lave -= parseFloat(element.total_deduction);
                         lave -= parseFloat(element.total_deduction * (row.total / row.package_value));
                     })
-                     
+
                 }
 
                 if (row.service_type == 1) {
@@ -318,7 +318,7 @@
                 $("#detail").children('.table').append(detail);
 
                 $("#list").removeClass('hidden');
-                $("#list").children('.table').find("#foot").before(use_list);   
+                $("#list").children('.table').find("#foot").before(use_list);
                 $("#list").children('.table').find("#foot").children('#package_value').text(parseFloat(package_lave).toFixed(1));
                 $("#list").children('.table').find("#foot").children('#amount').text(parseFloat(lave).toFixed(1));
 

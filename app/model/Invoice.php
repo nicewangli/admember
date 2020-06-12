@@ -100,10 +100,10 @@ class Invoice extends Model
         $where[] = ['it.service_type', '=', 1];
 
         if (!empty($whereOr)) {
-            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->field('it.*, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type, sp.deducted_percent')->order('invoice_date', 'desc')->select()->toArray();
+            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->field('it.*, it.id as item_id, it.invoice_id as parent_id, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type, sp.deducted_percent, 1 as package_type')->order('invoice_date', 'desc')->select()->toArray();
 
         }else{
-            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type, sp.deducted_percent')->order('invoice_date', 'desc')->select()->toArray();
+            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, it.id as item_id, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type, sp.deducted_percent, 1 as package_type')->order('invoice_date', 'desc')->select()->toArray();
 
         }
 

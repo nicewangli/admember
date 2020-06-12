@@ -1,4 +1,11 @@
 {extend name="public:base" /}
+{block name="style"}
+<style type="text/css">
+    /*.height-responsive {*/
+    /*    height: 400px;*/
+    /*}*/
+</style>
+{/block}
 {block name="content"}
 <section class="content">
 
@@ -33,7 +40,7 @@
                                                 <a class="fa fa-chevron-left"
                                                    aria-hidden="true"></a>
                                             </label>
-                                            <button type="submit" id="current_month"> 月</button>
+                                            <button type="submit" class="click-search" id="current_month"> 月</button>
                                             <label class="btn btn-default btn-sm click-search" id="next_month">
                                                 <a class="fa fa-chevron-right"
                                                    aria-hidden="true"> </a>
@@ -48,7 +55,7 @@
                                                    aria-hidden="true"></a>
                                             </label>
 
-                                            <button type="submit" id="current_day">日</button>
+                                            <button type="submit" class="click-search" id="current_day">日</button>
 
                                             <label class="btn btn-default btn-sm click-search" id="next_day">
                                                 <a class="fa fa-chevron-right"
@@ -63,7 +70,7 @@
                                                 <a class="fa fa-chevron-left" aria-hidden="true"></a>
                                             </label>
 
-                                            <button type="submit" id="current_week">星期</button>
+                                            <button type="submit" class="click-search" id="current_week">星期</button>
 
                                             <label class="btn btn-default btn-sm click-search" id="next_week">
                                                 <a class="fa fa-chevron-right"
@@ -78,30 +85,48 @@
 
                             <div class="col-xs-12 col-md-6">
                                 <div class="form-group row">
-                                    <label class="col-sm-2 control-label " for="store"> 店鋪 </label>
+                                    <label class="col-sm-2 control-label " for="store_id"> 店鋪 </label>
                                     <div class="col-xs-12 col-md-4">
-                                        <select class="form-control to-search" id="store" name="store" size="1"
+                                        <select class="form-control to-search" id="store_id" name="store_id" size="1"
                                                 value="">
                                             <option value="0"></option>
-                                            <option value="1">銅鑼灣</option>
+                                            {notempty name="store"}
+                                            {volist name="store" id="val"}
+                                            <option value="{$val.id}" {eq name="$store_id" value="$val.id"} selected {/eq}>銅鑼灣</option>
+                                            {/volist}
+                                            {/notempty}
                                         </select>
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <label class="col-sm-2 control-label " for="user_id">
-                                        美容師 </label>
-                                    <div class="col-xs-12 col-md-4">
-                                        <select class="form-control  to-search" id="user_id" name="user_id" size="1"
-                                                value="{$user_id}">
+                                        員工 </label>
+                                    <div class="col-xs-12 col-md-8">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <select class=" form-control" id="category" name="category" size="1"
+                                                        value="{$category}">
+                                                    {notempty name=":getDuty()"}
+                                                    {volist name=":getDuty()" id="val"}
+                                                    <option value="{$key}" {eq name="$category" value="$key"} selected {/eq}>{$val}</option>
+                                                    {/volist}
+                                                    {/notempty}
+                                                </select>
+                                            </div>
 
-                                            <option value="0">(以下所有)</option>
-                                            {notempty name="users"}
-                                            {volist name="users" id="val"}
-                                            <option>{$val.for_short}</option>
-                                            {/volist}
-                                            {/notempty}
-                                        </select>
+                                            <div class="col-md-6">
+                                                <select class="form-control  to-search" id="user_id" name="user_id" size="1"
+                                                        value="{$user_id}">
+                                                    <option value="0">(以下所有)</option>
+                                                    {notempty name="beautician"}
+                                                    {volist name="beautician" id="val"}
+                                                    <option value="{$val.uid}" {eq name="$user_id" value="$val.uid"} selected {/eq}>{$val.for_short}</option>
+                                                    {/volist}
+                                                    {/notempty}
+                                                </select>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -109,9 +134,9 @@
 
 
                         <div class="row pt-2">
-                            <div class="col-xs-12 col-md-12 " id="attdances">
-                                <table id="example1" class="table table-bordered table-striped table-responsive"
-                                       style="height: 400px; overflow-y: auto">   <!--宽高滚动条 -->
+                            <div class="col-auto" id="attdances">
+                                <table id="example1" class="table table-sm table-bordered table-striped table-responsive {if !$user_id} height-responsive {/if}"
+                                       style="overflow-y: auto">   <!--宽高滚动条 -->
                                     <thead>
                                     <tr class="bg-purple disabled color-palette">
                                         <td></td>
@@ -122,11 +147,11 @@
                                     </tr>
 
                                     <tr class="bg-purple disabled color-palette">
-                                        <td>美容師</td>
+                                        <td>員工</td>
                                         {volist name="days" id="val"}
                                         <td>{$val.sort_date}</td>
                                         {/volist}
-                                        <td>美容師</td>
+                                        <td>員工</td>
                                     </tr>
                                     </thead>
 
@@ -161,11 +186,11 @@
 
                                     <tfoot>
                                     <tr class="bg-purple disabled color-palette">
-                                        <td>美容師</td>
+                                        <td>員工</td>
                                         {volist name="days" id="val"}
                                         <td>{$val.day}</td>
                                         {/volist}
-                                        <td>美容師</td>
+                                        <td>員工</td>
                                     </tr>
 
                                     <tr class="bg-purple disabled color-palette">
@@ -187,11 +212,11 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 control-label " for="types"> 設定方式 </label>
                                     <div class="col-sm-3">
-                                        <select class="form-control" id="types" name="types" size="1">
-                                            <option value="0" {eq name="types" value="0"}selected{/eq}>(編假/取消)</option>
-                                            <option value="1" {eq name="types" value="1"}selected{/eq}>單日編假</option>
-                                            <option value="2" {eq name="types" value="2"}selected{/eq}>重複編假</option>
-                                            <option value="3" {eq name="types" value="3"}selected{/eq}>單日取消</option>
+                                        <select class="form-control" id="types" size="1">
+                                            <option value="0">(編假/取消)</option>
+                                            <option value="1">單日編假</option>
+                                            <option value="2">重複編假</option>
+                                            <option value="3">單日取消</option>
                                         </select>
                                     </div>
                                 </div>
@@ -199,7 +224,7 @@
                                 <div class="form-group row text-danger hidden" id="attention">
                                     <label class="col-sm-2  control-label" for="attention"> 注意：</label>
                                     <div class="col-sm-10">
-                                        <h6><a class="bg-danger disabled ">以下設定只會應用在上面的時間表所顯示的日期和美容師</a></h6>
+                                        <h6><a class="text-danger disabled ">以下設定只會應用在上面的時間表所顯示的日期和美容師</a></h6>
                                     </div>
                                 </div>
 
@@ -208,41 +233,41 @@
                                     <label class="col-sm-2 control-label " for="week"> 星期：</label>
                                     <div class="col-sm-10">
                                         <div class="d-flex align-items-center">
-                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="0" {if in_array(0, $weeks)}checked{/if}>
+                                            <input class="mr-1 weeks" id="week1" type="checkbox" value="0">
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期日</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="1" {if in_array(1, $weeks)}checked{/if}>
+                                            <input class="mr-1 weeks" type="checkbox" value="1">
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期一</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="2" {if in_array(2, $weeks)}checked{/if}>
+                                            <input class="mr-1 weeks" type="checkbox" value="2">
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期二</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="3" {if in_array(3, $weeks)}checked{/if}>
+                                            <input class="mr-1 weeks" type="checkbox" value="3">
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期三</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="4" {if in_array(4, $weeks)}checked{/if}>
+                                            <input class="mr-1 weeks" type="checkbox" value="4">
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期四</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="5" {if in_array(5, $weeks)}checked{/if}>
+                                            <input class="mr-1 weeks" type="checkbox" value="5">
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期五</trans>
                                             </label>
                                             &nbsp;&nbsp;&nbsp;&nbsp;
-                                            <input class="mr-1 weeks" name="weeks[]" type="checkbox" value="6" {if in_array(6, $weeks)}checked{/if}>
+                                            <input class="mr-1 weeks" type="checkbox" value="6">
                                             <label class="form-check-label">
                                                 <trans oldtip="Checkbox checked" newtip="选中复选框" style="">星期六</trans>
                                             </label>
@@ -254,23 +279,23 @@
                                 <div class="form-group row hidden" id="vacation">
                                     <label class="col-sm-2 control-label " for="vacation"> 休假 </label>
                                     <div class="col-sm-3">
-                                        <select class="form-control" id="vacation_item" name="vacation_item" size="1">
+                                        <select class="form-control" id="vacation_item" size="1">
                                             <option value=""></option>
-                                            <option value="O" {eq name="vacation_item" value="O"}selected{/eq}>Day Off</option>
-                                            <option value="AF" {eq name="vacation_item" value="AF"}selected{/eq}>年假</option>
-                                            <option value="*" {eq name="vacation_item" value="*"}selected{/eq}>补假</option>
-                                            <option value="PL" {eq name="vacation_item" value="PL"}selected{/eq}>事假</option>
-                                            <option value="SL" {eq name="vacation_item" value="SL"}selected{/eq}>病假</option>
-                                            <option value="B" {eq name="vacation_item" value="B"}selected{/eq}>工作时间B</option>
-                                            <option value="D" {eq name="vacation_item" value="D"}selected{/eq}>工作时间D</option>
-                                            <option value="E" {eq name="vacation_item" value="E"}selected{/eq}>工作时间E</option>
-                                            <option value="NP" {eq name="vacation_item" value="NP"}selected{/eq}>无休假</option>
-                                            <option value="OT" {eq name="vacation_item" value="OT"}selected{/eq}>超时工作</option>
-                                            <option value="X" {eq name="vacation_item" value="X"}selected{/eq}>未到/已过办公时间</option>
-                                            <option value="OF" {eq name="vacation_item" value="OF"}selected{/eq}>不在公司</option>
-                                            <option value="ER" {eq name="vacation_item" value="ER"}selected{/eq}>补公</option>
-                                            <option value="MT" {eq name="vacation_item" value="MT"}selected{/eq}>Meeting</option>
-                                            <option value="TR" {eq name="vacation_item" value="TR"}selected{/eq}>Training</option>
+                                            <option value="O">Day Off</option>
+                                            <option value="AF">年假</option>
+                                            <option value="*">补假</option>
+                                            <option value="PL">事假</option>
+                                            <option value="SL">病假</option>
+                                            <option value="B">工作时间B</option>
+                                            <option value="D">工作时间D</option>
+                                            <option value="E">工作时间E</option>
+                                            <option value="NP">无休假</option>
+                                            <option value="OT">超时工作</option>
+                                            <option value="X">未到/已过办公时间</option>
+                                            <option value="OF">不在公司</option>
+                                            <option value="ER">补公</option>
+                                            <option value="MT">Meeting</option>
+                                            <option value="TR">Training</option>
                                         </select>
 
                                     </div>
@@ -280,19 +305,19 @@
                                 <div class="form-group row hidden" id="time">
                                     <label class="col-sm-2 control-label " for="time"> 時間 </label>
                                     <div class="col-sm-2">
-                                        <select class="form-control" id="start_time" name="start_time" size="1">
+                                        <select class="form-control" id="start_time" size="1">
                                             <option value=""></option>
                                             {volist name=":attendanceHours()" id="att"}
-                                            <option value="{$att.id}" {eq name="start_time" value="$att.id"}selected{/eq}>{$att.text}</option>
+                                            <option value="{$att.id}">{$att.text}</option>
                                             {/volist}
                                         </select>
                                     </div>
                                     至
                                     <div class="col-sm-2">
-                                        <select class="form-control" id="end_time" name="end_time" size="1">
+                                        <select class="form-control" id="end_time" size="1">
                                             <option value=""></option>
                                             {volist name=":attendanceHours()" id="att"}
-                                            <option value="{$att.id}" {eq name="end_time" value="$att.id"}selected{/eq}>{$att.text}</option>
+                                            <option value="{$att.id}">{$att.text}</option>
                                             {/volist}
                                         </select>
                                     </div>
@@ -303,7 +328,7 @@
                                     <label class="col-sm-2 control-label " for="remark"> 備註 </label>
                                     <div class="col-sm-6">
                                         <textarea class="form-control" type="text" id="terms"
-                                                  name="terms" placeholder="">{$terms|default=''}</textarea>
+                                                  placeholder=""></textarea>
 
                                     </div>
                                 </div>
@@ -311,14 +336,14 @@
                                 <div class="form-group row hidden" id="set">
                                     <label class="col-sm-2 control-label ">  </label>
                                     <div class="col-sm-6">
-                                        <button class="btn btn-default btn-sm">設定</button>
+                                        <button class="btn btn-default btn-sm" id="setBtn">設定</button>
                                     </div>
                                 </div>
                             </div>
 
 
                             <div class="col-xs-12 col-md-4">
-                                <table class="table ts_table2 table-striped">
+                                <table class="table table-sm ts_table2 table-striped">
                                     <H5>注解</H5>
                                     <tbody>
                                     <tr>
@@ -350,8 +375,6 @@
                                 </table>
 
                             </div>
-
-
                         </div>
                     </div>
                 </div>
@@ -379,9 +402,8 @@
 
 
         $("#current_month").click(function () {
-            let date = $("#start_date").val();
-            let start_date = moment(date).startOf("month");
-            let end_date = moment(date).endOf("month");
+            let start_date = moment().startOf("month");
+            let end_date = moment().endOf("month");
 
             document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
@@ -412,9 +434,8 @@
         });
 
         $("#current_day").click(function () {
-            let date = $("#start_date").val();
-            let start_date = moment(date).startOf("day");
-            let end_date = moment(date).endOf("day");
+            let start_date = moment().startOf("day");
+            let end_date = moment().endOf("day");
 
             document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
@@ -448,9 +469,8 @@
         });
 
         $("#current_week").click(function () {
-            let date = $("#start_date").val();
-            let start_date = moment(date).startOf("week");
-            let end_date = moment(date).endOf("week");
+            let start_date = moment().startOf("week");
+            let end_date = moment().endOf("week");
 
             document.getElementById('start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('end_date').value = moment(end_date).format("YYYY-MM-DD");
@@ -485,6 +505,10 @@
             $('#att_index').submit()
         });
 
+        $("#category").change(function () {
+            $("#user_id").val(0);
+            $('#att_index').submit()
+        });
 
         $("#types").change(function () {
             let type = $(this).val();
@@ -520,28 +544,98 @@
                 $("#remark").addClass('hidden');
                 $("#set").addClass('hidden');
             }
+
+            $("#start_time").val('');
+            $("#end_time").val('');
+            $("#vacation_item").val('');
+            $("#terms").val('');
+        });
+
+        $("#vacation_item").change(function () {
+            let item = $(this).val(),
+                items = ["O", "AF", "*", "PL", "SL"];
+            if (items.indexOf(item) == -1){
+                $("#start_time").val('');
+                $("#end_time").val('');
+            } else {
+                $("#start_time").val($("#start_time").children().eq(1).val());
+                $("#end_time").val($("#end_time").children().eq(1).val());
+            }
+        });
+
+        $("#setBtn").click(function () {
+            let start_time = $("#start_time").val();
+            let end_time = $("#end_time").val();
+            let vacation_item = $("#vacation_item").val();
+            let terms = $("#terms").val();
+            let weeks = [], temp = {};
+            $(".weeks:checked").each(function(){
+                weeks.push($(this).val());
+            });
+
+            data = [
+                {field: "#week1", value: weeks},
+                {field: "#vacation_item", value: vacation_item},
+                {field: "#start_time", value: start_time},
+                {field: "#end_time", value: end_time},
+            ];
+            if(validate(data) === false) {
+                return false;
+            }
+
+
+            if (confirm("你要把以上的設定存儲到更表嗎？") === false) return false;
+
+            temp['store_id'] = $("#store_id").val();
+            temp['user_id'] = $("#user_id").val();
+            temp['category'] = $("#category").val();
+            temp['start_time'] = start_time;
+            temp['end_time'] = end_time;
+            temp['item'] = vacation_item;
+            temp['remarks'] = terms;
+            temp['weeks'] = weeks;
+            temp['start_date'] = $("#start_date").val();
+            temp['end_date'] = $("#end_date").val();
+
+            // console.log(weeks);
+            // console.log(temp);
+            $.ajax({
+                url: "{:url('add_fast')}",
+                data: temp,
+                type: "POST",
+                success(res) {
+                    layer.msg(res.msg);
+                    location.reload();
+                }
+            })
         })
-    })
+    });
 
 
     function attendance(obj, act, vdate, user_id, user_name) {
-        console.log(this);
 
-        let that = $(this);
         let type = $("#types").val();
         let start_time = $("#start_time").val();
         let end_time = $("#end_time").val();
         let vacation_item = $("#vacation_item").val();
         let weeks = $(".weeks:checked").val();
         let terms = $("#terms").val();
-        let param = {}, item = [], temp = {};
+        let param = {}, item = [], temp = {}, data;
 
         if (type == 1) {  //單日編假
+            data = [
+                {field: "#vacation_item", value: vacation_item},
+                {field: "#start_time", value: start_time},
+                {field: "#end_time", value: end_time},
+            ];
+            if(validate(data) === false) {
+                return false;
+            }
+
             param['id'] = '';
             param['user_id'] = user_id;
             param['vdate'] = vdate;
 
-            temp['id'] = '';
             temp['start_time'] = start_time;
             temp['end_time'] = end_time;
             temp['item'] = vacation_item;
@@ -564,10 +658,17 @@
                 }
             })
         }
-        else if (type == 2) {  //重複編假
-
-        }
+        // else if (type == 2) {  //重複編假
+        //
+        // }
         else if (type == 3) {   //單日取消
+            data = [
+                {field: "#vacation_item", value: vacation_item},
+            ];
+            if(validate(data) === false) {
+                return false;
+            }
+
             param['user_id'] = user_id;
             param['vdate'] = vdate;
             param['vacation_item'] = vacation_item;
@@ -600,8 +701,24 @@
                 maxmin: true,
                 area: ['50%', '50%'],
                 content: url,
+                cancel: function(index, layero){
+                    location.reload();
+                }
             });
         }
+    }
+
+    function validate(data) {
+        for (var i = 0; i< data.length; i++) {
+            if (data[i].value.length == 0) {
+                layer.tips(data[i].field+'不能爲空', data[i].field, {
+                    tips: 4
+                });
+                return false;
+                break;
+            }
+        }
+
     }
 
 

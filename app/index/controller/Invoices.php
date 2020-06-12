@@ -7,6 +7,7 @@ namespace app\index\controller;
 
 use app\Application;
 use app\model\InvoiceTransfer;
+use app\model\PackageStaging;
 use think\facade\View;
 use think\Request;
 use app\model\Invoice;
@@ -462,8 +463,12 @@ class Invoices extends Application
         // }
     }
 
-    public function print_page()
+    public function print_page(PackageStaging $model)
     {
-        return view('print');
+        $type = input('type');
+        $id = input('id');
+        if($type = 'ps') {
+        }
+        return View::fetch('print');
     }
 }

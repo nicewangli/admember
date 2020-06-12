@@ -95,6 +95,21 @@ function getDays($start_date, $end_date){
     return $results;
 }
 
+function formatWeekDays($start_date, $end_date, $weeks){
+    $results = array();
+
+    while (strtotime($start_date) <= strtotime($end_date)) {
+        $start = new DateTime($start_date);
+        $week = $start->format('w');
+        if (in_array($week, $weeks)) {
+            array_push($results, $start_date);
+        }
+        $start_date = date ("Y-m-d", strtotime("+1 days", strtotime($start_date)));
+    }
+
+    // Return results
+    return $results;
+}
 
 function getDayItem($attendances,$user_id,$vdate){
     $atts = [];

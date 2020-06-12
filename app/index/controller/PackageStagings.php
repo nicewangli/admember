@@ -8,6 +8,7 @@ namespace app\index\controller;
 use app\Application;
 use app\model\InvoiceItem;
 use app\model\ServicePackage;
+use think\facade\Session;
 use think\facade\View;
 use think\Request;
 use app\model\PackageStaging;
@@ -148,7 +149,7 @@ class PackageStagings extends Application
 //                    $param['total'] = $param['invoice_total'];
 //                    $param['total_amount'] = $param['invoice_total'];
                     $param['final_total'] = $param['all_total'] - $param['total_amount'];
-//                    $invoiceResult = $invoice::create($param);
+//                  $invoiceResult = $invoice::create($param);
                     $param['code'] = $this->getConfigNo('package_staging','package_staging');
 //                    $param['invoice_id'] = $invoiceResult->id;
 //                    $param['total'] = $total;
@@ -178,7 +179,7 @@ class PackageStagings extends Application
                     $packageStagingSeller->saveSeller($package_staging_id, $param['seller']);
                 }
                 $model->commit();
-                return json(['code' => 200]);
+                return json(['code' => 200,'id'=>$package_staging_id]);
             } catch (\Exception $e) {
                 $model->rollback();
                 return json(['code' => 0, 'msg' => $e->getMessage()]);
@@ -332,5 +333,43 @@ class PackageStagings extends Application
             'ids' => $ids
         ]);
         return View::fetch();
+    }
+
+    public function print_page(PackageStagingItem $packageStagingItem,PackageStaging $model,PackageStagingSeller $packageStagingSeller,PackageStagingPayment $packageStagingPayment)
+    {
+        $id = input('id',40);
+        $divFor = [
+            [
+               'type' => '會員存根',
+               'div_id' => 'member_print'
+            ],[
+                'type' => '公司存根',
+                'div_id' => 'company_print'
+            ]
+        ];
+        $result = $model->alias('ps')->leftJoin('member m','ps.member_id = m.id')->field('ps.*,m.first_name,m.code as member_no')->find($id);
+        $items = $packageStagingItem->findItems($id);
+        $all_total = 0.0;
+        $all_payment = 0.0;
+        foreach ($items as $item) {
+            $all_total += (float)$item['total'];
+            $all_payment += (float)$item['current_payment'];
+        }
+        $residue = $all_total - $all_payment;
+        $sellers = $packageStagingSeller->findSellers($id);
+        $payments = $packageStagingPayment->findPayments($id);
+
+        View::assign([
+            'result' => $result,
+            'items' => $items,
+            'sellers' =>$sellers,
+            'payments' => $payments,
+            'username' => Session::get('username'),
+            'residue' => $residue,
+            'all_total' =>$all_total,
+            'all_payment' =>$all_payment,
+            'divFor' => $divFor
+        ]);
+        return View::fetch('print');
     }
 }

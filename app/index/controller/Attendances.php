@@ -24,35 +24,42 @@ class Attendances extends Application
         $start_date = $params["start_date"] ?? date('Y-m-01');
         $end_date = $params["end_date"] ?? date('Y-m-t');
 
+        $category = $params['category'] ?? "COSMETOLOGIST";
         $user_id = $params['user_id'] ?? '';
         $store_id = $params['store_id'] ?? '';
         $store = getStoreArr();
 
         $days = getDays($start_date, $end_date);
         $attendances = $attendance->select();
-        
-        $users = $user->field("uid,for_short")->order('for_short', 'asc')->select()->toArray();
+
+        $beautician = $user->field("uid, for_short")->order('for_short', 'asc')->where('category', $category)->select()->toArray();
+
+        $where[] = ['category', '=', $category];
+        if ($user_id) {
+            $where[] = ['uid', '=', $user_id];
+        }
+        if ($store_id) {
+            $where[] = ['store_id', 'like', '%'.$store_id.'%'];
+        }
+        $users = $user->field("uid, for_short")->where($where)->order('for_short', 'asc')->select()->toArray();
+
         foreach ($users as $key => $value) {
             $where = ['user_id' => $value['uid'], 'vdate' => 'vdate'];
             $users[$key]['attendance'] = $attendance::where($where)->select()->toArray();
         }
 
-        $user_id = $params['user_id'] ?? '';
-
         View::assign([
             'days' => $days,
             'grid_url' => url('lists', ['user_id' => $user_id]),
             'user_id' => $user_id,
+            'category' => $category,
+            'store_id' => $store_id,
+            'store' => $store,
+            'beautician' => $beautician,
             'users' => $users,
             'attendances' => $attendances,
             'start_date' => $start_date,
             'end_date' => $end_date,
-            'types' => input('types', 0),
-            'weeks' => input('weeks', []),
-            'vacation_item' => input('vacation_item', ''),
-            'start_time' => input('start_time', ''),
-            'end_time' => input('end_time',''),
-            'terms' => input('terms',''),
         ]);
         return View::fetch();
     }
@@ -110,10 +117,10 @@ class Attendances extends Application
                 $items[$key]['vdate'] = $param['vdate'];
 
                 $items[$key]['created_user_id'] = $this->user->uid;
-                $items[$key]['create_time'] = time();
+                $items[$key]['create_time'] = date('Y-m-d H:i:s', time());
 
                 $items[$key]['updated_user_id'] = $this->user->uid;
-                $items[$key]['update_time'] = time();
+                $items[$key]['update_time'] = date('Y-m-d H:i:s', time());
 //                $result = $model::create($items[$key]);
             }
             $result = $model::insertAll($items);
@@ -146,17 +153,17 @@ class Attendances extends Application
 
                 if ($value['id']) {
                     $items[$key]['updated_user_id'] = $this->user->uid;
-                    $items[$key]['update_time'] = time();
+                    $items[$key]['update_time'] = date('Y-m-d H:i:s', time());
                 } else {
                     unset($items[$key]['id']);
                     $items[$key]['user_id'] = $param['user_id'];
                     $items[$key]['vdate'] = $param['vdate'];
 
                     $items[$key]['created_user_id'] = $this->user->uid;
-                    $items[$key]['create_time'] = time();
+                    $items[$key]['create_time'] = date('Y-m-d H:i:s', time());
 
                     $items[$key]['updated_user_id'] = $this->user->uid;
-                    $items[$key]['update_time'] = time();
+                    $items[$key]['update_time'] = date('Y-m-d H:i:s', time());
                 }
 
 //                $result = $model::create($items[$key]);
@@ -217,5 +224,57 @@ class Attendances extends Application
         } else {
             return json(['code' => 0, 'msg' => 'delete failed']);
         }
+    }
+
+    //重複編假
+    public function add_fast(Attendance $model, User $user)
+    {
+        $param = input('post.');
+
+        if ($param['user_id']) {
+            $users = [$param['user_id']];
+        } else {
+            $where[] = ['category', '=', $param['category']];
+
+            if ($param['store_id']) {
+                $where[] = ['store_id', 'like', '%'.$param['store_id'].'%'];
+            }
+            $users = $user->where($where)->column('uid');
+        }
+
+        $days = formatWeekDays($param['start_date'], $param['end_date'], $param['weeks']);
+
+        $items = [];
+        $index = 0;
+        if (!empty($days)) {
+            foreach ($days as $day) {
+                foreach ($users as $user_id) {
+                    $items[$index]['user_id'] = $user_id;
+                    $items[$index]['vdate'] = $day;
+                    $items[$index]['start_time'] = $param['start_time'];
+                    $items[$index]['end_time'] = $param['end_time'];
+                    $items[$index]['item'] = $param['item'];
+                    $items[$index]['remarks'] = $param['remarks'];
+
+                    $items[$index]['created_user_id'] = $this->user->uid;
+                    $items[$index]['create_time'] = date('Y-m-d H:i:s', time());
+
+                    $items[$index]['updated_user_id'] = $this->user->uid;
+                    $items[$index]['update_time'] = date('Y-m-d H:i:s', time());
+
+                    $index ++;
+                }
+            }
+
+            $result = $model::insertAll($items);
+            if ($result) {
+                return json(['code' => 200, 'msg' => ' successfully.']);
+            } else {
+                return json(['code' => 0]);
+            }
+        }else {
+            return json(['code' => 0]);
+        }
+
     }
 }

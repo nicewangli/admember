@@ -10,7 +10,10 @@
     <meta name="referrer" content="no-referrer-when-downgrade" />
     <meta name="referrer" content="origin-when-cross-origin" />
     <title>{$sysConfig.sitename}</title>
+    {include file="public:head" /}
 
+    <!-- 加载 Select2 -->
+    {block name="head_js"}{/block}
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 	{css href="__CSS__/print_screen.css" /}
 </head>
@@ -21,6 +24,8 @@
      {block name="content"}{/block}
 
 </div>
-
+{js href="__PLUGIN__/jquery/jquery.min.js" /}
+{block name="js"}
+{/block}
 </body>
 </html>

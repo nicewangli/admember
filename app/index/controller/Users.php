@@ -269,7 +269,7 @@ class Users extends Application
 
     public function option()
     {
-        $result = Db::name('users')->field('uid as id, for_short as text')->order('for_short asc')->select()->toArray();
+        $result = Db::name('users')->field('uid as id, for_short as text')->where('category', 'COSMETOLOGIST')->order('for_short asc')->select()->toArray();
 
         return json(['code' => 200, 'results' => $result]);
     }

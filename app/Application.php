@@ -130,6 +130,7 @@ class Application extends BaseController
             'del_transfer',
             'booking_to_use_package',
             'del_fast',
+            'add_fast',
             'change_status'
 
         ];

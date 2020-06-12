@@ -64,7 +64,7 @@
                                                 <select class="form-control select2" type="text" id="consultant"
                                                         name="consultant">
                                                     <option value="">&nbsp;</option>
-                                                    {foreach name=":getUsers()" id='user'}
+                                                    {foreach name=":getUsersbyCategory('COSMETOLOGIST')" id='user'}
                                                     <option value="{$user.uid|default=''}" {if !empty($search.consultant) &&
                                                             $search.consultant==$user.uid}selected{/if}>
                                                         {$user.name}

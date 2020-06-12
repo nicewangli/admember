@@ -372,7 +372,11 @@
                                 <i class=" fa fa-file-alt"></i>
                                 存儲
                             </button>
-
+                            <button class="btn flat btn-info btn-sm test">
+                                <input type="hidden" id="print" name="print" value="">
+                                <i class=" fa fa-file-alt"></i>
+                                test
+                            </button>
                             <button class="btn btn-default btn-sm btn-close">
                                 取消
                             </button>
@@ -781,7 +785,12 @@
             total_amount();
         });
 
-        
+        $(".test").click(function () {
+            parent.layer_print();
+        });
+        $(document).on("input propertychange","#print",function () {
+            parent.layer_print();
+        });
         $(".submit").click(function(){
             let final_totals = $("#final_totals").val();
             if (final_totals > 0) {
@@ -799,8 +808,10 @@
                 url = '{:url("packageStagings/edit?id=")}' + id
             }
 
-            let params = $("#stagingForm").serialize();  
-            
+            let params = $("#stagingForm").serialize();
+            // jQuery.ajaxSetup({
+            //     'beforeSend': function(xhr) {xhr.setRequestHeader("header Referrer Policy","header no-referrer-when-downgrade")}
+            // })
             $.ajax({
                 url: url,
                 data: params,
@@ -809,16 +820,11 @@
                     if(res.code == 200){
                         parent.$('#package_stagings-grid').bootstrapTable('refresh');
                         //注意：parent 是 JS 自带的全局对象，可用于操作父页面
-
+                        // $("#print").val("hello");
+                        // window.location.href = '{:url("invoices/print_page")}?type=ps&&id='+res.id;
                         let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                         parent.layer.close(index);
-                        //打印弹窗
-                        layer.open({
-                            type: 2,
-                            title: '打印存根',
-                            area: ['700px', '98%'],
-                            content: '{:url("invoices/print_page")}'
-                        });
+                        // parent.layer_print();
                     }
 
                 }
