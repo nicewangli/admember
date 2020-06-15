@@ -61,7 +61,7 @@ class PackageStaging extends Model
 
 
         foreach ($list as $key => $value) {
-            $list[$key]['type'] = '套票分期';
+            $list[$key]['type'] = 2;
             $list[$key]['type_id'] = '套票分期' . $value['package_staging_id'];
 
             if (isset($value['package_unit'])) {
@@ -111,7 +111,7 @@ class PackageStaging extends Model
                 ['upi.service_package_id', '=', $value['service_package_id']],
                 ['upi.package_type', '=', 2]
             ];
-            $items = Db::name('use_package_item')->alias('upi')->leftJoin('use_package up', 'up.id = upi.use_package_id')->field('up.id, up.use_time, upi.total_deduction, up.code, "使用" as action, "使用套票" as type')->where($itemWhere)->select()->toArray();
+            $items = Db::name('use_package_item')->alias('upi')->leftJoin('use_package up', 'up.id = upi.use_package_id')->field('up.id, up.use_time, upi.total_deduction, up.code, "使用" as action, "2" as type')->where($itemWhere)->select()->toArray();
 
 
             $list[$key]['items'] = $items;
@@ -165,7 +165,7 @@ class PackageStaging extends Model
         $list = Db::name('package_staging')->alias('ps')->field('ps.id, ps.staging_time as date_time, ps.code as code, ps.member_store, ps.member_reward')->where($where)->select()->toArray();
         foreach ($list as $key => $value) {
             $list[$key]['action'] = '增值';
-            $list[$key]['type'] = '套票分期';
+            $list[$key]['type'] = 2;
             $list[$key]['member_store'] = number_format($value['member_store'], 1);
             $list[$key]['member_reward'] = number_format($value['member_reward'], 1);
 
@@ -185,7 +185,7 @@ class PackageStaging extends Model
         $list = Db::name('package_staging_payment')->alias('psp')->leftJoin('package_staging ps', 'ps.id = psp.package_staging_id')->leftJoin('mapping m', 'm.id = psp.method')->field('ps.id, ps.staging_time as date_time, ps.code as code, psp.amount as member_store')->where($where)->select()->toArray();
         foreach ($list as $key => $value) {
             $list[$key]['action'] = '使用';
-            $list[$key]['type'] = '套票分期';
+            $list[$key]['type'] = 2;
             $list[$key]['member_store'] = number_format($value['member_store'], 1);
         
             $store += $value['member_store'];
@@ -203,7 +203,7 @@ class PackageStaging extends Model
         $list = Db::name('package_staging_payment')->alias('psp')->leftJoin('package_staging ps', 'ps.id = psp.package_staging_id')->leftJoin('mapping m', 'm.id = psp.method')->field('ps.id, ps.staging_time as date_time, ps.code as code, psp.amount as member_reward')->where($where)->select()->toArray();
         foreach ($list as $key => $value) {
             $list[$key]['action'] = '使用';
-            $list[$key]['type'] = '套票分期';
+            $list[$key]['type'] = 2;
             $list[$key]['member_reward'] = number_format($value['member_reward'], 1);
         
             $reward += $value['member_reward'];

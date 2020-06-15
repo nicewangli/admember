@@ -184,6 +184,19 @@
                 field: 'type',
                 title: '單據類型',
                 searchable: true,
+                formatter: function (value, row, index, field) {
+                    let text = '';
+                    if (value == 1) {
+                        text = '發票';
+                    }
+                    else if (value == 2) {
+                        text = '套票分期';
+                    }
+                    else if (value == 3) {
+                        text = '套票退款';
+                    }
+                    return text;
+                }
             }, {
                 field: 'code',
                 title: '單據編號',
@@ -192,6 +205,20 @@
             onLoadSuccess: function (data) {
                 $("#reward").children('input').val(data.total_reward);
             },
+            onClickRow: function (row, element, field) {
+                let type = row.type, url = '';
+                if (type == 1) {
+                    url = '{:url("invoices/edit?id=")}' + row.id;
+                    invoiceWin(url)
+                }
+                else if (type == 2) {
+                    url = '{:url("packageStagings/edit?id=")}' + row.id;
+                    stagingWin(url)
+                }
+                else if (type == 2) {
+
+                }
+            }
         });
 
         $('.to-search').change(function () {
@@ -201,9 +228,8 @@
 
 
         $("#reward_current_year").click(function () {
-            let date = $("#reward_start_date").val();
-            let start_date = moment(date).startOf("year");
-            let end_date = moment(date).endOf("year");
+            let start_date = moment().startOf("year");
+            let end_date = moment().endOf("year");
 
             document.getElementById('reward_start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('reward_end_date').value = moment(end_date).format("YYYY-MM-DD");
@@ -239,9 +265,8 @@
 
 
         $("#reward_current_month").click(function () {
-            let date = $("#reward_start_date").val();
-            let start_date = moment(date).startOf("month");
-            let end_date = moment(date).endOf("month");
+            let start_date = moment().startOf("month");
+            let end_date = moment().endOf("month");
 
             document.getElementById('reward_start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('reward_end_date').value = moment(end_date).format("YYYY-MM-DD");
@@ -277,9 +302,8 @@
 
 
         $("#reward_current_day").click(function () {
-            let date = $("#reward_start_date").val();
-            let start_date = moment(date).startOf("day");
-            let end_date = moment(date).endOf("day");
+            let start_date = moment().startOf("day");
+            let end_date = moment().endOf("day");
 
             document.getElementById('reward_start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('reward_end_date').value = moment(end_date).format("YYYY-MM-DD");
@@ -315,9 +339,8 @@
 
 
         $("#reward_current_week").click(function () {
-            let date = $("#reward_start_date").val();
-            let start_date = moment(date).startOf("week");
-            let end_date = moment(date).endOf("week");
+            let start_date = moment().startOf("week");
+            let end_date = moment().endOf("week");
 
             document.getElementById('reward_start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('reward_end_date').value = moment(end_date).format("YYYY-MM-DD");

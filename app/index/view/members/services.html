@@ -137,6 +137,8 @@
 
 {block name="js"}
 <script type="text/javascript">
+    var uid = 0;
+
     function initBeautician(){
         $.ajax({
             url: "{:url('users/option')}",
@@ -195,7 +197,11 @@
                 title: '次數',
                 searchable: true,
                 class: 'text-right',
-            },]
+            },],
+            onClickRow: function (row, element, field) {
+                uid = row.uid;
+                $('#services-grid').bootstrapTable('refresh');
+            }
         });
 
         $('#services-grid').bootstrapTable({
@@ -213,7 +219,8 @@
                     beautician: $("#beautician").val(),
                     start_date: $("#services_start_date").val(),
                     end_date: $("#services_end_date").val(),
-                    code: $("#serviceCode").val()
+                    code: $("#serviceCode").val(),
+                    user_id: uid
                 };
             },
             pagination: true,                                //是否显示分页（*）
@@ -267,6 +274,10 @@
             },],
             onLoadSuccess: function (data) {
                 $("#total_amount").children('input').val(data.total_amount);
+            },
+            onClickRow: function (row, element, field) {
+                let url = '{:url("use_packages/edit?id=")}' + row.use_package_id;
+                usePackageWin(url)
             }
         });
 
@@ -276,16 +287,19 @@
             $('#users-grid').bootstrapTable('refresh');
         });
 
-        $(document).on("input propertychange", "#code", function () {
+        $(document).on("input propertychange", "#serviceCode", function () {
             $('#services-grid').bootstrapTable('refresh');
             $('#users-grid').bootstrapTable('refresh');
         });
 
+        $("#beautician").change(function () {
+            uid = 0;
+        });
+
 
         $("#services_current_year").click(function () {
-            let date = $("#services_start_date").val();
-            let start_date = moment(date).startOf("year");
-            let end_date = moment(date).endOf("year");
+            let start_date = moment().startOf("year");
+            let end_date = moment().endOf("year");
 
             document.getElementById('services_start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
@@ -324,9 +338,8 @@
 
 
         $("#services_current_month").click(function () {
-            let date = $("#services_start_date").val();
-            let start_date = moment(date).startOf("month");
-            let end_date = moment(date).endOf("month");
+            let start_date = moment().startOf("month");
+            let end_date = moment().endOf("month");
 
             document.getElementById('services_start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
@@ -365,9 +378,8 @@
 
 
         $("#services_current_day").click(function () {
-            let date = $("#services_start_date").val();
-            let start_date = moment(date).startOf("day");
-            let end_date = moment(date).endOf("day");
+            let start_date = moment().startOf("day");
+            let end_date = moment().endOf("day");
 
             document.getElementById('services_start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");
@@ -406,9 +418,8 @@
 
 
         $("#services_current_week").click(function () {
-            let date = $("#services_start_date").val();
-            let start_date = moment(date).startOf("week");
-            let end_date = moment(date).endOf("week");
+            let start_date = moment().startOf("week");
+            let end_date = moment().endOf("week");
 
             document.getElementById('services_start_date').value = moment(start_date).format("YYYY-MM-DD");
             document.getElementById('services_end_date').value = moment(end_date).format("YYYY-MM-DD");

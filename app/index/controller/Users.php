@@ -50,6 +50,7 @@ class Users extends Application
             $userDuty = new UserDuty();
             $uid = intval($uid);
             $data = input('post.');
+            $data['status'] = 1;
             $items = $data['item'];
             $updateDuty = array_pop($items);
             $data['category'] = $updateDuty['duty'];

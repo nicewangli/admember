@@ -218,8 +218,8 @@
                                         <input type="hidden" name="service[{$index-1}][package_value]" value="{$val.package_value}" class="package_value">
                                         <input type="hidden" name="service[{$index-1}][package_unit]" value="{$val.package_unit}">
                                     </td>
-                                    <td width="12%">{$val.code}</td>
-                                    <td width="20%">{$val.name}</td>
+                                    <td width="12%">{$val.service_code}</td>
+                                    <td width="20%">{$val.service_name}</td>
                                     <td width="10%">
                                         <input type="number" min="1" name="service[{$index-1}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
                                         <input type="hidden" name="service[{$index-1}][package_original_value]" class="package_original_value" value="{$val.package_original_value}">
@@ -756,7 +756,38 @@
                 }
             })
         });
-        
+
+        function showIframe(url,w,h){
+            //添加iframe
+            var if_w = w;
+            var if_h = h;
+            //allowTransparency='true' 设置背景透明
+            $("<iframe width='" + if_w + "' height='" + if_h + "' id='YuFrame1' name='YuFrame1' style='position:absolute;z-index:4;'  frameborder='no' marginheight='0' marginwidth='0' allowTransparency='true'></iframe>").prependTo('body');
+            var st=document.documentElement.scrollTop|| document.body.scrollTop;//滚动条距顶部的距离
+            var sl=document.documentElement.scrollLeft|| document.body.scrollLeft;//滚动条距左边的距离
+            var ch=document.documentElement.clientHeight;//屏幕的高度
+            var cw=document.documentElement.clientWidth;//屏幕的宽度
+            var objH=$("#YuFrame1").height();//浮动对象的高度
+            var objW=$("#YuFrame1").width();//浮动对象的宽度
+            var objT=Number(st)+(Number(ch)-Number(objH))/2;
+            var objL=Number(sl)+(Number(cw)-Number(objW))/2;
+            $("#YuFrame1").css('left',objL);
+            $("#YuFrame1").css('top',objT);
+
+            $("#YuFrame1").attr("src", url)
+
+            //添加背景遮罩
+            $("<div id='YuFrame1Bg' style='display:block;z-index:3;position:absolute;left:0px;top:0px;filter:Alpha(Opacity=30);/* IE */-moz-opacity:0.4;/* Moz + FF */opacity: 0.4; '/>").prependTo('body');
+            var bgWidth = Math.max($("body").width(),cw);
+            var bgHeight = Math.max($("body").height(),ch);
+            $("#YuFrame1Bg").css({width:bgWidth,height:bgHeight});
+
+            //点击背景遮罩移除iframe和背景
+            $("#YuFrame1Bg").click(function() {
+                $("#YuFrame1").remove();
+                $("#YuFrame1Bg").remove();
+            });
+        }
 
         $(document).on("input propertychange", ".quantity", function () {
             total();
@@ -818,17 +849,25 @@
                 type: "POST",
                 success(res){
                     if(res.code == 200){
+                        let id = res.id;
+                        let url  = '{:url("print_page")}?id='+id;
+                        showIframe(url,700,500);
                         parent.$('#package_stagings-grid').bootstrapTable('refresh');
                         //注意：parent 是 JS 自带的全局对象，可用于操作父页面
                         // $("#print").val("hello");
                         // window.location.href = '{:url("invoices/print_page")}?type=ps&&id='+res.id;
-                        let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                        parent.layer.close(index);
+                        // parent.layer_print(res.id)
+                        // let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
+                        // parent.layer.close(index);
                         // parent.layer_print();
                     }
 
-                }
-            })
+                },
+
+            }).done(function () {
+                // parent.layer_print(40);
+                console.log('1');
+            });
         });
 
         $(".btn-close").click(function(){

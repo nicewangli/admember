@@ -55,13 +55,15 @@
     <table width="100%" border="0" cellpadding="2" cellspacing="0" style="border-collapse:collapse;">
         <colgroup>
             <col width="4%" /><!-- Item -->
-            <col width="36%" /><!-- Treatment / Product -->
+            <col width="26%" /><!-- Treatment / Product -->
             <col width="10%" /><!-- Quantity -->
             <col width="6%" /><!-- Unit -->
             <col width="11%" /><!-- Unit Price -->
             <col width="11%" /><!-- Discount -->
             <col width="11%" /><!-- Tmt. Shifting -->
             <col width="11%" /><!-- Amount -->
+            <col width="5%" /><!-- Amount -->
+            <col width="5%" /><!-- Amount -->
         </colgroup>
         <tr>
             <td class="print-small" align="left" style="border-bottom:1px solid Black;">項目</td>
@@ -72,6 +74,8 @@
             <td class="print-small" align="right" style="border-bottom:1px solid Black;">折扣</td>
             <td class="print-small" align="right" style="border-bottom:1px solid Black;">轉套票</td>
             <td class="print-small" align="right" style="border-bottom:1px solid Black;">金額</td>
+            <td class="print-small" align="right" style="border-bottom:1px solid Black;">此期付款</td>
+            <td class="print-small" align="right" style="border-bottom:1px solid Black;">剩余</td>
         </tr>
         {volist name="items" id="item"}
         <tr>
@@ -82,6 +86,8 @@
             <td class="print-small" align="right" valign="top">{$item.price}</td>
             <td class="print-small" align="right" valign="top">{$item.discount}</td>
             <td class="print-small" align="right" valign="top"></td>
+            <td class="print-small" align="right" valign="top">{$item.total}</td>
+            <td class="print-small" align="right" valign="top">{$item.current_payment}</td>
             <td class="print-small" align="right" valign="top">{$item.total}</td>
         </tr>
         {/volist}
@@ -99,10 +105,11 @@
                 {$payment.payment_method}...{$payment.amount}
                 {/volist}
             </td>
-            <td class="print-small" align="left" style="border-top:1px solid Black;">總計&nbsp;:</td>
-            <td class="print-small" align="right" valign="top">{$all_total}</td>
-            <td class="print-small" align="right" valign="top">{$all_payment}</td>
-            <td class="print-small" align="right" valign="top">{$residue}</td>
+            <td class="print-small" align="left" style="margin:100px;border-top:1px solid Black;">總計&nbsp;:
+            <td class="print-small" align="left" >{$all_total}</td>
+            <td class="print-small" align="left" >{$all_payment}</td>
+            <td class="print-small" align="left" >{$residue}</td>
+            </td>
 <!--            <td class="print-small" align="right" style="border-top:1px solid Black;">$688.00</td>-->
         </tr>
     </table><br />

@@ -162,7 +162,32 @@ $(document).ready( function (){
                     
                     if (ids.indexOf(element.id.toString()) == -1) {
 
-                        nodes += '<tr class="border-b service"> <td width="8%" align="center" data-id=""><input type="checkbox" class="checkbox" value="' + number + '"><input type="hidden" class="combinations" value="' + element.id + '"></td> <td width="5%"> <input type="hidden" name="service[' + number + '][service_id]" value="' + element.id + '"> <input type="hidden" name="service[' + number + '][service_type]" value="3"> </td> <td width="13%">' + element.code + '</td> <td width="28%">' + element.name + '</td> <td width="10%"><input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;"></td> <td width="13%"><input type="text" name="service[' + number + '][price]" value="' + element.price + '" class="form-control text-right price" style="width: 100%;"></td> <td width="10%"><input type="text" name="service[' + number + '][discount]" value="0.0" class="form-control text-right discount" style="width: 100%;"></td> <td width="13%"><input type="text" name="service[' +number + '][total]" value="' + element.price + '" class="form-control text-right total" style="width: 100%;" readonly=""></td> </tr>';
+                        nodes += '<tr class="border-b service"> \n' +
+                            '    <td width="8%" align="center" data-id="">\n' +
+                            '    <input type="checkbox" class="checkbox" value="' + number + '">\n' +
+                            '    <input type="hidden" class="combinations" value="' + element.id + '">\n' +
+                            '    </td> \n' +
+                            '    <td width="5%"> \n' +
+                            '    <input type="hidden" name="service[' + number + '][service_id]" value="' + element.id + '"> \n' +
+                            '    <input type="hidden" name="service[' + number + '][service_type]" value="3"> \n' +
+                            '    <input type="hidden" name="service[' + number + '][service_code]" value="' + element.code + '"> \n' +
+                            '    <input type="hidden" name="service[' + number + '][service_name]" value="' + element.name + '"> \n' +
+                            '    </td> \n' +
+                            '    <td width="13%">' + element.code + '</td> \n' +
+                            '    <td width="28%">' + element.name + '</td> \n' +
+                            '    <td width="10%">\n' +
+                            '    <input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;">\n' +
+                            '    </td> \n' +
+                            '    <td width="13%">\n' +
+                            '    <input type="text" name="service[' + number + '][price]" value="' + element.price + '" class="form-control text-right price" style="width: 100%;">\n' +
+                            '    </td> \n' +
+                            '    <td width="10%">\n' +
+                            '    <input type="text" name="service[' + number + '][discount]" value="0.0" class="form-control text-right discount" style="width: 100%;">\n' +
+                            '    </td> \n' +
+                            '    <td width="13%">\n' +
+                            '    <input type="text" name="service[' +number + '][total]" value="' + element.price + '" class="form-control text-right total" style="width: 100%;" readonly="">\n' +
+                            '    </td> \n' +
+                            '    </tr>';
 
                         number++;
 

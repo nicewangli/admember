@@ -45,15 +45,14 @@ class InvoiceItem extends Model
             $where['id'] = $value['service_id'];
 
             if ($value['service_type'] == 1) {
-                $items[$key]['code'] = Db::name('service_package')->where($where)->value('code');
-                $items[$key]['name'] = Db::name('service_package')->where($where)->value('name');
+//                $items[$key]['code'] = Db::name('service_package')->where($where)->value('code');
+//                $items[$key]['name'] = Db::name('service_package')->where($where)->value('name');
 
                 $items[$key]['transfer'] = Db::name('invoice_transfer')
                     ->alias('it')
                     ->leftJoin('invoice_item ni', 'it.new_invoice_item_id = ni.id')
                     ->leftJoin('invoice_item oi', 'it.old_invoice_item_id = oi.id')
-                    ->leftJoin('service_package sp', 'oi.service_id = sp.id')
-                    ->field('it.*, sp.name, sp.code, oi.package_value - oi.package_value_used + it.transfer_value as max_value, oi.total - it.package_avg * (oi.package_value_used - it.transfer_value) as max_deduction')
+                    ->field('it.*, oi.service_name, oi.service_code, oi.package_value - oi.package_value_used + it.transfer_value as max_value, oi.total - it.package_avg * (oi.package_value_used - it.transfer_value) as max_deduction')
                     ->where(['it.new_invoice_item_id' => $value['id'], 'ni.service_type' => 1, 'oi.service_type' => 1])
                     ->select()->toArray();
 
@@ -64,13 +63,13 @@ class InvoiceItem extends Model
                 array_push($service_packages, $items[$key]);
             }
             if ($value['service_type'] == 2) {
-                $items[$key]['code'] = Db::name('product')->where($where)->value('code');
-                $items[$key]['name'] = Db::name('product')->where($where)->value('name');
+//                $items[$key]['code'] = Db::name('product')->where($where)->value('code');
+//                $items[$key]['name'] = Db::name('product')->where($where)->value('name');
                 array_push($products, $items[$key]);
             }
             if ($value['service_type'] == 3) {
-                $items[$key]['code'] = Db::name('combination')->where($where)->value('code');
-                $items[$key]['name'] = Db::name('combination')->where($where)->value('name');
+//                $items[$key]['code'] = Db::name('combination')->where($where)->value('code');
+//                $items[$key]['name'] = Db::name('combination')->where($where)->value('name');
                 array_push($combinations, $items[$key]);
             }
             
@@ -90,7 +89,7 @@ class InvoiceItem extends Model
             ->leftJoin('invoice i', 'i.id = it.invoice_id')
             ->leftJoin('service_package sp', 'sp.id = it.service_id')
             ->leftJoin('mapping m', 'm.id = it.package_unit')
-            ->field('it.invoice_id as parent_id, it.total, i.member_id, sp.id, sp.code, sp.name, sp.price, sp.expiration_date as expiration_month, it.package_value, sp.service_type, m.val as package_unit, it.expiration_date, it.package_value_used, 1 as type')
+            ->field('it.invoice_id as parent_id, it.total, i.member_id, sp.id, it.service_code, it.service_name, sp.price, sp.expiration_date as expiration_month, it.package_value, sp.service_type, m.val as package_unit, it.expiration_date, it.package_value_used, 1 as type')
             ->whereOr([$where, $whereOr])
             ->order('id', 'desc')
             ->select()

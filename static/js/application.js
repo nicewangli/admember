@@ -235,6 +235,44 @@ function bookingWin(url){
 }
 
 
+function invoiceWin(url){
+    layer.open({
+        type: 2,
+        title: 'Invoices Information',
+        fix: true,
+        shade: 0,
+        resize: true,
+        maxmin: true,
+        area: win_screen() < 1 ? ['90%', '80%'] : ['70%', '80%'],
+        content: url
+    });
+}
+
+function stagingWin(url){
+    layer.open({
+        type: 2,
+        title: '套票分期',
+        fix: true,
+        shade: 0,
+        resize: true,
+        maxmin: true,
+        area: win_screen() < 1 ? ['90%', '80%'] : ['70%', '80%'],
+        content: url
+    });
+}
+
+function usePackageWin(url){
+    layer.open({
+        type: 2,
+        title: '使用套票',
+        fix: true,
+        shade: 0,
+        resize: true,
+        maxmin: true,
+        area: win_screen() < 1 ? ['90%', '80%'] : ['70%', '80%'],
+        content: url
+    });
+}
 
 function emailWin(url){
     layer.open({

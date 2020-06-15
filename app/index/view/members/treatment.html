@@ -260,7 +260,7 @@
                     '<td>' + parseFloat(row.total - row.total / row.package_value * row.package_value_used).toFixed(1) + '</td>\n'+
                     '</tr>';
 
-                use_list = '<tr>\n'+
+                use_list = '<tr onclick="clickFun(' + row.package_type + ',' + row.parent_id +')">\n'+
                     '<td>' + row.invoice_date + '</td>\n'+
                     '<td>購買</td>\n'+
                     '<td class="text-right">' + row.package_value + '</td>\n';
@@ -278,12 +278,17 @@
 
                 if (items.length > 0) {
                     $.each(items, function(index, element){
-                        use_list += '<tr>\n'+
+                        use_list += '<tr onclick="clickItem(' + element.type + ',' + element.id +')">\n'+
                             '<td>' + element.use_time + '</td>\n'+
                             '<td>' + element.action + '</td>\n'+
-                            '<td class="text-right">' + '-' + parseFloat(element.total_deduction).toFixed(1) + '</td>\n'+
-                            '<td>' + element.type + '</td>\n'+
-                            '<td>' + element.code + '</td>\n'+
+                            '<td class="text-right">' + '-' + parseFloat(element.total_deduction).toFixed(1) + '</td>\n';
+                        if (element.type == 1) {
+                            use_list += '<td>發票</td>\n';
+                        }
+                        else if (element.type == 2) {
+                            use_list += '<td>使用套票</td>\n';
+                        }
+                        use_list += '<td>' + element.code + '</td>\n'+
                             '<td class="text-right">' + '-' + parseFloat(element.total_deduction * (row.total / row.package_value)).toFixed(1) + '</td>\n'+
                             '</tr>';
 
@@ -356,6 +361,37 @@
             url: "{:url('')}",
 
         })
+    }
+
+
+    function clickFun(type, parent_id) {
+        let url = '';
+        if (type == 1) {
+            url = '{:url("invoices/edit?id=")}' + parent_id;
+            invoiceWin(url)
+        }
+        else if (type == 2) {
+            url = '{:url("packageStagings/edit?id=")}' + parent_id;
+            stagingWin(url)
+        }
+        else if (type == 3) {
+
+        }
+    }
+
+    function clickItem(type, id) {
+        let url = '';
+        if (type == 1) {
+            url = '{:url("invoices/edit?id=")}' + id;
+            invoiceWin(url)
+        }
+        else if (type == 2) {
+            url = '{:url("use_packages/edit?id=")}' + id;
+            usePackageWin(url)
+        }
+        else if (type == 3) {
+
+        }
     }
 </script>
 {/block}

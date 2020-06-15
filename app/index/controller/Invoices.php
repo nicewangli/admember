@@ -390,6 +390,8 @@ class Invoices extends Application
         $where = [];
         $list = [];
 
+        $where[] = ['it.used_up', '=', 0];
+
         if ($param['member_id']) {
             $where[] = ['i.member_id', '=', $param['member_id']];
         }

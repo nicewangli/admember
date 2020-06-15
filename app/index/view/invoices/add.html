@@ -200,8 +200,8 @@
                                         <input type="hidden" name="service[{$val.index}][package_unit]" value="{$val.package_unit}">
                                         <i class="fa fa-plus-square-o collaps"></i>
                                     </td>
-                                    <td width="13%">{$val.code}</td> 
-                                    <td width="28%">{$val.name}</td> 
+                                    <td width="13%">{$val.service_code}</td>
+                                    <td width="28%">{$val.service_name}</td>
                                     <td width="10%">
                                         <input type="number" min="1" name="service[{$val.index}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
                                         <input type="hidden" name="service[{$val.index}][package_original_value]" class="package_original_value" value="{$val.package_original_value}">
@@ -253,8 +253,8 @@
                                                 <input type="hidden" name="service[{$val.index}][transfer][{$k}][old_invoice_id]" value="{$va.old_invoice_id}">
                                                 <input type="hidden" name="service[{$val.index}][transfer][{$k}][old_invoice_item_id]" value="{$va.old_invoice_item_id}">
                                             </td>
-                                            <td width="15%">{$va.code}</td>
-                                            <td width="30%">{$va.name}</td>
+                                            <td width="15%">{$va.service_code}</td>
+                                            <td width="30%">{$va.service_name}</td>
                                             <td width="15%">
                                                 <input type="text" name="service[{$val.index}][transfer][{$k}][transfer_value]" value="{$va.transfer_value}" class="form-control form-control-sm text-right transfer_value" data-max="{$va.max_value}" data-idx="{$val.index}" style="width: 100%;">
                                             </td>
@@ -296,8 +296,8 @@
                                         <input type="hidden" name="service[{$val.index}][service_id]" value="{$val.service_id}"> 
                                         <input type="hidden" name="service[{$val.index}][service_type]" value="{$val.service_type}"> 
                                     </td> 
-                                    <td width="13%">{$val.code}</td> 
-                                    <td width="28%">{$val.name}</td> 
+                                    <td width="13%">{$val.service_code}</td>
+                                    <td width="28%">{$val.service_name}</td>
                                     <td width="10%">
                                         <input type="number" min="1" name="service[{$val.index}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
                                     </td> 
@@ -333,8 +333,8 @@
                                         <input type="hidden" name="service[{$val.index}][service_id]" value="{$val.service_id}"> 
                                         <input type="hidden" name="service[{$val.index}][service_type]" value="{$val.service_type}"> 
                                     </td> 
-                                    <td width="13%">{$val.code}</td> 
-                                    <td width="28%">{$val.name}</td> 
+                                    <td width="13%">{$val.service_code}</td>
+                                    <td width="28%">{$val.service_name}</td>
                                     <td width="10%">
                                         <input type="number" min="1" name="service[{$val.index}][quantity]" value="{$val.quantity}" class="form-control text-right quantity" style="width: 100%;">
                                     </td> 

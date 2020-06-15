@@ -38,9 +38,9 @@
                     <table id="user-grid" class="table table-striped table-bordered table-hover ">
                         <thead>
                         <tr>
-                            <th data-field="check_status" data-checkbox="true"></th>
+<!--                            <th data-field="check_status" data-checkbox="true"></th>-->
                             <th data-field="code" data-sortable="true" data-filter-control="input" data-width="120">編號</th>
-                            <th data-field="for_short" data-sortable="true" data-filter-control="input">名稱(簡稱)</th>
+                            <th data-field="for_short" data-sortable="true" data-filter-control="input" data-formatter="userDb">名稱(簡稱)</th>
                             <th data-field="first_name" data-sortable="true" data-filter-control="input">名稱(英文)</th>
                             <th data-field="title" data-sortable="true" data-filter-control="select">級別</th>
                             <th data-field="duty" data-sortable="true" data-filter-control="select">職位</th>
@@ -120,6 +120,14 @@
         // let html = "<a href=\"{:url('index',['act'=>'edit','uid'=>$val.uid])}\"><i class=\"ace-icon fa fa-edit\"></i>编辑</a>";
         let html = '<a href='+to_url+'><i class="ace-icon fa fa-edit"></i>编辑</a>';
         return html;
+    }
+    function userDb(value,row) {
+        let to_url = "{:url('index')}?act=edit&&uid="+row.uid;
+        let html = '<span ondblclick=turnUser('+row.uid+')>'+value+'</span>';
+        return html
+    }
+    function turnUser(id) {
+        window.location.href = "{:url('index')}?act=edit&&uid="+id;
     }
     $(function(){
         //bt表格

@@ -63,13 +63,14 @@ class Bookings extends Application
 
         $beaWhere[] = ['category', '=', 'COSMETOLOGIST'];
         $result = User::field('uid as id, for_short as title')->order("for_short asc")->where($beaWhere)->select()->toArray();
+        $roomArr = Room::select();
         $time = workingHours();
         $colorArr = Booking::event_colors();
         $statusArr = Booking::event_status_zn();
         $ads = Attendance::attendanceType();
         $model = new BookingItem();
         //
-        $item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->leftJoin('member m','m.id = b.member_id')->leftJoin('users u','u.uid = bi.beautician1')->leftJoin('users cu','cu.uid = b.consultant_id')->leftJoin('room r','r.id = b.room_id')->field('bi.*,b.status,b.remark,b.is_deduct,b.booking_date,b.id as bid,m.first_name as m_name,r.name as r_name,u.for_short as u_name,cu.for_short as cu_name,b.phone as phone_mobile')->where($biWhere);
+        $item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->leftJoin('member m','m.id = b.member_id')->leftJoin('users u','u.uid = bi.beautician1')->leftJoin('users cu','cu.uid = b.consultant_id')->leftJoin('room r','r.id = b.room_id')->field('bi.*,b.status,b.remark,b.is_deduct,b.booking_date,b.id as bid,b.name as m_name,b.is_member,r.name as r_name,u.for_short as u_name,cu.for_short as cu_name,b.phone as phone_mobile')->where($biWhere);
         $booking_item = $item->where($biWhere)->select()->toArray();
         $adArr = Attendance::field('user_id,vdate,start_time,end_time,item')->select()->toArray();
         foreach ($adArr as &$ad) {
@@ -82,7 +83,7 @@ class Bookings extends Application
             $item['status_name'] = array_search($item['status'],$statusArr);
         }
 //        dump($booking_item);die;
-        return View::fetch('index', ['date_start' => $date_start, 'date_end' => $date_end, 'beauticianArr' => $result, 'bookingItems' => $booking_item, 'time' => $time, 'dayArr' => $dayArr,'search'=>$search,'adArr'=>$adArr]);
+        return View::fetch('index', ['date_start' => $date_start, 'date_end' => $date_end, 'beauticianArr' => $result, 'bookingItems' => $booking_item, 'time' => $time, 'dayArr' => $dayArr,'search'=>$search,'adArr'=>$adArr,'roomArr' => $roomArr,'type'=>'bea']);
     }
 
     public function qsearch()

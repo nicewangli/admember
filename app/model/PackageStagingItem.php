@@ -62,7 +62,7 @@ class PackageStagingItem extends Model
 
     public function findItems($id)
     {
-        $items = $this->alias('psi')->leftJoin('service_package sp', 'psi.service_package_id = sp.id')->field('psi.*, sp.code, sp.name')->where('psi.package_staging_id', $id)->order('psi.id ASC')->select()->toArray();
+        $items = $this->where('package_staging_id', $id)->order('id ASC')->select()->toArray();
 
         return $items;
     }
@@ -99,7 +99,7 @@ class PackageStagingItem extends Model
             ->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')
             ->leftJoin('service_package sp', 'sp.id = psi.service_package_id')
             ->leftJoin('mapping m', 'm.id = psi.package_unit')
-            ->field('psi.package_staging_id as parent_id, psi.total, ps.member_id, sp.id, sp.code, sp.name, sp.price, sp.expiration_date as expiration_month, psi.package_value, sp.service_type, m.val as package_unit, psi.package_value_used, ps.staging_time, ps.final_total as arrears, 2 as type')
+            ->field('psi.package_staging_id as parent_id, psi.total, ps.member_id, sp.id, psi.service_code, psi.service_name, sp.price, sp.expiration_date as expiration_month, psi.package_value, sp.service_type, m.val as package_unit, psi.package_value_used, ps.staging_time, ps.final_total as arrears, 2 as type')
             ->where($where)
             ->order('id', 'desc')
             ->select()

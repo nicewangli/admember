@@ -400,6 +400,10 @@ class Members extends Application
             $where[] = ['upi.beautician1|upi.beautician2', '=', $param['beautician']];
         }
 
+        if ($param['user_id']) {
+            $where[] = ['upi.beautician1|upi.beautician2', '=', $param['user_id']];
+        }
+
         if ($param['code']) {
             $service_id = Db::name('service')->where('code', 'like', '%' . $param['code'] . '%')->column('id');
             $where[] = ['upi.service_id', 'in', $service_id];
@@ -506,13 +510,19 @@ class Members extends Application
         $whereInvoice = [];
         $whereInvoice[] = ['i.invoice_date', 'between', [$param['start_date'] . ' 00:00:00', $param['end_date'] . ' 23:59:59']];
         $whereInvoice[] = ['i.member_id', '=', $param['member_id']];
-        $whereInvoice[] = ['i.member_store', '>', 0];
 
         $whereStaging = [];
         $whereStaging[] = ['ps.staging_time', 'between', [$param['start_date'] . ' 00:00:00', $param['end_date'] . ' 23:59:59']];
         $whereStaging[] = ['ps.member_id', '=', $param['member_id']];
-        $whereStaging[] = ['ps.member_store', '>', 0];
 
+        if ($param['grip_type'] == 1) {
+            $whereInvoice[] = ['i.member_store', '>', 0];
+            $whereStaging[] = ['ps.member_store', '>', 0];
+        }
+        elseif ($param['grip_type'] == 2) {
+            $whereInvoice[] = ['i.member_reward', '>', 0];
+            $whereStaging[] = ['ps.member_reward', '>', 0];
+        }
 
         if ($param['type']) {  //單據類型
             if ($param['type'] == 1) {   //發票

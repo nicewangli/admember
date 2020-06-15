@@ -89,10 +89,10 @@
                                     <div class="col-xs-12 col-md-4">
                                         <select class="form-control to-search" id="store_id" name="store_id" size="1"
                                                 value="">
-                                            <option value="0"></option>
-                                            {notempty name="store"}
-                                            {volist name="store" id="val"}
-                                            <option value="{$val.id}" {eq name="$store_id" value="$val.id"} selected {/eq}>銅鑼灣</option>
+                                            <option value="0">&nbsp;</option>
+                                            {notempty name=":getStoreArr()"}
+                                            {volist name=":getStoreArr()" id="val"}
+                                            <option value="{$val.id}" {eq name="$store_id" value="$val.id"} selected {/eq}>{$val.name}</option>
                                             {/volist}
                                             {/notempty}
                                         </select>
