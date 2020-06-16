@@ -305,6 +305,7 @@
             toolbar: "#invoices-toolbar",                    //工具按钮用哪个容器
             pagination: true,                                //是否显示分页（*）
             sidePagination: 'server',                         //分页方式：client客户端分页，server服务端分页（*）
+            sortOrder: 'desc',
             buttonsClass: "btn-sm btn btn-sm btn-default",
             striped: true,                                   //是否显示行间隔色
             cookie: true,
@@ -487,6 +488,15 @@
 
     })
 
-
+    function layer_print(id)
+    {
+        //打印弹窗
+        layer.open({
+            type: 2,
+            title: '打印存根',
+            area: ['700px', '98%'],
+            content: '{:url("print_page")}?id='+id,
+        });
+    }
 </script>
 {/block}

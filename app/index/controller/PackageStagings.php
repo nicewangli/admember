@@ -53,25 +53,24 @@ class PackageStagings extends Application
     public function lists(PackageStaging $model, Member $member, Store $store, Invoice $invoice)
     {
         $param = input('get.');
-        $sort = isset($param['sort']) ?  $param['sort'] :  'id';
+        $sort = isset($param['sort']) ?  $param['sort'] :  'staging_time';
         $order = isset($param['order']) ?  $param['order'] :  'desc';
         $where = [];
 
         if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
-			          $query_fields = ['staging_time','store','member_id','total_amount'];
-            foreach ($query_fields as $field){
-                if(isset($filter[$field])) {
-                    $where[] = [$field, 'like', '%'.$filter[$field] . '%'];
-                }
+//			          $query_fields = ['staging_time','store','member_id','total_amount'];
+//            foreach ($query_fields as $field){
+//                if(isset($filter[$field])) {
+//                    $where[] = [$field, 'like', '%'.$filter[$field] . '%'];
+//                }
+//            }
+
+            if(isset($filter['code'])){
+                $where[] = ['code', 'like', '%'.$filter['code'] . '%'];
             }
-			
-            if(isset($filter['invoice'])){
-                $invoice_id = $invoice::where('code', $filter['invoice'])->value('id');
-                $where[] = ['invoice_id', '=', $invoice_id];
-            }
-            if(isset($filter['staging_date'])){
-                $where[] = ['staging_date', '=', $filter['staging_date']];
+            if(isset($filter['staging_time'])){
+                $where[] = ['staging_time', '=', $filter['staging_time']];
             }
 
             if(isset($filter['store'])){
@@ -370,6 +369,7 @@ class PackageStagings extends Application
             'all_payment' =>$all_payment,
             'divFor' => $divFor
         ]);
+//        dump($items);die;
         return View::fetch('print');
     }
 }

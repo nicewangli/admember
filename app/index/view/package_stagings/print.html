@@ -80,7 +80,7 @@
         {volist name="items" id="item"}
         <tr>
             <td class="print-small" align="left" valign="top">1</td>
-            <td class="print-small" align="left" valign="top">{$item.name}</td>
+            <td class="print-small" align="left" valign="top">{$item.service_name}</td>
             <td class="print-small" align="right" valign="top">{$item.quantity}</td>
             <td class="print-small" align="left" valign="top"></td>
             <td class="print-small" align="right" valign="top">{$item.price}</td>
@@ -105,11 +105,11 @@
                 {$payment.payment_method}...{$payment.amount}
                 {/volist}
             </td>
-            <td class="print-small" align="left" style="margin:100px;border-top:1px solid Black;">總計&nbsp;:
-            <td class="print-small" align="left" >{$all_total}</td>
-            <td class="print-small" align="left" >{$all_payment}</td>
-            <td class="print-small" align="left" >{$residue}</td>
-            </td>
+            <td class="print-small" align="left" style="margin:100px;border-top:1px solid Black;">總計&nbsp;:</td>
+            <td class="print-small" align="left" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$all_total}</td>
+            <td class="print-small" align="left" >&nbsp;{$all_payment}&nbsp;&nbsp;</td>
+            <td class="print-small" align="left" >&nbsp;{$residue}&nbsp;&nbsp;</td>
+
 <!--            <td class="print-small" align="right" style="border-top:1px solid Black;">$688.00</td>-->
         </tr>
     </table><br />

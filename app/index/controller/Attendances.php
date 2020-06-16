@@ -208,8 +208,11 @@ class Attendances extends Application
         $where = [
             ['user_id', '=', $param['user_id']],
             ['vdate', '=', $param['vdate']],
-            ['item', '=', $param['vacation_item']],
         ];
+
+        if ($param['vacation_item']) {
+            $where[] = ['item', '=', $param['vacation_item']];
+        }
 
         if ($model->softDelete) {
             $result = $model->where($where)->useSoftDelete('delete_time', time())->delete();

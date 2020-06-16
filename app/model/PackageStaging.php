@@ -45,9 +45,9 @@ class PackageStaging extends Model
         }
 
         if ($cate < 2){
-            $where[] = ['sp.code', 'like', '%'.$param['code'].'%'];
+            $where[] = ['psi.service_code', 'like', '%'.$param['code'].'%'];
 
-            $list = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->field('psi.*, ps.code as code, ps.staging_time as udate, sp.code as item_code, sp.name as item_name, ps.total_amount as amount, psi.current_payment as item_total')->order('staging_time', 'desc')->select()->toArray();
+            $list = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->field('psi.*, ps.code as code, ps.staging_time as udate, ps.total_amount as amount, psi.current_payment as item_total')->order('staging_time', 'desc')->select()->toArray();
 
             $total_amount = Db::name('package_staging_item')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'sp.id = psi.service_package_id')->where($where)->sum('psi.current_payment');
 
@@ -68,7 +68,7 @@ class PackageStaging extends Model
 
                 $unit = Db::name('mapping')->where('id', $value['package_unit'])->value('val');
 
-                $list[$key]['item_value'] = $value['package_value'].' '.$unit;
+                $list[$key]['service_value'] = $value['package_value'].' '.$unit;
             }
 
         }
@@ -98,7 +98,7 @@ class PackageStaging extends Model
             } else {
                 $list[$key]['expiration'] = $value['expiration_date'];
             }
-            $list[$key]['code_name'] = $value['code']."<br>".$value['name'];
+            $list[$key]['code_name'] = $value['service_code']."<br>".$value['service_name'];
             $unit = Mapping::where('id', $value['package_unit'])->value('val');
             $list[$key]['package_value_lave'] = number_format(floatval($value['package_value']) - floatval($value['package_value_used']), 1).$unit;
             $list[$key]['package_unit'] = $unit;
@@ -136,7 +136,7 @@ class PackageStaging extends Model
             ->leftJoin('service s', 'upi.service_id = s.id')
             ->leftJoin('package_staging_item it', 'it.package_staging_id = upi.parent_id and it.service_package_id = upi.service_package_id')
             ->leftJoin('mapping m', 'm.id = it.package_unit')
-            ->field('upi.*, up.code, up.use_time, up.signature, s.code as service_code, s.name as service_name, it.total, it.package_value, m.val as package_unit')
+            ->field('upi.*, up.code, up.use_time, up.signature, it.total, it.package_value, m.val as package_unit')
             ->where($where)
             ->order('use_time', 'desc')
             ->select()

@@ -26,19 +26,25 @@ class Invoice extends Model
         $where[] = ['i.invoice_date', 'between', [$param['start_date'] . ' 00:00:00', $param['end_date']. ' 23:59:59']];
         $where[] = ['i.member_id', '=', $param['member_id']];
 
+        $storeWhere = $where;
+
+        if (in_array($cate, [0,1,2,3])) {
+            $where[] = ['it.service_code', 'like', '%'.$param['code'].'%'];
+        }
+
         if (in_array($cate, [1,2,3])) {
             $where[] = ['it.service_type', '=', $cate];
         }
 
-        $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->field('it.*, i.invoice_date as udate, i.code as code, i.total_amount as amount')->order('invoice_date', 'desc')->select()->toArray();
+        $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->field('it.*, it.total as item_total, i.invoice_date as udate, i.code as code, i.total_amount as amount')->order('invoice_date', 'desc')->select()->toArray();
 
         $total_amount = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->where($where)->sum('it.total');
 
         if ($cate == 0 || $cate == 4){
-            $where[] = ['member_store', '>', 0];
+            $storeWhere[] = ['member_store', '>', 0];
 
-            $store = Db::name('invoice')->alias('i')->field('i.id, id as invoice_id, i.invoice_date as udate, i.code as code, i.total_amount as amount, i.member_store as item_total, 0 as service_type')->where($where)->select()->toArray();
-            $store_amount = Db::name('invoice')->alias('i')->where($where)->sum('i.member_store');
+            $store = Db::name('invoice')->alias('i')->field('i.id, id as invoice_id, i.invoice_date as udate, i.code as code, i.total_amount as amount, i.member_store as item_total, 0 as service_type')->where($storeWhere)->select()->toArray();
+            $store_amount = Db::name('invoice')->alias('i')->where($storeWhere)->sum('i.member_store');
         }
 
         if ($cate == 4) {
@@ -52,37 +58,41 @@ class Invoice extends Model
             $list[$key]['type'] = 1;
             $list[$key]['type_id'] = '發票' . $value['invoice_id'];
 
-            $item = [];
+//            $item = [];
             if ($value['service_type'] > 0) {
-                if ($value['service_type'] == 1) {  //服務套票
-                    $item = Db::name('service_package')->find($value['service_id']);
-
+//                if ($value['service_type'] == 1) {  //服務套票
+//                    $item = Db::name('service_package')->find($value['service_id']);
+//
+//                    $unit = Db::name('mapping')->where('id', $value['package_unit'])->value('val');
+//                    $list[$key]['item_value'] = $value['package_value'].' '.$unit;
+//
+//                }
+//                elseif ($value['service_type'] == 2) {   //產品
+//                    $item = Db::name('product')->find($value['service_id']);
+//
+//                    $unit = Db::name('mapping')->where('id', $item['unit'])->value('val');
+//                    $list[$key]['item_value'] = $value['quantity'].' '.$unit;
+//                }
+//                elseif ($value['service_type'] == 3) {   //產品組合
+//                    $item = Db::name('combination')->find($value['service_id']);
+//
+//                    $unit = Db::name('mapping')->where('id', $item['unit'])->value('val');
+//                    $list[$key]['item_value'] = $value['quantity'].' '.$unit;
+//                }
+//
+//                if($param['code'] && stripos($item['code'], $param['code']) === false){
+//                    unset($list[$key]);
+//                    $total_amount -= $value['total'];
+//                    continue;
+//                }
+//
+//                $list[$key]['item_code'] = $item['code'];
+//                $list[$key]['item_name'] = $item['name'];
+//                $list[$key]['item_total'] = $value['total'];
+                if (isset($value['package_unit'])) {
                     $unit = Db::name('mapping')->where('id', $value['package_unit'])->value('val');
-                    $list[$key]['item_value'] = $value['package_value'].' '.$unit;
-
+                    $list[$key]['service_value'] = $value['quantity'] . ' ' . $unit;
                 }
-                elseif ($value['service_type'] == 2) {   //產品
-                    $item = Db::name('product')->find($value['service_id']);
-
-                    $unit = Db::name('mapping')->where('id', $item['unit'])->value('val');
-                    $list[$key]['item_value'] = $value['quantity'].' '.$unit;
-                }
-                elseif ($value['service_type'] == 3) {   //產品組合
-                    $item = Db::name('combination')->find($value['service_id']);
-
-                    $unit = Db::name('mapping')->where('id', $item['unit'])->value('val');
-                    $list[$key]['item_value'] = $value['quantity'].' '.$unit;
-                }
-
-                if($param['code'] && stripos($item['code'], $param['code']) === false){
-                    unset($list[$key]);
-                    $total_amount -= $value['total'];
-                    continue;
-                }
-
-                $list[$key]['item_code'] = $item['code'];
-                $list[$key]['item_name'] = $item['name'];
-                $list[$key]['item_total'] = $value['total'];
             }
         }
 
@@ -100,7 +110,7 @@ class Invoice extends Model
         $where[] = ['it.service_type', '=', 1];
 
         if (!empty($whereOr)) {
-            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->field('it.*, it.id as item_id, it.invoice_id as parent_id, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type, sp.deducted_percent, 1 as package_type')->order('invoice_date', 'desc')->select()->toArray();
+            $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->whereOr([$where, $whereOr])->field('it.*, it.id as item_id, it.invoice_id as parent_id, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, it.expiration_date, sp.service_type, sp.deducted_percent, 1 as package_type')->order('invoice_date', 'desc')->select()->toArray();
 
         }else{
             $list = Db::name('invoice_item')->alias('it')->leftJoin('invoice i', 'i.id = it.invoice_id')->leftJoin('service_package sp', 'sp.id = it.service_id')->where($where)->field('it.*, it.id as item_id, i.invoice_date, i.code as invoice_no, i.member_id, i.store_id, sp.code, sp.name, it.expiration_date, sp.service_type, sp.deducted_percent, 1 as package_type')->order('invoice_date', 'desc')->select()->toArray();
@@ -113,7 +123,7 @@ class Invoice extends Model
             } else {
                 $list[$key]['expiration'] = $value['expiration_date'];
             }
-            $list[$key]['code_name'] = $value['code']."<br>".$value['name'];
+            $list[$key]['code_name'] = $value['service_code']."<br>".$value['service_name'];
             $unit = Mapping::where('id', $value['package_unit'])->value('val');
             $list[$key]['package_value_lave'] = number_format(floatval($value['package_value']) - floatval($value['package_value_used']), 1).$unit;
             $list[$key]['package_unit'] = $unit;
@@ -153,7 +163,7 @@ class Invoice extends Model
             ->leftJoin('service s', 'upi.service_id = s.id')
             ->leftJoin('invoice_item it', 'it.invoice_id = upi.parent_id and it.service_id = upi.service_package_id and it.service_type = 1')
             ->leftJoin('mapping m', 'm.id = it.package_unit')
-            ->field('upi.*, up.code, up.use_time, up.signature, s.code as service_code, s.name as service_name, it.total, it.package_value, m.val as package_unit')
+            ->field('upi.*, up.code, up.use_time, up.signature, it.total, it.package_value, m.val as package_unit')
             ->where($where)
             ->order('use_time', 'desc')
             ->select()

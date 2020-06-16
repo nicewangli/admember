@@ -86,7 +86,7 @@ $(document).ready( function (){
         contentType: 'text/html',
         // toolbar: "#service_packages-toolbar",                    //工具按钮用哪个容器
         pagination: true,                                //是否显示分页（*）
-        sidePagination:'client',                         //分页方式：client客户端分页，server服务端分页（*）
+        sidePagination:'server',                         //分页方式：client客户端分页，server服务端分页（*）
         buttonsClass:"btn-sm btn btn-sm btn-default",
         striped: true,                                   //是否显示行间隔色
         cookie: true,
@@ -119,7 +119,8 @@ $(document).ready( function (){
             title: '類別',
             searchable: true,
             filterControl: 'select',
-            formatter: cateFormatter
+            formatter: cateFormatter,
+            filterData: "url: {:url('product_categories/options')}"
         }, {
             field: 'name',
             title: '名稱',

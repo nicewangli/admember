@@ -8,6 +8,7 @@ namespace app\index\controller;
 use app\Application;
 use app\model\InvoiceTransfer;
 use app\model\PackageStaging;
+use think\facade\Session;
 use think\facade\View;
 use think\Request;
 use app\model\Invoice;
@@ -70,7 +71,7 @@ class Invoices extends Application
     public function lists(Invoice $model, Member $member, Store $store)
     {
         $param = input('get.');
-        $sort = isset($param['sort']) ?  $param['sort'] :  'id';
+        $sort = isset($param['sort']) ?  $param['sort'] :  'invoice_date';
         $order = isset($param['order']) ?  $param['order'] :  'desc';
         $where = [];
 
@@ -190,7 +191,7 @@ class Invoices extends Application
                 $invoiceSeller->saveSeller($invoice_id, $param['seller']);
             }
 
-            return json(['code' => 200]);
+            return json(['code' => 200,'id'=>$invoice_id]);
         }
 
         $store = getStore();
@@ -465,12 +466,24 @@ class Invoices extends Application
         // }
     }
 
-    public function print_page(PackageStaging $model)
+    public function print_page(Invoice $model, InvoiceItem $invoiceItem, InvoicePayment $invoicePayment, InvoiceSeller $invoiceSeller)
     {
-        $type = input('type');
         $id = input('id');
-        if($type = 'ps') {
-        }
+        $result = $model->alias('i')->leftJoin('member m','m.id = i.member_id')->field('i.*,m.code as member_no,m.first_name')->find($id);
+        $inv_items = $invoiceItem->findItems($id);
+        $inv_payments = $invoicePayment->findPayments($id);
+        $inv_sellers = $invoiceSeller->findSellers($id);
+        $payment = $result['total_amount'] - $result['final_total'];
+        View::assign(
+            [
+                'result' => $result,
+                'items' => $inv_items,
+                'sellers' => $inv_sellers,
+                'payments' => $inv_payments,
+                'total_payment' => $payment,
+                'username' => Session::get('username'),
+            ]
+        );
         return View::fetch('print');
     }
 }

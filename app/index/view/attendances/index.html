@@ -135,7 +135,7 @@
 
                         <div class="row pt-2">
                             <div class="col-auto" id="attdances">
-                                <table id="example1" class="table table-sm table-bordered table-striped table-responsive {if !$user_id} height-responsive {/if}"
+                                <table id="example1" class="table table-sm table-bordered table-striped  {if !$user_id} height-responsive {/if}"
                                        style="overflow-y: auto">   <!--宽高滚动条 -->
                                     <thead>
                                     <tr class="bg-purple disabled color-palette">
@@ -662,12 +662,12 @@
         //
         // }
         else if (type == 3) {   //單日取消
-            data = [
-                {field: "#vacation_item", value: vacation_item},
-            ];
-            if(validate(data) === false) {
-                return false;
-            }
+            // data = [
+            //     {field: "#vacation_item", value: vacation_item},
+            // ];
+            // if(validate(data) === false) {
+            //     return false;
+            // }
 
             param['user_id'] = user_id;
             param['vdate'] = vdate;

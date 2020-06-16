@@ -158,13 +158,13 @@
                                         <input type="hidden" name="service[{$val.index}][item_id]" value="{$val.item_id}">
                                     </td> 
                                     <td width="10%">
-                                        <p>{$val.service_package.code}</p>
-                                        <p>{$val.service.code}</p>
+                                        <p>{$val.service_package_code}</p>
+                                        <p>{$val.service_code}</p>
                                         <p>&emsp;</p>
                                     </td> 
                                     <td width="20%">
-                                        <p>{$val.service_package.name}</p>
-                                        <p>{$val.service.name}</p> 
+                                        <p>{$val.service_package_name}</p>
+                                        <p>{$val.service_name}</p>
                                         <p>套票值：{:number_format($val.service_package.package_value - $val.service_package.package_value_used, 1)}/{$val.service_package.package_value} {$val.service_package.package_unit}</p>
                                     </td> 
                                     <td width="15%">

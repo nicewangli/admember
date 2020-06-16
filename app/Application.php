@@ -94,6 +94,7 @@ class Application extends BaseController
             'del',
             'modify',
             'option',
+            'options',
             'products',
             'services',
             'modules',

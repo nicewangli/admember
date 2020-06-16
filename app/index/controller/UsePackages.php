@@ -31,7 +31,7 @@ class UsePackages extends Application
     public function lists(UsePackage $model, Member $member, Store $store, Invoice $invoice)
     {
         $param = input('get.');
-        $sort = isset($param['sort']) ?  $param['sort'] :  'id';
+        $sort = isset($param['sort']) ?  $param['sort'] :  'use_time';
         $order = isset($param['order']) ?  $param['order'] :  'desc';
         $where = [];
 

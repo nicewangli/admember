@@ -18,37 +18,7 @@ class ProductCategories extends Application
     //列表
     public function index(Request $request, ProductCategory $model)
     {
-        // $param = $request->param();
 
-        // if (isset($param['export_data']) && $param['export_data'] == 1) {
-        //     $header = ['Category Name','Status'];
-        //     $body = [];
-        //     $data = $model->select();
-        //     foreach ($data as $item) {
-        //         $record = [];
-        //         $record['category'] = $item->category;
-        //         $record['status'] = $item->status;
-
-
-        //         $body[] = $record;
-        //     }
-        //     return exportData($header, $body, 'contacts-' . date('Y-m-d-H-i-s'));
-        // }
-        // $search = input('get.search');
-
-        // $data = $model::whereOr([
-        //     ['name', 'like', $search . '%'],
-        //     ['status', 'like', $search . '%'],
-
-        // ])->paginate();
-        // //关键词，排序等赋值
-
-        // View::assign([
-        //     'data' => $data,
-        //     'page' => $data->render(),
-        //     'total' => $data->total(),
-        //     'search' => $search
-        // ]);
         return View::fetch();
     }
 
@@ -167,5 +137,11 @@ class ProductCategories extends Application
         $where = ['pid' => $id];
         $list = $model->option($where);
         return json(['code' => 200, 'results' => $list]);
+    }
+
+    public function options(ProductCategory $model)
+    {
+        $list = $model->where('pid', 0)->column('name', 'id');
+        return json($list);
     }
 }

@@ -119,7 +119,8 @@ $(document).ready( function (){
             title: '類別',
             searchable: true,
             filterControl: 'select',
-            formatter: cateFormatter
+            formatter: cateFormatter,
+            filterData: "url: {:url('product_categories/options')}"
         }, {
             field: 'name',
             title: '名稱',
