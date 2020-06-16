@@ -67,7 +67,15 @@
                                                     {foreach name=":getUsersbyCategory('COSMETOLOGIST')" id='user'}
                                                     <option value="{$user.uid|default=''}" {if !empty($search.consultant) &&
                                                             $search.consultant==$user.uid}selected{/if}>
+
                                                         {$user.name}
+                                                    </option>
+
+                                                    <option value="bea" {if $type=='bea'}selected{/if}>
+                                                        美容師
+                                                    </option>
+                                                    <option value="room" {if $type=='room'}selected{/if}>
+                                                        房間
                                                     </option>
                                                     {/foreach}
                                                 </select>
@@ -76,12 +84,14 @@
                                                 <select class="form-control form-control-sm" name="room_id"
                                                         id="room_id">
                                                     <option value=""></option>
+                                                    {eq name="$type" value="room"}
                                                     {foreach name=":getRooms()" id='val'}
                                                     <option value="{$val.id}" {if isset($search.room_id) &&
                                                             $search.room_id==$val.id}selected{/if}>
                                                         {$val.name}
                                                     </option>
                                                     {/foreach}
+                                                    {/eq}
                                                 </select>
                                             </div>
                                         </div>
