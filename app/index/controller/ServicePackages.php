@@ -95,7 +95,10 @@ class ServicePackages extends Application
             }
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
-
+            //编号
+            if(!isset($param['code'])) {
+                $param['code'] = $this->getConfigNo('service_packages','service_package');
+            }
             $result = $model::create($param);
 
             if (isset($param['item'])) {
@@ -105,8 +108,9 @@ class ServicePackages extends Application
 
             return json(['code' => 200]);
         }
+        $code = $this->getConfigNo('service_packages','service_package');
         $package_unit = $mapping::where('type_id', 'package_unit')->select();
-        return view('add', ['package_unit' => $package_unit]);
+        return view('add', ['package_unit' => $package_unit,'code'=>$code]);
     }
 
     //修改

@@ -61,16 +61,8 @@
                                     <div class="col-md-8">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <select class="form-control select2" type="text" id="consultant"
-                                                        name="consultant">
-                                                    <option value="">&nbsp;</option>
-                                                    {foreach name=":getUsersbyCategory('COSMETOLOGIST')" id='user'}
-                                                    <option value="{$user.uid|default=''}" {if !empty($search.consultant) &&
-                                                            $search.consultant==$user.uid}selected{/if}>
-
-                                                        {$user.name}
-                                                    </option>
-
+                                                <select class="form-control select2" type="text" id="type"
+                                                        name="type">
                                                     <option value="bea" {if $type=='bea'}selected{/if}>
                                                         美容師
                                                     </option>
@@ -81,14 +73,22 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
-                                                <select class="form-control form-control-sm" name="room_id"
-                                                        id="room_id">
+                                                <select class="form-control form-control-sm" name="search_id"
+                                                        id="search_id">
                                                     <option value=""></option>
                                                     {eq name="$type" value="room"}
                                                     {foreach name=":getRooms()" id='val'}
-                                                    <option value="{$val.id}" {if isset($search.room_id) &&
-                                                            $search.room_id==$val.id}selected{/if}>
+                                                    <option value="{$val.id}" {if isset($search.search_id) &&
+                                                            $search.search_id==$val.id}selected{/if}>
                                                         {$val.name}
+                                                    </option>
+                                                    {/foreach}
+                                                    {/eq}
+                                                    {eq name="$type" value="bea"}
+                                                    {foreach name=":getUsersbyCategory('COSMETOLOGIST')" id='user'}
+                                                    <option value="{$user.uid|default=''}" {if !empty($search.search_id) &&
+                                                            $search.search_id==$user.uid}selected{/if}>
+                                                        {$user.name}
                                                     </option>
                                                     {/foreach}
                                                     {/eq}
@@ -251,16 +251,12 @@
                                         <td>{$shijian.text}</td>
                                         {eq name="$type" value="bea"}
                                         {volist name="beauticianArr" id="bea"}
-                                        <td class="get_tooltip" data-bea="{$bea.id}" data-placement="right">
-                                            {volist name="bookingItems" id="bi"}
-                                            {if condition="$bi.booking_date eq $dateWeek.date  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}
-                                            <font color="white">{$bi.m_name}<br/>{$bi.start_time}--{$bi.end_time}
+                                        <td class="get_tooltip" data-bea="{$bea.id}" data-placement="right">{volist name="bookingItems" id="bi"}{if condition="$bi.booking_date eq $dateWeek.date  && $bi.beautician1 eq $bea.id && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}<font color="white">{$bi.m_name}<br/>{$bi.start_time}--{$bi.end_time}
                                                 <br/>
                                                 {$bi.phone_mobile}<br />
                                                 ({$bi.r_name})<br/>
                                                 (顧問：{$bi.cu_name})
-                                            </font>
-                                            <input type="hidden" value="{$bi.bc}"
+                                            </font><input type="hidden" value="{$bi.bc}"
                                                    data-is_deduct="{$bi.is_deduct}"
                                                    data-id="{$bi.bid}" data-resource="{$bi.beautician1}"
                                                    data-event="{$bi.id}"
@@ -272,21 +268,9 @@
                                                    data-m_phone="{$bi.phone_mobile}"
                                                    data-service_name="{$bi.service_name}"
                                                    data-status_name="{$bi.status_name}"
-                                                   data-remark="{$bi.remark}">
-                                            <i class="test_tooltip" data-toggle="tooltip" data-placement="top" style="position: absolute;" data-html="true">
+                                                   data-remark="{$bi.remark}"><i class="test_tooltip" data-toggle="tooltip" data-placement="top" style="position: absolute;" data-html="true">
 
-                                            </i>
-                                            {/if}
-                                            {/volist}
-                                            {volist name="adArr" id="ad"}
-                                            {if condition='$ad.vdate eq $dateWeek.date && $ad.user_id eq $bea.id && ($ad.end_time > $shijian.id&&$shijian.id>=$ad.start_time)'}
-                                            {$ad.item}
-                                            <input type="hidden" data-type="ad">
-                                            {/if}
-                                            {/volist}
-                                        </td>
-                                        {/volist}
-                                        {/eq}
+                                            </i>{/if}{/volist} {volist name="adArr" id="ad"}{if condition='$ad.vdate eq $dateWeek.date && $ad.user_id eq $bea.id && ($ad.end_time > $shijian.id&&$shijian.id>=$ad.start_time)'}{$ad.item}<input type="hidden" data-type="ad">{/if}{/volist}</td>{/volist}{/eq}
                                         {eq name="$type" value="room"}
                                         {volist name="roomArr" id="room"}
                                         <td class="get_tooltip" data-room="{$room.id}" data-placement="right">{volist name="bookingItems" id="bi"} {if condition="$bi.booking_date eq $dateWeek.date  && in_array($room.id,$bi.room_id) && ($bi.end_time > $shijian.id&&$shijian.id>=$bi.start_time)"}<font color="white">{$bi.m_name}<br/>{$bi.start_time}--{$bi.end_time}<br/>{$bi.phone_mobile}<br />({$bi.r_name})<br/>(顧問：{$bi.cu_name})</font><input type="hidden" value="{$bi.bc}" data-is_deduct="{$bi.is_deduct}" data-id="{$bi.bid}" data-resource="{$bi.beautician1}" data-event="{$bi.id}" data-day="{$dateWeek.date}" data-type="bi" data-start_time="{$bi.start_time}" data-end_time="{$bi.end_time}" data-bea_name="{$bi.u_name}" data-r_name="{$bi.r_name}" data-m_name="{$bi.m_name}" data-m_phone="{$bi.phone_mobile}" data-service_name="{$bi.service_name}" data-status_name="{$bi.status_name}" data-remark="{$bi.remark}"><i class="test_tooltip" data-toggle="tooltip" data-placement="top" style="position: absolute;" data-html="true"></i>{/if}{/volist}</td>{/volist}{/eq}
@@ -330,14 +314,15 @@
         // _w_table_rowspan("#bea",5);
     });
 
-    $("#room_id").change(function () {
+    $("#search_id").change(function () {
         form_change();
     });
 
     $("#store_id").change(function () {
         form_change();
     });
-    $("#consultant").change(function () {
+    $("#type").change(function () {
+        $("#search_id").val('');
         form_change();
     });
     $("#date_start").blur(function () {
@@ -462,8 +447,8 @@
         }
     }
 
-    $(".get_tooltip").on('mousemove',function (e) {
-        $(this).find('i').css({top: e.pageY-100, left: e.pageX-20 });
+    $(".get_tooltip").on('mouseover',function (e) {
+        $(this).find('i').css({top: e.pageY-123, left: e.pageX-20 });
         $(this).find('i').tooltip('show');
     });
     $(".get_tooltip").on('mouseleave',function (e) {

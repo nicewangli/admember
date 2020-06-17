@@ -145,6 +145,7 @@
                 }, {
                     field: 'name',
                     title: '名稱',
+                    formatter:comFormatter,
                 }, {
                     field: 'status',
                     title: '狀態',
@@ -218,6 +219,10 @@
             return name;
         }
 
+        function comFormatter(value,row,index) {
+            let html = '<a href="#" ondblclick=combinations('+row.id+')>'+value+'</a>';
+            return html
+        }
     </script>
 {include file='public/content_common' /}
 

@@ -157,6 +157,7 @@
                 }, {
                     field: 'name',
                     title: '名稱',
+                    formatter:turnProductsFormatter
                 }, {
                     field: 'status',
                     title: '狀態',
@@ -228,6 +229,11 @@
                 name += '->' + row.category.name;
             }
             return name;
+        }
+
+        function turnProductsFormatter(value,row,index) {
+            let html = '<span ondblclick=products('+row.id+')>'+value+'</span>';
+            return html
         }
     </script>
 {include file='public/content_common' /}

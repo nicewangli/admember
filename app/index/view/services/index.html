@@ -233,6 +233,7 @@
                 }, {
                     field: 'name',
                     title: '名稱',
+                    formatter:serviceFormatter,
                 }, {
                     field: 'status',
                     title: '狀態',
@@ -285,7 +286,11 @@
             }
             return name;
         }
-        
+
+        function serviceFormatter(value,row,index) {
+            let html = '<span ondblclick=services('+row.id+')>'+value+'</span>';
+            return html
+        }
     </script>
 {include file='public/content_common' /}
 

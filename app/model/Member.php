@@ -21,6 +21,12 @@ class Member extends Model
     protected $timeField = [];
 
 
+    public function findMembers($where)
+    {
+        $find = $this->field('id, first_name, code as member_no, phone_mobile, salutation')->where($where)->select();
+        return $find;
+    }
+
     public function findMember($where)
     {
         return $this->field('id, first_name, code as member_no, phone_mobile, salutation')->where($where)->find();

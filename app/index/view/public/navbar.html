@@ -28,7 +28,7 @@
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                         {notempty name="v.children"}
                         {volist name="v.children" id="vv"}
-                        <li> <a class="dropdown-item" href="{empty name="vv.children"}{:url($vv['url'])}{else /}#{/empty}" class='nav-link {if condition="($current_permission.id eq $vv.id) or ($vv.id eq $current_permission.pid) or ($vv.id eq $current_permission_father.pid) or ($vv.id eq $current_permission_father.pid)"} active {/if}'> {$vv.title} </a></li>
+                        <li> <a class="dropdown-item" {eq name="$vv.title" value="WhatsApp"} target="_blank" {/eq} href="{empty name="vv.children"}{:url($vv['url'])}{else /}#{/empty}" class='nav-link {if condition="($current_permission.id eq $vv.id) or ($vv.id eq $current_permission.pid) or ($vv.id eq $current_permission_father.pid) or ($vv.id eq $current_permission_father.pid)"} active {/if}'> {$vv.title} </a></li>
                         {/volist}
                         {/notempty}
                     </ul>

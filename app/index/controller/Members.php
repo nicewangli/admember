@@ -45,20 +45,34 @@ class Members extends Application
 //        $sort = 'code';
         $order = $param['order'];
         $where = [];
-          if(isset($param['filter'])){
+
+        if(isset($param['filter'])){
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
 
-            $query_fields = ['code','first_name','last_name','phone_mobile','phone_work','email1'];
+            $query_fields = ['code','first_name', 'last_name', 'phone_mobile', 'phone_work', 'email1', 'opt', 'categors'];
             foreach ($query_fields as $field){
                 if(isset($filter[$field])) {
-                    $where[] = ['m.'.$field, 'like', '%'.$filter[$field].'%'];
+                    if ($field == 'opt') {
+                        $opt = Mapping::where(['val' => $filter[$field], 'type_id' => 'opt'])->value('id');
+                        $where[] = ['m.'.$field, '=', $opt];
+                    }
+                    else if ($field == 'categors') {
+                        $categors = Mapping::where(['val' => $filter[$field], 'type_id' => 'categors'])->value('id');
+                        $where[] = ['m.'.$field, '=', $categors];
+                    }
+                    else {
+                        $where[] = ['m.'.$field, 'like', $filter[$field] . '%'];
+                    }
                 }
             }
+
         }
-//          $model = new Member();
+
+        if (isset($param['code'])) {
+            $where[] = ['code', 'like', '%'.$param['code'].'%'];
+        }
         $items = Member::alias('m')->leftJoin('mapping mp', 'm.opt = mp.id')->field('m.*, mp.val as opt')->where($where)->limit($offset, $limit)->order($sort.' '.$order)->select();
-//        dump($model->getLastSql());die;
-//        dump($items);die;
+
         $total = Member::alias('m')->where($where)->count();
         $data = [
             'rows' => $items,
@@ -222,22 +236,29 @@ class Members extends Application
     {
         $code = input('code');
         $where = [];
-        $where[] = ['code','=',$code];
-        $member = $model->findMember($where);
+        $where[] = ['code','like', '%'.$code.'%'];
+        $member = $model->findMembers($where);
         $invoices = [];
         $notes = "";
-        if ($member) {
-            $invoices = $invoice->findInvoice($member->id);
+        if ($member && count($member) > 0) {
+            if (count($member) == 1) {
+                $member = $member[0];
+                $invoices = $invoice->findInvoice($member->id);
 
-            $notes = $booking->booking_notes($member->id);
+                $notes = $booking->booking_notes($member->id);
 
-            $member['no_service'] = true;
-            $service = $model->findService($member['id'], 1);
-            if (!empty($service)) {
-                $member['no_service'] = false;
+                $member['no_service'] = true;
+                $service = $model->findService($member['id'], 1);
+                if (!empty($service)) {
+                    $member['no_service'] = false;
+                }
+                return json(['members' => 0, 'member' => $member, 'invoices' => $invoices, 'notes' => $notes]);
+            } else {
+                return json(['members' => 1]);
             }
+        } else {
+            return json(['members' => 0]);
         }
-        return json(['member' => $member, 'invoices' => $invoices, 'notes' => $notes]);
     }
 
 
@@ -756,6 +777,13 @@ class Members extends Application
         } else {
             return json(['code' => 0, 'msg' => 'no file upload']);
         }
+    }
+
+    public function members()
+    {
+        $code = input('code');
+        $panel = input('panel');
+        return view('members', ['code' => $code, 'panel' => $panel]);
     }
 
 }

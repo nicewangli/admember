@@ -287,6 +287,19 @@ function emailWin(url){
     });
 }
 
+function memberWin(url) {
+    layer.open({
+        type: 2,
+        title: '會員',
+        fix: true,
+        shade: 0,
+        resize: true,
+        maxmin: true,
+        area: ['90%', '95%'],
+        content: url
+    });
+}
+
 
 function win_screen() {
     //获取当前窗口的宽度

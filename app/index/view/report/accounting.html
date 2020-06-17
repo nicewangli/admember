@@ -3,7 +3,7 @@
 <section class="content">
     <div class="card">
 
-        <form class="form-horizontal" action="{:url('index',['act'=>'update'])}" method="post">
+        <form class="form-horizontal" action="{:url('index1',['act'=>'update'])}" method="post">
 
             <div class="card card-primary card-outline card-outline-tabs" style="border-top:2px">
                 <div class="card-header p-3 border-bottom-0">
@@ -86,6 +86,7 @@
                 <div class="card-body">
                     <div class="tab-content">
                         <div id="report" class="tab-pane fade show active">
+                            <form class="form-horizontal" action="{:url('index1',['act'=>'update'])}" method="post">
                             <div class="form-group row">
                                 <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
                                 <div class="col-xs-12 col-md-2">
@@ -133,9 +134,23 @@
                     </span>
 
                             </div>
+                                <div class="col-md-offset-2 col-md-9">
+                                    <button id="submit" class="btn btn-info" type="submit">
+                                        <i class="icon-ok bigger-110"></i>
+                                        提交
+                                    </button>
+
+                                    &nbsp; &nbsp; &nbsp;
+                                    <button class="btn btn-danger" type="reset">
+                                        <i class="icon-undo bigger-110"></i>
+                                        重置
+                                    </button>
+                                </div>
+                            </form>
                         </div>
 
                         <div id="sell" class="tab-pane fade  in">
+                            <form class="form-horizontal" action="{:url('index2',['act'=>'update'])}" method="post">
                             <div class="form-group row">
                                 <label class="col-sm-1 control-label " for="data_tom"> 日期 </label>
                                 <div class="col-xs-12 col-md-2">
@@ -211,6 +226,19 @@
                     </span>
                                 </div>
                             </div>
+                                <div class="col-md-offset-2 col-md-9">
+                                    <button id="submit" class="btn btn-info" type="submit">
+                                        <i class="icon-ok bigger-110"></i>
+                                        提交
+                                    </button>
+
+                                    &nbsp; &nbsp; &nbsp;
+                                    <button class="btn btn-danger" type="reset">
+                                        <i class="icon-undo bigger-110"></i>
+                                        重置
+                                    </button>
+                                </div>
+                            </form>
                         </div>
 
                         <div id="reserve" class="tab-pane fade in">
@@ -888,7 +916,7 @@
                     </div>
                 </div>
 
-                <!-- <div class="col-md-offset-2 col-md-9">
+<!--                 <div class="col-md-offset-2 col-md-9">
             <button id="submit" class="btn btn-info" type="submit">
                 <i class="icon-ok bigger-110"></i>
                 提交

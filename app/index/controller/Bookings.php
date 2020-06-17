@@ -27,17 +27,28 @@ class Bookings extends Application
         $dayArr = [];
         $beaWhere = [];
         $biWhere = [];
+        $roomWhere = [];
         $search = [];
+        $type = 'bea';
         if (!empty(Request::get())) {
             $params = input('get.');
-            if (!empty($params['consultant'])) {
-                $beaWhere[] = ['uid', '=', $params['consultant']];
-                $search['consultant'] = (int) $params['consultant'];
+
+            //用于判断是否有设置type以及对于type的id查询
+            if (!empty($params['type'])) {
+                if($params['type'] == 'bea') {
+                    if(!empty($params['search_id'])) {
+                        $beaWhere[] = ['uid', '=', $params['search_id']];
+                        $search['search_id'] = (int) $params['search_id'];
+                    }
+                } else if($params['type'] == 'room'){
+                    if(!empty($params['search_id'])) {
+                        $roomWhere[] = ['id', '=', $params['search_id']];
+                        $search['search_id'] = (int) $params['search_id'];
+                    }
+                }
+                $type = $params['type'];
             }
-            if (!empty($params['room_id'])) {
-                $biWhere[] = ['b.room_id', '=', $params['room_id']];
-                $search['room_id'] = (int) $params['room_id'];
-            }
+
             if (!empty($params['store_id'])) {
                 $biWhere[] = ['b.store_id', '=', $params['store_id']];
                 $search['store_id'] = (int) $params['store_id'];
@@ -63,8 +74,7 @@ class Bookings extends Application
 
         $beaWhere[] = ['category', '=', 'COSMETOLOGIST'];
         $result = User::field('uid as id, for_short as title')->order("for_short asc")->where($beaWhere)->select()->toArray();
-
-        $roomArr = Room::select();
+        $roomArr = Room::where($roomWhere)->select();
         $time = workingHours();
         $colorArr = Booking::event_colors();
         $statusArr = Booking::event_status_zn();
@@ -84,8 +94,7 @@ class Bookings extends Application
             $item['status_name'] = array_search($item['status'],$statusArr);
             $item['room_id'] = empty($item['room_id']) ? [] : explode(',', $item['room_id']);
         }
-//        dump($booking_item);die;
-        return View::fetch('index', ['date_start' => $date_start, 'date_end' => $date_end, 'beauticianArr' => $result, 'bookingItems' => $booking_item, 'time' => $time, 'dayArr' => $dayArr,'search'=>$search,'adArr'=>$adArr,'roomArr' => $roomArr,'type'=>'room']);
+        return View::fetch('index', ['date_start' => $date_start, 'date_end' => $date_end, 'beauticianArr' => $result, 'bookingItems' => $booking_item, 'time' => $time, 'dayArr' => $dayArr,'search'=>$search,'adArr'=>$adArr,'roomArr' => $roomArr,'type'=>$type]);
     }
 
     public function qsearch()

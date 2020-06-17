@@ -84,7 +84,7 @@
                             WhatsApps
                         </a>
                         <a class="btn btn-default  btn-sm btn-close" href="#">
-                            关闭
+                            關閉
                         </a>
                         {if $item.status == 5 && $item.new_member}
                             <a class="btn btn-default  btn-sm new_invoice" href="#" data-id="{$item.id}">
@@ -105,6 +105,8 @@
         </div>
 
         <input type="hidden" name="id" id="id" value="{$item.id|default=''}">
+        <input type="hidden" id="panel" value="booking">
+
         <div class="row pt-2">
             <div class="col-xs-12 col-md-6">
                 <div class="col-md-8"><label class="text-primary">預約資料</label></div>
@@ -426,6 +428,8 @@
 
 {block name="js"}
 {js href="__JS__/application.js" /}
+{include file='public/member_common' /}
+
 <script type="text/javascript">
     var working_hourse = {:json_encode($workingHours) } ;
 
@@ -592,46 +596,6 @@
                         let invoice = res.invoice;
                         $("#invoice_id").val(invoice.id);
                         $("#invoice_no").val(invoice.code);
-                    }
-                }
-            })
-        });
-
-        $(document).on("input propertychange", "#member_no", function () {
-            let member_no = $(this).val();
-
-            $.ajax({
-                url: "{:url('members/find_member')}",
-                data: {code: member_no},
-                success(res) {
-                    if (res.member) {
-                        let member = res.member;
-                        let notes = res.notes;
-                        $("#member_id").val(member.id);
-                        $("#member_no").val(member.member_no);
-                        $("#name").val(member.first_name);
-                        $("#phone").val(member.phone_mobile);
-
-                        let select = document.getElementById('salutation'), i;
-                        for (i = 0; i < select.options.length; i ++ ) {
-                            if (select.options[i].text == member.salutation) {
-                                select.options[i].selected = true;
-                                break;
-                            }
-                        }
-                        if (member.no_service) {
-                            layer.tips('這個會員沒有任何可使用的套票', '#member_no', {
-                                tips: 3
-                            });
-                        }
-
-                        let bookingNotes = $("#booking-notes");
-                        bookingNotes.removeClass('hidden');
-                        bookingNotes.find("#absence").text("預約 " + notes.booking + " 次,  " + notes.absence + " 次缺席 (" + notes.percent + "%)").find("#birthday").text(notes.birthday);
-                        bookingNotes.find("#birthday").text(notes.birthday);
-                        if (notes.reservation_remarks != '') {
-                            bookingNotes.find("#remarks").text(notes.reservation_remarks);
-                        }
                     }
                 }
             })

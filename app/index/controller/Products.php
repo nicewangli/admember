@@ -90,14 +90,16 @@ class Products extends Application
             $param['created_time'] = time();
 
             //编号
-            $param['code'] = $this->getConfigNo('product','product');
+            if(!isset($param['code'])) {
+                $param['code'] = $this->getConfigNo('product','product');
+            }
             $result = $model::create($param);
             return json(['code' => 200]);
         }
         $products_unit = $mapping::where('type_id', 'products_unit')->select();
         $brand = $mapping::where('type_id', 'brand')->select();
-
-        return view('add', ['products_unit' => $products_unit, 'brand' => $brand]);
+        $code = $this->getConfigNo('product','product');
+        return view('add', ['products_unit' => $products_unit, 'brand' => $brand,'code' => $code]);
     }
 
     //修改

@@ -89,7 +89,10 @@ class Application extends BaseController
             'userfilter',
             'calendar',
             'index',
+		    'index1',
+            'index2',
             'add',
+            'form',
             'edit',
             'del',
             'modify',
@@ -132,7 +135,8 @@ class Application extends BaseController
             'booking_to_use_package',
             'del_fast',
             'add_fast',
-            'change_status'
+            'change_status',
+            'members'
 
         ];
 

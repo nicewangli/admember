@@ -142,6 +142,7 @@
                 }, {
                     field: 'name',
                     title: '名稱',
+                    formatter:spFormatter,
                 }, {
                     field: 'status',
                     title: '狀態',
@@ -198,6 +199,11 @@
                 name += '->' + row.category.name;
             }
             return name;
+        }
+
+        function spFormatter(value,row,index) {
+            let html = '<a href="#" ondblclick=services('+row.id+')>'+value+'</a>';
+            return html
         }
     </script>
     {include file='public/content_common' /}

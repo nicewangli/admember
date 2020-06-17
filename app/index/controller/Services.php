@@ -28,20 +28,19 @@ class Services extends Application
         $order = isset($param['order']) ?  $param['order'] :  'desc';
         $where = [];
 
-        if ($param['status'] != '') {
-            $where[] = ['status', '=', $param['status']];
-        }
-
-        if ($param['field'] == 'category') {
-            if ($param['parent_category_id']) {
-                $where[] = ['parent_category_id', '=', $param['parent_category_id']];
+        if(isset($param['filter'])) {
+            $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
+            if (isset($filter['category'])) {
+                $where[] = ['parent_category_id', '=', $filter['category']];
             }
-            if ($param['category_id']) {
-                $where[] = ['category_id', '=', $param['category_id']];
+            if (isset($filter['code'])) {
+                $where[] = ['code', 'like', '%' . trim($filter['code']) . '%'];
             }
-        } else {
-            if ($param['keyword']) {
-                $where[] = [$param['field'], 'like', '%'.trim($param['keyword']).'%'];
+            if (isset($filter['name'])) {
+                $where[] = ['name', 'like', '%' . trim($filter['name']) . '%'];
+            }
+            if (isset($filter['status'])) {
+                $where[] = ['status', '=', $filter['status']];
             }
         }
 
@@ -94,7 +93,9 @@ class Services extends Application
             $param['created_time'] = time();
 
             //编号
-            $param['code'] = $this->getConfigNo('serve','service');
+            if(!isset($param['code'])) {
+                $param['code'] = $this->getConfigNo('serve','service');
+            }
             $result = $model::create($param);
 
             if (isset($param['item'])) {
@@ -105,8 +106,8 @@ class Services extends Application
             return json(['code' => 200]);
         }
 
-
-        return view('add');
+        $code = $this->getConfigNo('serve','service');
+        return view('add',['code'=>$code]);
     }
 
     //修改

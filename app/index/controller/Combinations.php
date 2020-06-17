@@ -89,7 +89,9 @@ class Combinations extends Application
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
             //编号
-            $param['code'] = $this->getConfigNo('product_mix','combination');
+            if(!isset($param['code'])) {
+                $param['code'] = $this->getConfigNo('product_mix','combination');
+            }
             $result = $model::create($param);
 
             if (isset($param['item'])) {
@@ -99,10 +101,11 @@ class Combinations extends Application
 
             return json(['code' => 200]);
         }
+        $code = $this->getConfigNo('product_mix','combination');
         $products_unit = $mapping::where('type_id', 'products_unit')->select();
         $brand = $mapping::where('type_id', 'brand')->select();
 
-        return view('add', ['products_unit' => $products_unit, 'brand' => $brand]);
+        return view('add', ['products_unit' => $products_unit, 'brand' => $brand,'code'=>$code]);
     }
 
     //修改

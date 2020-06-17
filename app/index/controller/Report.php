@@ -11,12 +11,20 @@ class Report extends Application
 {
     public function index()
     {
-        return View::fetch('form');
+        return View::fetch('test');
     }
-    
+
+    public function index1()
+    {
+        return View::fetch('test2');
+    }
+    public function index2()
+    {
+        return View::fetch('test1');
+    }
     #销售报表
     public function sales(){
-    	return view();
+        return View::fetch();
     }
     
     #基本报表

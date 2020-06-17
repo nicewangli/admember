@@ -23,6 +23,7 @@ class WaLogs extends Application
         $user_tel = $user->tel;
         $phone = input('phone');
         $search = input('search');
+        $condition = input('condition');
         $from_me = input('from_me');
 //        if(!empty($search)) {
 //            $where = [];
@@ -43,7 +44,7 @@ class WaLogs extends Application
         } else {
             View::assign(['type' => 'nav-all-tab']);
         }
-        $needData = $this->getNeedData($phone, $type, $from_me,$search);
+        $needData = $this->getNeedData($phone, $type, $from_me,$search,$condition);
         $param = $request->param();
         $model = $model->scope('where', $param);
         if (isset($param['export_data']) && $param['export_data'] == 1) {
@@ -69,6 +70,8 @@ class WaLogs extends Application
             'members' => $needData['member'],
             'waLog' => $needData['waLog'],
             'waLogInfo' => $needData['waLogInfo'],
+            'search' => $needData['search'],
+            'condition' => $needData['condition'],
             'page' => $data->render(),
             'total' => $data->total(),
             'user_tel' => $user_tel
@@ -112,7 +115,7 @@ class WaLogs extends Application
     }
 
     //显示member
-    public function getNeedData($phone = '', $type = '', $from_me = '',$search = '')
+    public function getNeedData($phone = '', $type = '', $from_me = '',$search = '',$condition = '')
     {
 
         $typeArr = [
@@ -130,11 +133,22 @@ class WaLogs extends Application
         if (isset($from_me)) {
             $waWhere[] = ['from_me', '=', $from_me];
         }
-        if (isset($search)) {
-            $memberWhereOr[] = ['code','like','%'.$search.'%'];
-            $memberWhereOr[] = ['first_name','like','%'.$search.'%'];
-            $memberWhereOr[] = ['phone_mobile','like','%'.$search.'%'];
+        if (isset($condition)) {
+            if (isset($search)) {
+                if($condition=='member_no') {
+                    $memberWhere[] = ['code','like','%'.$search.'%'];
+                } else if ($condition == 'member_name') {
+                    $memberWhere[] = ['first_name','like','%'.$search.'%'];
+                } else {
+                    $memberWhere[] = ['phone_mobile','like','%'.$search.'%'];
+                }
+            }
         }
+//        if (isset($search)) {
+//            $memberWhereOr[] = ['code','like','%'.$search.'%'];
+//            $memberWhereOr[] = ['first_name','like','%'.$search.'%'];
+//            $memberWhereOr[] = ['phone_mobile','like','%'.$search.'%'];
+//        }
         if (!empty($phone)) {
             $to_phone = wa_phone_format($phone);
             $memberWhere[] = ['phone_mobile', '=', $phone];
@@ -145,7 +159,7 @@ class WaLogs extends Application
         } else {
             $waLogInfoArr = [];
         }
-        $memberArr = $member->where($memberWhere)->whereOr($memberWhereOr)->paginate([
+        $memberArr = $member->where($memberWhere)->paginate([
             'list_rows' => 10,
             'var_page' => 'member_page',
             'query' => request()->param(),
@@ -162,7 +176,7 @@ class WaLogs extends Application
         $waLogArr = $waLog->setWaLogArray($waLogArr);
 
 
-        return ['member' => $memberArr, 'waLog' => $waLogArr, 'waLogInfo' => $waLogInfoArr];
+        return ['member' => $memberArr, 'waLog' => $waLogArr, 'waLogInfo' => $waLogInfoArr,'search' => $search,'condition' => $condition];
     }
 
     //whatsApp消息弹窗页面
