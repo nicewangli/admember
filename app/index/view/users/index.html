@@ -149,6 +149,9 @@
             filterControl: true,
             pageSize: 10,
             pageList: [10, 20, 50, 100],
+            onDblClickRow(row,$element) {
+                turnUser(row.uid);
+            },
             onCheck: function(row,ele){
                 $.get('contacts/check_one',{opt:'checked',id: row.id},function(data){
                     display_selected(data);

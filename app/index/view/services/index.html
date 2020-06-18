@@ -216,6 +216,9 @@
                 search: false,                                   //显示搜索框
                 pageSize: 10,                                    //每页的记录行数（*）
                 pageList: [10, 20, 50, 100],
+                onDblClickRow(row,$element) {
+                    services(row.id);
+                },
                 columns: [{
                     checkbox: true,
                     clickToSelect: true

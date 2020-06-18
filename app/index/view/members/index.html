@@ -123,7 +123,7 @@
 <!--                            <th data-field="check_status" data-checkbox="true"></th>-->
                             <th data-field="code" data-sortable="true" data-filter-control="input" data-width="120">編號</th>
                             <th data-field="first_name" data-sortable="true" data-filter-control="input" data-formatter="showFm">名稱(英文)</th>
-                            <th data-field="last_name" data-sortable="true" data-filter-control="input" data-formatter="memberDb">名稱(中文)</th>
+                            <th data-field="last_name" data-sortable="true" data-filter-control="input">名稱(中文)</th>
                             <th data-field="opt" data-sortable="true" data-filter-control="input">分類</th>
                             <th data-field="phone_mobile" data-sortable="true" data-filter-control="input">手提電話</th>
                             <th data-field="department" data-sortable="true" data-visible="false" data-filter-control="input">住宅電話</th>
@@ -179,6 +179,9 @@
             filterControl: true,
             pageSize: 10,
             pageList: [10, 20, 50, 100],
+            onDblClickRow(row,$element) {
+                turnMember(row.id);
+            },
             onCheck: function(row,ele){
                 $.get('contacts/check_one',{opt:'checked',id: row.id},function(data){
                     display_selected(data);

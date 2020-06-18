@@ -239,6 +239,7 @@ class ServicePackages extends Application
 
         }else{
             $where[] = ['i.member_id', '=', $member_id];
+            $stagingWhere[] = ['ps.member_id', '=', $member_id];
 
             $whereOr = $where;
 
