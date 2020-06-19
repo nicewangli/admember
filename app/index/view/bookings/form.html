@@ -99,6 +99,9 @@
                         <a class="btn btn-default btn-sm btn-close" href="#">
                             取消
                         </a>
+                        <a class="btn  btn-default btn-sm" href="#" onclick="wa_info()">
+                            WhatsApps
+                        </a>
                     {/if}
                 </div>
             </div>
@@ -404,14 +407,16 @@
                         </div>
                     </div>
 
-                    {if !empty($notes.reservation_remarks)}
-                    <div class="form-group row">
+                    <div class="form-group row reservation_remarks {if empty($notes.reservation_remarks)} hidden {/if}">
                         <label class="col-md-3 control-label">預約備註：</label>
                         <div class="col-md-9">
-                            <label id="remarks">{$notes.reservation_remarks|default=''}</label>
+                            {if empty($notes.reservation_remarks)}
+                            <label class="remarks"></label>
+                            {else /}
+                            <label class="remarks">{$notes.reservation_remarks|raw}</label>
+                            {/if}
                         </div>
                     </div>
-                    {/if}
                 </div>
             </div>
         </div>
@@ -421,7 +426,7 @@
             <div class="col-xs-12 col-md-12 bg-secondary disabled color-palette text-center">最後更新：{$item.updated_user_name|default=''} / {$item.update_time|default=''}</div>
         </div>
         {/if}
-
+        <input type="hidden" id="wa_acc" value="" name="sender_jid">
     </form>
 </section>
 {/block}
@@ -572,7 +577,11 @@
 
     function wa_info(){
         let phone = $("#phone").val();
-        let senderId = $("#user_tel").val();
+        let senderId = $("#wa_acc").val();
+        if(phone === '') {
+            return false;
+        }
+        // let senderId = $("#user_tel").val();
         let url = '{:url("wa_logs/wa_info?phone=")}'+phone+'&sender_jid='+senderId;
         layer.open({
             type: 2,

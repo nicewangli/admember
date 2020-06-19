@@ -23,7 +23,7 @@ class Member extends Model
 
     public function findMembers($where)
     {
-        $find = $this->field('id, first_name, code as member_no, phone_mobile, salutation')->where($where)->select();
+        $find = $this->field('id, first_name, code as member_no, phone_mobile, salutation,wa_acc')->where($where)->select();
         return $find;
     }
 

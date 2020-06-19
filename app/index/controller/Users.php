@@ -181,7 +181,7 @@ class Users extends Application
     {
         $dutyArr = getDuty();
         $param = input('get.');
-        $sort = isset($param['sort']) ? $param['sort'] : 'code';
+        $sort = isset($param['sort']) ? $param['sort'] : 'for_short';
         $order = isset($param['order']) ? $param['order'] : 'asc';
         $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
         $where = [];

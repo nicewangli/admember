@@ -40,7 +40,6 @@
     <input type="hidden" id="invoice_id" value="{$invoice_id}">
     <input type="hidden" id="member_id" value="{$member_id}">
     <input type="hidden" id="type" value="{$type}">
-    <input type="hidden" id="ids" value="{$ids}">
     <div class="card-body">
         <div class="row pt-2">
 
@@ -152,11 +151,11 @@
                 let nodes = '';
 
                 let number = parseInt(parent.$(".items_count").val());
-                ids = ids.split(",");
+                // ids = ids.split(",");
 
                 $.each(rows, function (index, element) {
 
-                    if (ids.indexOf(element.id.toString()) == -1) {
+                    // if (ids.indexOf(element.id.toString()) == -1) {
 
                         nodes += '<tr class="border-b service">\n' +
                             '    <td width="8%" align="center" data-id="">\n' +
@@ -190,7 +189,7 @@
                             '</td>'
                             '</tr> \n'
                         number++;
-                    }
+                    // }
                 })
                 parent.$("#service_package").removeClass('hidden');
                 parent.$("#member").before(nodes);

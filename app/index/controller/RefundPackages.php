@@ -170,8 +170,9 @@ class RefundPackages extends Application
         $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
         $member_id = $param['member_id'];
         $where = [];
-
-        $items = $packageStagingItem->order('id', 'desc')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'psi.service_package_id = sp.id')->leftJoin('invoice i', 'i.id = ps.invoice_id')->leftJoin('member m', 'i.member_id = m.id')->field('psi.*,ps.code as ps_no,m.code as member_no,m.id as member_id,i.code as invoice_no,i.id as invoice_id,sp.name as sp_name,SUM(psi.current_payment) as sum_payment,i.final_total')->group('psi.service_package_id,ps.invoice_id')->where('m.id', '=', $member_id)->select()->toArray();
+        $items = $packageStagingItem->alias('psi')->leftJoin('package_staging ps','ps.id = psi.package_staging_id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->field('psi.*,ps.code as ps_no,sp.name as sp_name')->where('ps.member_id','=',$member_id)->where('ps.is_first','=',1)->select()->toArray();
+        dump($items);die;
+//        $items = $packageStagingItem->order('id', 'desc')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'psi.service_package_id = sp.id')->leftJoin('invoice i', 'i.id = ps.invoice_id')->leftJoin('member m', 'i.member_id = m.id')->field('psi.*,ps.code as ps_no,m.code as member_no,m.id as member_id,i.code as invoice_no,i.id as invoice_id,sp.name as sp_name,SUM(psi.current_payment) as sum_payment,i.final_total')->group('psi.service_package_id,ps.invoice_id')->where('m.id', '=', $member_id)->select()->toArray();
 //        $items = $model->alias('m')->leftJoin('invoice i','i.member_id = m.id')->leftJoin('package_staging ps','ps.invoice_id = i.id')->leftJoin('package_staging_item psi','psi.package_staging_id = ps.id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->order('psi.id','desc')->field('psi.*,ps.ps_no,m.member_no,m.id as member_id,i.invoice_no,i.id as invoice_id,sp.name as sp_name,SUM(psi.current_payment) as sum_payment')->group('psi.service_package_id,ps.invoice_id')->where('m.id','=',$member_id)->select()->toArray();
         if (isset($param['search'])) {
             $where[] = ['name', 'like', '%' . $param['search'] . '%'];

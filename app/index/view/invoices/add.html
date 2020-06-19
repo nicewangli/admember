@@ -648,7 +648,16 @@
         })
     }
 
-
+    function layer_print(id)
+    {
+        //打印弹窗
+        layer.open({
+            type: 2,
+            title: '打印存根',
+            area: ['700px', '98%'],
+            content: '{:url("print_page")}?id='+id,
+        });
+    }
     //計算轉套票總值
     function deduction(idx) {
         let transfer_value, package_avg, deduction, max_value, max_deduction;
@@ -886,7 +895,7 @@
                         }
                         //注意：parent 是 JS 自带的全局对象，可用于操作父页面
                         // let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                        parent.layer.close(parent.layer_print(res.id));
+                        parent.layer.close(layer_print(res.id));
                     }
                 }
             })

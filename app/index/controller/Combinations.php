@@ -31,6 +31,25 @@ class Combinations extends Application
         $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
         $where = [];
 
+        if (isset($param['status']) && $param['status'] != '') {
+            $where[] = ['status', '=', $param['status']];
+        }
+
+        if (isset($param['field'])) {
+            if ($param['field'] == 'category') {
+                if ($param['parent_category_id']) {
+                    $where[] = ['parent_category_id', '=', $param['parent_category_id']];
+                }
+                if ($param['category_id']) {
+                    $where[] = ['category_id', '=', $param['category_id']];
+                }
+            } else {
+                if ($param['keyword']) {
+                    $where[] = [$param['field'], 'like', '%' . trim($param['keyword']) . '%'];
+                }
+            }
+        }
+
         if(isset($param['filter'])) {
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
             if (isset($filter['category'])) {

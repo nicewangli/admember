@@ -472,7 +472,8 @@ class Invoices extends Application
         $result = $model->alias('i')->leftJoin('member m','m.id = i.member_id')->field('i.*,m.code as member_no,m.first_name')->find($id);
         $inv_items = $invoiceItem->findItems($id);
         $inv_payments = $invoicePayment->findPayments($id);
-        $inv_sellers = $invoiceSeller->findSellers($id);
+        //TODO:print给个true，列印bug
+        $inv_sellers = $invoiceSeller->findSellers($id,true);
         $payment = $result['total_amount'] - $result['final_total'];
         View::assign(
             [

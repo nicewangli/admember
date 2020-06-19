@@ -15,7 +15,7 @@
     {js href="__PLUGIN__/bootstrap/js/bootstrap.bundle.min.js" /}
     {js href="__JS__/adminlte.min.js" /}
     {js href="__JS__/init.js" /}
-    {js href="__JS__/application.js" /}
+<!--    {js href="__JS__/application.js" /}-->
 
     <!-- 加载 Select2 -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.0.12/dist/js/select2.full.min.js"></script>
@@ -52,8 +52,8 @@
                             <label class="col-md-3 control-label" for="code">編號：</label>
                             <div class="col-md-7">
                                 <input class="form-control" type="text" id="code" name="code"
-                                       {if isset($code)} value="{$code}" {else/} value="{$data.code|default=''}" readonly{/if}
-                                       >
+                                       {if isset($code)} value="{$code}" {else/} value="{$data.code|default=''}" {/if}
+                                readonly >
                             </div>
                         </div>
                         
@@ -221,7 +221,7 @@
             let data = e.params.data;
             $("#category_id").children().not(":eq(0)").remove();
             initRolesChildCategory(data.id);
-        })
+        });
 
 
         function initRolesChildCategory(id) {
@@ -257,6 +257,22 @@
                 success(res){
                     if(res.code == 200){
                         parent.$('#services-grid').bootstrapTable('refresh');
+
+                        if (res.id > 0) {
+                            if (confirm('需要新增套票嗎？') !== false) {
+                                let url = '{:url("service_packages/service_to_package?id=")}' + res.id;
+                                parent.layer.open({
+                                    type: 2,
+                                    title: 'Service Package Information',
+                                    fix: true,
+                                    shade: 0,
+                                    resize: true,
+                                    maxmin: true,
+                                    area: ['90%', '80%'],
+                                    content: url
+                                });
+                            }
+                        }
                         //注意：parent 是 JS 自带的全局对象，可用于操作父页面
                         let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                         parent.layer.close(index);

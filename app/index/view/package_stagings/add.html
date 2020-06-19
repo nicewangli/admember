@@ -425,7 +425,16 @@
             });
         });
     }
-
+    function layer_print(id)
+    {
+        //打印弹窗
+        layer.open({
+            type: 2,
+            title: '打印存根',
+            area: ['700px', '98%'],
+            content: '{:url("print_page")}?id='+id,
+        });
+    }
 
     function del(){
         let id = 0;
@@ -825,7 +834,7 @@
                         // window.location.href = '{:url("invoices/print_page")}?type=ps&&id='+res.id;
                         // parent.layer_print(res.id)
                         // let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                        parent.layer.close(parent.layer_print(res.id));
+                        parent.layer.close(layer_print(res.id));
                         // parent.layer_print();
                     }
 

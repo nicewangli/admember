@@ -81,7 +81,7 @@ class Bookings extends Application
         $ads = Attendance::attendanceType();
         $model = new BookingItem();
         //
-        $item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->leftJoin('member m','m.id = b.member_id')->leftJoin('users u','u.uid = bi.beautician1')->leftJoin('users cu','cu.uid = b.consultant_id')->leftJoin('room r','r.id = b.room_id')->field('bi.*,b.status,b.remark,b.is_deduct,b.booking_date,b.id as bid,b.room_id,b.name as m_name,b.is_member,r.name as r_name,u.for_short as u_name,cu.for_short as cu_name,b.phone as phone_mobile')->where($biWhere);
+        $item = $model->alias('bi')->leftJoin('booking b','b.id = bi.booking_id')->leftJoin('member m','m.id = b.member_id')->leftJoin('users u','u.uid = bi.beautician1')->leftJoin('users cu','cu.uid = b.consultant_id')->leftJoin('room r','r.id = b.room_id')->field('bi.*,b.status,b.remark,b.is_deduct,b.booking_date,b.id as bid,b.room_id,b.name as m_name,b.is_member,r.name as r_name,u.for_short as u_name,cu.for_short as cu_name,b.phone as phone_mobile,m.code as member_no')->where($biWhere);
         $booking_item = $item->where($biWhere)->select()->toArray();
         $adArr = Attendance::field('user_id,vdate,start_time,end_time,item')->select()->toArray();
         foreach ($adArr as &$ad) {

@@ -26,17 +26,26 @@ class InvoiceSeller extends Model
         $this->insertAll($data);
     }
 
-    public function findSellers($id)
+    //TODO:先加个print判断，如果为列印
+    public function findSellers($id,$print=false)
     {
         $result = $this->alias('is')->leftJoin('users u', 'is.seller_id = u.uid')->field('is.*, u.for_short as seller_name')->where('is.invoice_id', $id)->order('is.id ASC')->select();
         $consultant = '';
         $beautician = '';
         foreach ($result as $key => $value) {
             if ($value['seller_type'] == 1) {  //顧問
-                $consultant .= $value['seller_name'] . '<span class="text-primary">(' . $value['commission_rate'] . '%)</span>, ';
+                if(!$print) {
+                    $consultant .= $value['seller_name']  . $value['commission_rate'] . '%,';
+                }else {
+                    $consultant .= $value['seller_name'] . '<span class="text-primary">(' . $value['commission_rate'] . '%)</span>, ';
+                }
             }
             elseif($value['seller_type'] == 2) {  //美容師
-                $beautician .= $value['seller_name'] . '<span class="text-primary">(' . $value['commission_rate'] . '%)</span>, ';
+                if(!$print) {
+                    $beautician .= $value['seller_name']  . $value['commission_rate'] . '%,';
+                }else {
+                    $beautician .= $value['seller_name'] . '<span class="text-primary">(' . $value['commission_rate'] . '%)</span>, ';
+                }
             }
         }
 

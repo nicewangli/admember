@@ -28,6 +28,25 @@ class Services extends Application
         $order = isset($param['order']) ?  $param['order'] :  'desc';
         $where = [];
 
+        if (isset($param['status']) && $param['status'] != '') {
+            $where[] = ['status', '=', $param['status']];
+        }
+
+        if (isset($param['field'])) {
+            if ($param['field'] == 'category') {
+                if ($param['parent_category_id']) {
+                    $where[] = ['parent_category_id', '=', $param['parent_category_id']];
+                }
+                if ($param['category_id']) {
+                    $where[] = ['category_id', '=', $param['category_id']];
+                }
+            } else {
+                if ($param['keyword']) {
+                    $where[] = [$param['field'], 'like', '%' . trim($param['keyword']) . '%'];
+                }
+            }
+        }
+
         if(isset($param['filter'])) {
             $filter = json_decode($param['filter'], JSON_UNESCAPED_UNICODE);
             if (isset($filter['category'])) {
@@ -97,13 +116,13 @@ class Services extends Application
                 $param['code'] = $this->getConfigNo('serve','service');
             }
             $result = $model::create($param);
+            $service_id = $result->id;
 
             if (isset($param['item'])) {
-                $service_id = $result->id;
                 $serviceItem->saveItem($service_id, $param['item']);
             }
 
-            return json(['code' => 200]);
+            return json(['code' => 200, 'id' => $service_id]);
         }
 
         $code = $this->getConfigNo('serve','service');

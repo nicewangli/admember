@@ -106,7 +106,15 @@ $(function(){
     $('.layer-close').click(function () {
         var index = parent.layer.getFrameIndex(window.name);
         parent.layer.close(index);
-    })
+    });
+
+    //禁止enter提交表單
+    document.onkeydown = function(e) {
+        var ev = (typeof event!= 'undefined') ? window.event : e;
+        if(ev.keyCode == 13) {
+            return false;
+        }
+    }
 
 })
 

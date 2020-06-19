@@ -61,7 +61,7 @@ class Members extends Application
                         $where[] = ['m.'.$field, '=', $categors];
                     }
                     else {
-                        $where[] = ['m.'.$field, 'like', $filter[$field] . '%'];
+                        $where[] = ['m.'.$field, 'like', '%'.$filter[$field] . '%'];
                     }
                 }
             }
