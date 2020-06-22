@@ -111,10 +111,6 @@ class Services extends Application
             $param['created_user_id'] = getUserId();
             $param['created_time'] = time();
 
-            //编号
-            if(!isset($param['code'])) {
-                $param['code'] = $this->getConfigNo('serve','service');
-            }
             $result = $model::create($param);
             $service_id = $result->id;
 
@@ -125,8 +121,7 @@ class Services extends Application
             return json(['code' => 200, 'id' => $service_id]);
         }
 
-        $code = $this->getConfigNo('serve','service');
-        return view('add',['code'=>$code]);
+        return view('add');
     }
 
     //修改
@@ -181,10 +176,37 @@ class Services extends Application
         return redirect(url('index'));
     }
 
+    //删除item
+    public function del_item(ServiceItem $serviceItem)
+    {
+        $ids = input('ids', []);
+        $result = $serviceItem->whereIn('id', $ids)->delete();
+        if ($result) {
+            return json(['code' => 200]);
+        } else {
+            return json(['code' => 0]);
+        }
+    }
 
     //
     public function services(Service $model)
     {
         return View::fetch('services');
+    }
+
+    //生成service編號
+    public function service_code(Service $model)
+    {
+        $code = input('code');
+        $max = $model->where('code', 'REGEXP', $code.'[0-9]*$')->max('code', false);
+        //正则去掉编号中的字母
+        $str = preg_replace('|[a-zA-Z/]+|', '', $max);
+        //最大编号加一
+        $no = (string)((int)$str + 1);//编号拼凑
+        for ($i = strlen($no); $i < strlen($this->sysConfig['serve_code']); ++$i) {
+            $no = '0' . $no;
+        }
+        $no = strtoupper($code) . $no;
+        return json(['code' => $no]);
     }
 }

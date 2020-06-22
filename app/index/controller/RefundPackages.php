@@ -7,11 +7,15 @@ namespace app\index\controller;
 use app\Application;
 use app\model\Invoice;
 use app\model\Member;
+use app\model\PackageStaging;
 use app\model\PackageStagingItem;
+use app\model\PackageStagingPayment;
+use app\model\PackageStagingSeller;
 use app\model\RefundPackage;
 use app\model\RefundPackageItem;
 use app\model\ServicePackage;
 use app\model\Store;
+use think\facade\Session;
 use think\Request;
 use think\facade\View;
 use think\Response;
@@ -96,7 +100,7 @@ class RefundPackages extends Application
             $rpId = $result->id;
             //根据细分项目的发票 去减  金额  package_staging_item_id =》 package_staging_item.status = 0
             $rpItem->saveItem($rpId, $param);
-            return json(['code' => 200]);
+            return json(['code' => 200,'id' => $rpId]);
         }
         return View::fetch('form', ['type' => 'add','storeArr'=>$storeArr]);
     }
@@ -170,8 +174,8 @@ class RefundPackages extends Application
         $ids = isset($param['ids']) ? explode(',', $param['ids']) : [];
         $member_id = $param['member_id'];
         $where = [];
-        $items = $packageStagingItem->alias('psi')->leftJoin('package_staging ps','ps.id = psi.package_staging_id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->field('psi.*,ps.code as ps_no,sp.name as sp_name')->where('ps.member_id','=',$member_id)->where('ps.is_first','=',1)->select()->toArray();
-        dump($items);die;
+        $items = $packageStagingItem->alias('psi')->leftJoin('package_staging ps','ps.id = psi.package_staging_id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->field('psi.*,ps.code as ps_no,sp.name as sp_name,ps.member_id')->where('ps.member_id','=',$member_id)->where('ps.is_first','=',1)->select()->toArray();
+//        dump($items);die;
 //        $items = $packageStagingItem->order('id', 'desc')->alias('psi')->leftJoin('package_staging ps', 'ps.id = psi.package_staging_id')->leftJoin('service_package sp', 'psi.service_package_id = sp.id')->leftJoin('invoice i', 'i.id = ps.invoice_id')->leftJoin('member m', 'i.member_id = m.id')->field('psi.*,ps.code as ps_no,m.code as member_no,m.id as member_id,i.code as invoice_no,i.id as invoice_id,sp.name as sp_name,SUM(psi.current_payment) as sum_payment,i.final_total')->group('psi.service_package_id,ps.invoice_id')->where('m.id', '=', $member_id)->select()->toArray();
 //        $items = $model->alias('m')->leftJoin('invoice i','i.member_id = m.id')->leftJoin('package_staging ps','ps.invoice_id = i.id')->leftJoin('package_staging_item psi','psi.package_staging_id = ps.id')->leftJoin('service_package sp','psi.service_package_id = sp.id')->order('psi.id','desc')->field('psi.*,ps.ps_no,m.member_no,m.id as member_id,i.invoice_no,i.id as invoice_id,sp.name as sp_name,SUM(psi.current_payment) as sum_payment')->group('psi.service_package_id,ps.invoice_id')->where('m.id','=',$member_id)->select()->toArray();
         if (isset($param['search'])) {
@@ -215,7 +219,6 @@ class RefundPackages extends Application
 //            if($value['category_id']){
 //                $items[$key]['category'] = $category::where('id', $value['category_id'])->value('name');
 //            }
-
             if (!empty($ids)) {
                 if (in_array($value['id'], $ids)) {
                     $items[$key]['checked'] = true;
@@ -224,12 +227,40 @@ class RefundPackages extends Application
                 }
             }
         }
-
         $data = [
             'rows' => $items,
             'total' => $total,
         ];
         return json($data);
+    }
+
+    public function print_page(RefundPackageItem $refundPackageItem,RefundPackage $model)
+    {
+        $id = input('id');
+        $divFor = [
+            [
+                'type' => '會員存根',
+                'div_id' => 'member_print'
+            ],[
+                'type' => '公司存根',
+                'div_id' => 'company_print'
+            ]
+        ];
+        $result = $model->alias('rp')->leftJoin('member m','rp.member_id = m.id')->field('rp.*,m.first_name,m.code as member_no')->find($id);
+        $items = $refundPackageItem->findItems($id);
+        $all_refund = 0.0;
+        foreach ($items as $item) {
+            $all_refund += (float)$item['refund'];
+        }
+
+        View::assign([
+            'result' => $result,
+            'items' => $items,
+            'username' => Session::get('username'),
+            'all_refund' =>$all_refund,
+            'divFor' => $divFor
+        ]);
+        return View::fetch('print');
     }
 
 }

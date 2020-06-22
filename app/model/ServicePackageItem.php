@@ -19,12 +19,12 @@ class ServicePackageItem extends Model
     public function saveItem($id, $data)
     {
 
-        $this->where('service_package_id', $id)->delete();
+//        $this->where('service_package_id', $id)->delete();
 
         foreach ($data as $key => $value){
             $data[$key]['service_package_id'] = $id;
         }
-        $this->insertAll($data);
+        $this->saveAll($data);
     }
 
     public function deleteItem($service_package_id)

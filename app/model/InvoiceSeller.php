@@ -34,15 +34,15 @@ class InvoiceSeller extends Model
         $beautician = '';
         foreach ($result as $key => $value) {
             if ($value['seller_type'] == 1) {  //顧問
-                if(!$print) {
-                    $consultant .= $value['seller_name']  . $value['commission_rate'] . '%,';
+                if($print) {
+                    $consultant .= $value['seller_name']  . $value['commission_rate'] .'%,';
                 }else {
                     $consultant .= $value['seller_name'] . '<span class="text-primary">(' . $value['commission_rate'] . '%)</span>, ';
                 }
             }
             elseif($value['seller_type'] == 2) {  //美容師
-                if(!$print) {
-                    $beautician .= $value['seller_name']  . $value['commission_rate'] . '%,';
+                if($print) {
+                    $beautician .= $value['seller_name']  . $value['commission_rate'] .'%,';
                 }else {
                     $beautician .= $value['seller_name'] . '<span class="text-primary">(' . $value['commission_rate'] . '%)</span>, ';
                 }

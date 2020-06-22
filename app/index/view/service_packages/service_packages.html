@@ -145,9 +145,10 @@ $(document).ready( function (){
             if (expiration_date > 0) {
                 expiration_date = moment().add(expiration_date, 'M').format("YYYY-MM-DD HH:mm:ss");
             }
+            number = parent.$('table').find('.items_count').val();
 
             if (from_panel == 'invoices') {
-                number = parent.$('table').find('tr.service').length;
+
                 node = '<tr class="border-b service">\n' +
                     '    <td width="8%" align="center" data-id="">\n' +
                     '      <input type="checkbox" class="checkbox" value="' + number + '">\n' +
@@ -205,14 +206,15 @@ $(document).ready( function (){
                     '     </td>\n' +
                     '   </tr>';
 
+                number ++;
+
                 parent.$("#service_package").removeClass('hidden');
                 parent.$("#product").before(node);
-                parent.total();
 
             } else if(from_panel == 'package_staging'){
-                number = parent.$('table').find('tr.service').length;
+
                 node = '<tr class="border-b service">  \n' +
-                    '   <td width="5%">  \n' +
+                    '   <td width="5%" align="center">  \n' +
                     '       <input type="checkbox" class="checkbox" value="' + number + '"> \n' +
                     '       <input type="hidden" class="service_packages" value="' + row.id + '">  \n' +
                     '   </td>  \n' +
@@ -243,10 +245,13 @@ $(document).ready( function (){
                     '   </td>  \n' +
                     '   </tr>';
 
+                number ++;
+
                 parent.$("#service_package").removeClass('hidden');
                 parent.$("#member").before(node);
-                parent.total();
             }
+            parent.$('table').find('.items_count').val(number);
+            parent.total();
         }
     });
 

@@ -140,7 +140,7 @@ $(document).ready( function (){
         }, ],
         onClickRow: function (row, element, field) {
             if (from_panel == 'invoices') {
-                number = parent.$('table').find('tr.service').length;
+                number = parent.$('table').find('.items_count').val();
 
                 node = '<tr class="border-b service">  ' +
                     '<td width="8%" align="center" data-id="">' +
@@ -169,8 +169,11 @@ $(document).ready( function (){
                     '</td>  ' +
                     '</tr>';
 
+                number ++;
+
                 parent.$("#product").removeClass('hidden');
                 parent.$("#combination").before(node);
+                parent.$('table').find('.items_count').val(number);
                 parent.total();
 
             }else if(from_panel == 'transfer_products'){
@@ -191,12 +194,12 @@ $(document).ready( function (){
                 parent.$('#'+from_panel).find('tbody').append(node);
                 parent.total();
             } else {
-                number = parent.$('#'+from_panel).find('tbody').find('tr').length;
+                number = parseFloat(parent.$('#maxNumber').val());
 
                 node = '<tr> ' +
                     '<input type="hidden" name="item[' + number + '][product_id]" value="' + row.id + '"> ' +
                     '<td width="5%">' +
-                    '<input type="checkbox" name=""></td> ' +
+                    '<input type="checkbox" class="checkbox"></td> ' +
                     '<td width="15%">' +
                     '<input class="form-control form-control-sm" type="number" name="item[' + number + '][ordering]" value="' + parseInt(number+1) + '" style="width: 100%;">' +
                     '</td> ' +
@@ -208,8 +211,10 @@ $(document).ready( function (){
                     '</td> ' +
                     '</tr>';
 
+                number ++;
+
                 parent.$('#'+from_panel).find('tbody').append(node);
-                // parent.total();
+                parent.$('#maxNumber').val(number);
             }
         }
     });

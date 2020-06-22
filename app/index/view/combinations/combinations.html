@@ -142,7 +142,7 @@ $(document).ready( function (){
             sortable: true
         }, ],
         onClickRow: function (row, element, field) {
-            number = parent.$('table').find('tr.service').length;
+            number = parent.$('table').find('.items_count').val();
 
             node = '<tr class="border-b service"> \n' +
                 '    <td width="8%" align="center" data-id="">\n' +
@@ -171,8 +171,11 @@ $(document).ready( function (){
                 '    </td> \n' +
                 '    </tr>';
 
+            number ++;
+
             parent.$("#combination").removeClass('hidden');
             parent.$("#member").before(node);
+            parent.$('table').find('.items_count').val(number);
             parent.total();
         }
     });

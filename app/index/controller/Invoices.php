@@ -237,7 +237,7 @@ class Invoices extends Application
                 $invoiceSeller->delSellers($id);
             }
 
-            return json(['code' => 200]);
+            return json(['code' => 200,'id' => $id]);
         }
 
         $inv_items = $invoiceItem->findItems($id);

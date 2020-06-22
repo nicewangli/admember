@@ -239,7 +239,7 @@
                                     <td width="5%">
                                         <input type="hidden" name="item[{$index-1}][user_id]" value="">
                                         <input type="hidden" name="item[{$index-1}][id]" value="{$userinfo.uid}">
-                                        {if $userinfo.category == $dutys.duty}
+                                        {if condition="$userinfo.category eq $dutys.duty && $userinfo.date_of_accession eq $dutys.entry_date"}
                                         <i class="fa fa-info-circle"></i>
                                         {/if}
                                     </td>

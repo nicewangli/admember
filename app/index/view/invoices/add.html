@@ -648,8 +648,7 @@
         })
     }
 
-    function layer_print(id)
-    {
+    function layer_print(id) {
         //打印弹窗
         layer.open({
             type: 2,
@@ -885,17 +884,19 @@
                     if(res.code == 200){
                         let from = $("#from").val();
 
+
+                        //注意：parent 是 JS 自带的全局对象，可用于操作父页面
+                        // let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                         if (from == 'booking'){
                             parent.layer.msg('success');
-                            parent.location.reload();
+                            // parent.location.reload();
 
                         }else{
                             parent.$('#invoices-grid').bootstrapTable('refresh');
 
                         }
-                        //注意：parent 是 JS 自带的全局对象，可用于操作父页面
-                        // let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
                         parent.layer.close(layer_print(res.id));
+
                     }
                 }
             })

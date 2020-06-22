@@ -184,6 +184,18 @@ class Combinations extends Application
         return redirect(url('index'));    
     }
 
+    //删除item
+    public function del_item(CombinationItem $combinationItem)
+    {
+        $ids = input('ids', []);
+        $result = $combinationItem->whereIn('id', $ids)->delete();
+        if ($result) {
+            return json(['code' => 200]);
+        } else {
+            return json(['code' => 0]);
+        }
+    }
+
     //
     public function combinations(Combination $model)
     {

@@ -238,7 +238,7 @@ class PackageStagings extends Application
             if (isset($param['delSeller']) && $param['delSeller']) {
                 $packageStagingSeller->delSellers($id);
             }
-            return json(['code' => 200]);
+            return json(['code' => 200,'id'=>$id]);
         }
 
         $items = $packageStagingItem->findItems($id);

@@ -1,0 +1,138 @@
+{extend name="public/print" /}
+{block name='content'}
+<div class="print-hide">
+    <br />
+    <input type="checkbox" id="member_p" checked />會員存根
+    <input type="checkbox" id="company_p" />公司存根
+    <input class="formButton" type="button" value="列印" onClick="window.print();" /><br />
+    <br />
+</div>
+{volist name="divFor" id="div"}
+<div id="{$div.div_id}">
+    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+        <tr style="height:45mm;">
+            <td class="print-huge-blod" align="left">&nbsp;</td>
+            <td class="print-large-blod" align="right">收據</td>
+        </tr>
+    </table><br />
+    <table width="100%" border="0" cellpadding="2" cellspacing="0">
+        <colgroup>
+            <col width="12%" />
+            <col width="37%" />
+            <col width="2%" />
+            <col width="12%" />
+            <col width="37%" />
+        </colgroup>
+        <tr>
+            <td class="print-small" align="left">編號&nbsp;:</td>
+            <td class="print-small" align="left" style="border-bottom:1px dotted #CCCCCC;">{$result.code} ({$div.type})</td>
+            <td class="print-small" align="left">&nbsp;</td>
+            <td class="print-small" align="left">日期&nbsp;:</td>
+            <td class="print-small" align="left" style="border-bottom:1px dotted #CCCCCC;">
+                {$result.staging_time}
+                <!--                3<sup>rd</sup> June 2020, 08:30:39PM-->
+            </td>
+        </tr>
+        <tr>
+            <td class="print-small" align="left">會員&nbsp;:</td>
+            <td class="print-small" align="left" style="border-bottom:1px dotted #CCCCCC;">{$result.first_name}({$result.member_no})</td>
+            <td class="print-small" align="left">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="print-small" align="left">列印&nbsp;:</td>
+            <td class="print-small" align="left" style="border-bottom:1px dotted #CCCCCC;">{$username}</td>
+
+        </tr>
+    </table><br />
+    <table width="100%" border="0" cellpadding="2" cellspacing="0" style="border-collapse:collapse;">
+        <colgroup>
+            <col width="4%" /><!-- Item -->
+            <col width="26%" /><!-- Treatment / Product -->
+            <col width="10%" /><!-- Quantity -->
+            <col width="6%" /><!-- Unit -->
+            <col width="11%" /><!-- Unit Price -->
+            <col width="11%" /><!-- Discount -->
+            <col width="11%" /><!-- Tmt. Shifting -->
+            <col width="11%" /><!-- Amount -->
+            <col width="5%" /><!-- Amount -->
+            <col width="5%" /><!-- Amount -->
+        </colgroup>
+        <tr>
+            <td class="print-small" align="left" style="border-bottom:1px solid Black;">項目</td>
+            <td class="print-small" align="left" style="border-bottom:1px solid Black;">编号</td>
+            <td class="print-small" align="right" style="border-bottom:1px solid Black;">套票</td>
+            <td class="print-small" align="left" style="border-bottom:1px solid Black;"></td>
+            <td class="print-small" align="right" style="border-bottom:1px solid Black;"></td>
+            <td class="print-small" align="right" style="border-bottom:1px solid Black;"></td>
+            <td class="print-small" align="right" style="border-bottom:1px solid Black;"></td>
+            <td class="print-small" align="right" style="border-bottom:1px solid Black;"></td>
+            <td class="print-small" align="right" style="border-bottom:1px solid Black;"></td>
+            <td class="print-small" align="right" style="border-bottom:1px solid Black;">退款金額</td>
+        </tr>
+        {volist name="items" id="item"}
+        <tr>
+            <td class="print-small" align="left" valign="top">1</td>
+            <td class="print-small" align="left" valign="top">{$item.ps_no}</td>
+            <td class="print-small" align="right" valign="top">{$item.service_name}</td>
+            <td class="print-small" align="left" valign="top"></td>
+            <td class="print-small" align="right" valign="top"></td>
+            <td class="print-small" align="right" valign="top"></td>
+            <td class="print-small" align="right" valign="top"></td>
+            <td class="print-small" align="right" valign="top"></td>
+            <td class="print-small" align="right" valign="top"></td>
+            <td class="print-small" align="right" valign="top">{$item.refund}</td>
+        </tr>
+        {/volist}
+    </table>
+    <table width="100%" border="0" cellpadding="2" cellspacing="0" style="border-collapse:collapse;">
+        <colgroup>
+            <col width="78%" />
+            <col width="11%" />
+            <col width="11%" />
+        </colgroup>
+        <tr>
+            <td class="print-small" align="left" style="margin:100px;border-top:1px solid Black;">總計&nbsp;:</td>
+            <td class="print-small" align="left" >&nbsp;{$all_refund}&nbsp;&nbsp;</td>
+
+            <!--            <td class="print-small" align="right" style="border-top:1px solid Black;">$688.00</td>-->
+        </tr>
+    </table><br />
+    <table width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tr>
+            <td align="left" valign="top">&nbsp;</td>
+            <td width="200" align="right" valign="top">
+                <table width="100%" border="0" cellpadding="2" cellspacing="0">
+                    <tr height="50">
+                        <td class="print-small" align="center" style="border:1px solid Black;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td class="print-small" align="center">簽名 (會員)</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+{/volist}
+{/block}
+{block name="js"}
+<script>
+    $(document).ready(function () {
+        $("#company_print").attr("style","display:none;");
+        $("#member_p").on('change',function () {
+            if($("#member_p").is(':checked')) {
+                $("#member_print").attr("style","display:block;");
+            } else {
+                $("#member_print").attr("style","display:none;");
+            }
+        })
+        $("#company_p").on('change',function () {
+            if($("#company_p").is(':checked')) {
+                $("#company_print").attr("style","display:block;");
+            } else {
+                $("#company_print").attr("style","display:none;");
+            }
+        })
+    })
+</script>
+{/block}

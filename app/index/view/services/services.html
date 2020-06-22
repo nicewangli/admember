@@ -132,12 +132,13 @@ $(document).ready( function (){
             sortable: true
         }, ],
         onClickRow: function (row, element, field) {
-            // parent.$('#package_services').find('tbody').empty();
-            index = parent.$('#package_services').find('tbody').find('tr').length;
+            index = parseFloat(parent.$('#maxNumber').val());
+            index ++;
+
             node = '<tr> '+
                 '<input type="hidden" name="item[' + index + '][service_id]" value="' + row.id + '">'+
                 '<td width="5%">'+
-                '<input type="checkbox" name="">'+
+                '<input type="checkbox" class="checkbox">'+
                 '</td> '+
                 '<td width="15%">'+
                 '<input type="number" class="form-control form-control-sm" name="item[' + index + '][ordering]" value="' + parseInt(index+1) + '" style="width: 100%;">'+
@@ -150,6 +151,7 @@ $(document).ready( function (){
                 '</tr>';
 
             parent.$('#package_services').find('tbody').append(node);
+            parent.$('#maxNumber').val(index);
         }
     });
 

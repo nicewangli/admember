@@ -18,12 +18,12 @@ class CombinationItem extends Model
     public function saveItem($id, $data)
     {
 
-        $this->where('combination_id', $id)->delete();
+//        $this->where('combination_id', $id)->delete();
 
         foreach ($data as $key => $value){
             $data[$key]['combination_id'] = $id;
         }
-        $this->insertAll($data);
+        $this->saveAll($data);
     }
 
     public function deleteItem($combination_id)

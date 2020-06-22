@@ -136,7 +136,8 @@ class Application extends BaseController
             'del_fast',
             'add_fast',
             'change_status',
-            'members'
+            'members',
+            'service_code'
 
         ];
 

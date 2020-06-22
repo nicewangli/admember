@@ -24,11 +24,13 @@ class PackageStagingItem extends Model
         if ($act != 'edit') {
             foreach ($service as $key => $value) {
                 $service[$key]['payment'] = $value['current_payment'];
+                $service[$key]['usable_value'] = $value['current_payment'];
                 $service[$key]['package_staging_id'] = $id;
                 $updateArr[] = $service[$key];
                 if ($data['is_first'] != '1') {
-                    //当新增旧分期数据，需要更新首次付款记录的已支付金额
+                    //当--新增--旧分期数据，需要更新首次付款记录的已支付金额
                     Db::table('package_staging_item')->where('id', $value['psi_id'])->inc('payment', (float)$value['current_payment'])->update();
+                    Db::table('package_staging_item')->where('id', $value['psi_id'])->inc('usable_value', (float)$value['current_payment'])->update();
                 }
             }
         } else { //修改
@@ -36,18 +38,22 @@ class PackageStagingItem extends Model
             foreach ($service as $key => $value) {
                 if (!isset($value['id'])) {//修改页面(首次分期新增服务套票) 新增的psi
                     $service[$key]['payment'] = $value['current_payment'];
+                    $service[$key]['usable_value'] = $value['current_payment'];
                     $service[$key]['package_staging_id'] = $id;
                     //判断新增的是首次分期的服务套票还是付款的旧分期
                     if (isset($value['psi_id'])) {
                         Db::table('package_staging_item')->where('id', $value['psi_id'])->inc('payment', (float)$value['current_payment'])->update();
+                        Db::table('package_staging_item')->where('id', $value['psi_id'])->inc('usable_value', (float)$value['current_payment'])->update();
                     }
                     $updateArr[] = $service[$key];
                 } else {
                     $updatePayment = $value['current_payment'] - $value['temp_current_payment']; //修改后支付金额的变化差值，用于更新
                     if (isset($value['first_psi_id'])) {  //旧分期的数据有设置首次付款item的id（first_psi_id）便于计算支付金额
                         Db::table('package_staging_item')->where('id', $value['first_psi_id'])->inc('payment', (float)$updatePayment)->update();
+                        Db::table('package_staging_item')->where('id', $value['first_psi_id'])->inc('usable_value', (float)$updatePayment)->update();
                     }
                     Db::table('package_staging_item')->where('id', $value['id'])->inc('payment', (float)$updatePayment)->update();
+                    Db::table('package_staging_item')->where('id', $value['id'])->inc('usable_value', (float)$updatePayment)->update();
                     $deleteOutArr[] = (int)$value['id'];
                 }
             }

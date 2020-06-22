@@ -61,12 +61,8 @@
                 <div class="col-xs-12 col-md-12 pt-2">
                     <div class="row">
                         <div class="col-lg-12" align="center">
-                            <button class="btn flat btn-info btn-sm submit">
-                                <i class=" fa fa-file-alt"></i>
-                                Submit
-                            </button>
 
-                            <button class="btn btn-default btn-sm">
+                            <button class="btn btn-default btn-sm layer-close">
                                 Close
                             </button>
                         </div>
@@ -77,7 +73,11 @@
     </div>
 </body>   
 <script type="text/javascript">
-    let package_id, package_code, package_name, package_value, package_value_used, package_unit, selections = [], selectionIds = [], data = {}, selectRow;
+    let package_id, package_code, package_name, package_value, package_value_used, package_unit, package_type, parent_id,
+        node = '', total, numbers = [], start_time, end_time,
+        service_package_item_id = 0,
+        from_panel = $("#from_panel").val(),
+        number = parseInt(parent.$(".items_count").val());
 
     function services(service_package_id, parent_id, type, member_id, service_type){
 
@@ -121,10 +121,6 @@
             pageList: [10, 20, 50, 100],
             singleSelect: false,                              //开启单选,想要获取被选中的行数据必须要有该参数
             columns: [{
-                field: 'checked',
-                checkbox: true,
-                clickToSelect: true
-            }, {
                 field: 'code',
                 title: '編號',
                 width: "120px",
@@ -140,16 +136,148 @@
                 title: '扣除值',
                 sortable: true
             }, ],
+            onClickRow: function (row, element, field) {
+
+                if (row.id) {
+                    service_package_item_id = row.id;
+                }
+
+                if (from_panel == 'use_packages') {
+                    total = parseFloat(parent.$("#total").val());
+                    if (parseFloat(package_value - package_value_used) > 0) {
+                        node = '<tr class="border-b service">\n' +
+                            ' <td width="5%" align="center" data-id="">\n' +
+                            '    <input type="checkbox" class="checkbox" value="' + number + '">\n' +
+                            '   <input type="hidden" class="service_packages" value="' + row.id + '">\n' +
+                            ' </td> \n' +
+                            ' <td width="5%"> \n' +
+                            '   <input type="hidden" name="service[' + number + '][service_package_id]" value="' + package_id + '">\n' +
+                            '   <input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + service_package_item_id + '">\n' +
+                            '   <input type="hidden" name="service[' + number + '][service_id]" value="' + row.service_id + '">\n' +
+                            '   <input type="hidden" name="service[' + number + '][commission]" value="' + row.beautician_pay + '"> \n' +
+                            '   <input type="hidden" name="service[' + number + '][package_type]" value="' + package_type + '"> \n' +
+                            '   <input type="hidden" name="service[' + number + '][parent_id]" value="' + parent_id + '"> \n' +
+                            '   <input type="hidden" name="service[' + number + '][item_id]" value="' + row.item_id + '"> \n' +
+                            '   <input type="hidden" name="service[' + number + '][service_package_code]" value="' + package_code + '"> \n' +
+                            '   <input type="hidden" name="service[' + number + '][service_package_name]" value="' + package_name + '"> \n' +
+                            '   <input type="hidden" name="service[' + number + '][service_code]" value="' + row.code + '"> \n' +
+                            '   <input type="hidden" name="service[' + number + '][service_name]" value="' + row.name + '"> \n' +
+                            ' </td> \n' +
+                            ' <td width="10%">\n' +
+                            '   <p>' + package_code + '</p><br/>\n' +
+                            '   <p>' + row.code + '</p>\n' +
+                            '   <p>&emsp;</p>\n' +
+                            ' </td> \n' +
+                            ' <td width="20%">\n' +
+                            '   <p>' + package_name + '</p><br/>\n' +
+                            '   <p>' + row.name + '</p>\n' +
+                            '   <p>套票值：' + parseFloat(package_value - package_value_used).toFixed(1) + '/' + package_value + package_unit + '</p>\n' +
+                            ' </td> \n' +
+                            ' <td width="15%">\n' +
+                            '   <select class="form-control beautician beautician1' + number + '" name="service[' + number + '][beautician1]" style="display: none; width: 100%;" required>\n' +
+                            // '   <option value="0"></option>\n'+
+                            '   </select>\n' +
+                            ' </td> \n' +
+                            ' <td width="15%">\n' +
+                            '   <select class="form-control beautician beautician2' + number + '" name="service[' + number + '][beautician2]" style="display: none; width: 100%;">\n' +
+                            '   <option value="0"></option>\n' +
+                            '   </select>\n' +
+                            ' </td> \n' +
+                            ' <td width="8%">\n' +
+                            '   <input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;">\n' +
+                            ' </td> \n' +
+                            ' <td width="11%">\n' +
+                            '   <input type="text" name="service[' + number + '][deduction]" value="' + row.deduct_val + '" class="form-control text-right deduction" style="width: 100%;">\n' +
+                            ' </td> \n' +
+                            ' <td width="11%">\n' +
+                            '   <input type="text" name="service[' + number + '][total_deduction]" value="' + row.deduct_val + '" class="form-control text-right total_deduction" style="width: 100%;" readonly="">\n' +
+                            ' </td> \n' +
+                            ' </tr>';
+
+                        number++;
+                        total += row.deduct_val;
+                    }
+
+                    parent.$("#use_packages").append(node);
+                    parent.$(".items_count").val(number);
+                    parent.$("#total").val(total);
+                    parent.initBeautician();
+
+                }
+                else if(from_panel == 'bookings'){
+
+                    if (parseFloat(package_value - package_value_used) > 0) {
+                        node = '<tr class="border-b service"> '+
+                            '<td align="center" data-id="">'+
+                            '<input type="checkbox" class="checkbox" value="' + number + '">'+
+                            '<input type="hidden" name="service[' + number + '][package_type]" value="' + package_type + '">'+
+                            '<input type="hidden" name="service[' + number + '][parent_id]" value="' + parent_id + '">'+
+                            '<input type="hidden" name="service[' + number + '][item_id]" value="' + row.item_id + '">'+
+                            '<input type="hidden" name="service[' + number + '][service_package_id]" value="' + package_id + '">'+
+                            '<input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + row.id + '">  '+
+                            '<input type="hidden" name="service[' + number + '][service_id]" value="' + row.service_id + '"> '+
+                            '<input type="hidden" name="service[' + number + '][service_package_code]" value="' + package_code + '"> '+
+                            '<input type="hidden" name="service[' + number + '][service_package_name]" value="' + package_name   + '"> '+
+                            '<input type="hidden" name="service[' + number + '][service_code]" value="' + row.code + '"> '+
+                            '<input type="hidden" name="service[' + number + '][service_name]" value="' + row.name + '"> '+
+                            '</td>'+
+                            '<td class="d-flex align-items-center justify-content-between">'+
+                            '<select class="form-control time_picker start_time" id="service_start_time_'+number+'" name="service[' + number + '][start_time]" style="display: none; width: 100%;"></select>'+
+                            '&nbsp;至 &nbsp;'+
+                            '<select class="form-control time_picker end_time" id="service_end_time_'+number+'" name="service[' + number + '][end_time]" style="display: none; width: 100%;">'+
+                            '</td>'+
+                            '<td> '+
+                            '<p style="margin-bottom:2px">' + package_code+ '</p>'+
+                            '<p style="margin-bottom:2px">' + row.code + '</p>'+
+                            '</td>'+
+                            '<td>'+
+                            '<p style="margin-bottom:2px">' + package_name+ '</p>'+
+                            '<p style="margin-bottom:2px">' + row.name + '</p>'+
+                            '<p style="margin-bottom:2px">套票值：' + parseFloat(package_value - package_value_used).toFixed(1) + '/' + package_value + package_unit + '</p>'+
+                            '</td>'+
+                            '<td>'+
+                            '<input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;">'+
+                            '</td>'+
+                            '<td>'+
+                            '<select class="form-control beautician beautician1" id="service_beautician1_'+number+'"  name="service[' + number + '][beautician1]" style="display: none; width: 100%;"></select>'+
+                            '</td>'+
+                            '<td>'+
+                            '<select class="form-control beautician beautician2" name="service[' + number + '][beautician2]" id="service_beautician2_'+number+'" style="display: none; width: 100%;"></select>'+
+                            '</td>'+
+                            '</tr>';
+
+                        numbers.push(number);
+                        number++;
+
+                        parent.$("#bookings").append(node);
+                        parent.$(".items_count").val(number);
+                        parent.initBeautician(numbers);
+                        parent.initWorkingHourse();
+
+                        start_time =  parent.$("#booking_init_time").val();
+                        end_time = wh_end_time(start_time);
+                        console.log(start_time, end_time);
+
+                        parent.$('#service_start_time_'+parseInt(number-1)).val(start_time).trigger('change');
+                        parent.$('#service_end_time_'+parseInt(number-1)).val(end_time).trigger('change');
+                        start_time = end_time;
+                        parent.$("#booking_init_time").val(start_time);
+
+                    }
+
+                }
+
+            }
         });
 
     }
 
     function wh_end_time(start_time){
-        let st_strs = start_time.split(":")
-        let time = Number(st_strs[0])
-        let hour = st_strs[1]
+        let st_strs = start_time.split(":");
+        let time = Number(st_strs[0]);
+        let hour = st_strs[1];
         if(hour == "30"){
-            st_strs[0] = time + 1
+            st_strs[0] = time + 1;
             st_strs[1] = "00"
         }else{
             st_strs[1] = "30"
@@ -229,215 +357,27 @@
                 sortable: true
             }, ],
             onClickRow:function (row, element) {
-                // package_id = row.id;
-                // package_code = row.code;
-                // package_name = row.name;
-                // package_value = row.package_value;
-                // package_value_used = row.package_value_used;
-                // package_unit = row.package_unit;
-                // invoice_id = row.invoice_id;
-                // member_id = row.member_id;
-                selectRow = row;
-
-                getAllSelections(selectRow);
+                package_id = row.id;
+                package_code = row.service_code;
+                package_name = row.service_name;
+                package_value = row.package_value;
+                package_value_used = row.package_value_used;
+                package_unit = row.package_unit;
+                package_type = row.type;
+                parent_id = row.parent_id;
+                member_id = row.member_id;
 
                 $('#services-grid').bootstrapTable('destroy');
-                services(row.id, row.parent_id, row.type, row.member_id, row.service_type);
+                services(package_id, parent_id, package_type, member_id, row.service_type);
             },
         });
 
-        $(".submit").click(function(){
-            let from_panel = $("#from_panel").val();
-
-            data = selectRow;
-            getAllSelections(selectRow);
-
-            // let rows = selections.slice(1);
-            let rows = selections;
-            if(rows.length<=0){
-                alert("请选择一行");
-                return;
-            }else {
-                //注意：parent 是 JS 自带的全局对象，可用于操作父页面
-                let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                parent.layer.close(index);
-                let nodes = '';
-                if (from_panel == 'use_packages') {
-                    let number = parseInt(parent.$(".items_count").val());
-                    let total = parseFloat(parent.$("#total").val());
-                    // ids = ids.split(",");
-
-                    $.each(rows, function(index, element){
-                        // console.log(element)
-                        let service_package_item_id = 0;
-                        if (element.id) {
-                            service_package_item_id = element.id;
-                        }
-
-                        if (parseFloat(element.package_value - element.package_value_used) > 0) {
-
-                            nodes += '<tr class="border-b service">\n'+
-                                ' <td width="5%" align="center" data-id="">\n'+
-                                '    <input type="checkbox" class="checkbox" value="' + number + '">\n'+
-                                '   <input type="hidden" class="service_packages" value="' + element.id + '">\n'+
-                                ' </td> \n'+
-                                ' <td width="5%"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][service_package_id]" value="' + element.package_id + '">\n'+
-                                '   <input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + service_package_item_id + '">\n'+
-                                '   <input type="hidden" name="service[' + number + '][service_id]" value="' + element.service_id + '">\n'+
-                                '   <input type="hidden" name="service[' + number + '][commission]" value="' + element.beautician_pay + '"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][package_type]" value="' + element.package_type + '"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][parent_id]" value="' + element.parent_id + '"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][item_id]" value="' + element.item_id + '"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][service_package_code]" value="' + element.package_code + '"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][service_package_name]" value="' + element.package_name + '"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][service_code]" value="' + element.code + '"> \n'+
-                                '   <input type="hidden" name="service[' + number + '][service_name]" value="' + element.name + '"> \n'+
-                                ' </td> \n'+
-                                ' <td width="10%">\n'+
-                                '   <p>' + element.package_code+ '</p><br/>\n'+
-                                '   <p>' + element.code + '</p>\n'+
-                                '   <p>&emsp;</p>\n'+
-                                ' </td> \n'+
-                                ' <td width="20%">\n'+
-                                '   <p>' + element.package_name+ '</p><br/>\n'+
-                                '   <p>' + element.name + '</p>\n'+
-                                '   <p>套票值：' + parseFloat(element.package_value - element.package_value_used).toFixed(1) + '/' + element.package_value + element.package_unit + '</p>\n'+
-                                ' </td> \n'+
-                                ' <td width="15%">\n'+
-                                '   <select class="form-control beautician beautician1' + number + '" name="service[' + number + '][beautician1]" style="display: none; width: 100%;" required>\n'+
-                                // '   <option value="0"></option>\n'+
-                                '   </select>\n'+
-                                ' </td> \n'+
-                                ' <td width="15%">\n'+
-                                '   <select class="form-control beautician beautician2' + number + '" name="service[' + number + '][beautician2]" style="display: none; width: 100%;">\n'+
-                                '   <option value="0"></option>\n'+
-                                '   </select>\n'+
-                                ' </td> \n'+
-                                ' <td width="8%">\n'+
-                                '   <input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;">\n'+
-                                ' </td> \n'+
-                                ' <td width="11%">\n'+
-                                '   <input type="text" name="service[' + number + '][deduction]" value="' + element.deduct_val + '" class="form-control text-right deduction" style="width: 100%;">\n'+
-                                ' </td> \n'+
-                                ' <td width="11%">\n'+
-                                '   <input type="text" name="service[' + number + '][total_deduction]" value="' + element.deduct_val + '" class="form-control text-right total_deduction" style="width: 100%;" readonly="">\n'+
-                                ' </td> \n'+
-                                ' </tr>';
-
-                            number++;
-                            total += element.deduct_val;
-                        }
-                    });
-
-                    parent.$("#use_packages").append(nodes);
-                    parent.$(".items_count").val(number);
-                    parent.$("#total").val(total);
-                    parent.initBeautician();
-
-                }else if(from_panel == 'bookings'){
-                    var numbers = [];
-                    let number = idx = parseInt(parent.$(".items_count").val());
-                    // ids = ids.split(",");
-                    $.each(rows, function(index, element){
-                        if (parseFloat(element.package_value - element.package_value_used) > 0) {
-                            nodes += '<tr class="border-b service"> '+
-                            '<td align="center" data-id="">'+
-                            '<input type="checkbox" class="checkbox" value="' + number + '">'+
-                            '<input type="hidden" name="service[' + number + '][package_type]" value="' + element.package_type + '">'+
-                            '<input type="hidden" name="service[' + number + '][parent_id]" value="' + element.parent_id + '">'+
-                            '<input type="hidden" name="service[' + number + '][item_id]" value="' + element.item_id + '">'+
-                            '<input type="hidden" name="service[' + number + '][service_package_id]" value="' + element.package_id + '">'+
-                            '<input type="hidden" name="service[' + number + '][service_package_item_id]" value="' + element.id + '">  '+
-                            '<input type="hidden" name="service[' + number + '][service_id]" value="' + element.service_id + '"> '+
-                            '<input type="hidden" name="service[' + number + '][service_package_code]" value="' + element.package_code + '"> '+
-                            '<input type="hidden" name="service[' + number + '][service_package_name]" value="' + element.package_name   + '"> '+
-                            '<input type="hidden" name="service[' + number + '][service_code]" value="' + element.code + '"> '+
-                            '<input type="hidden" name="service[' + number + '][service_name]" value="' + element.name + '"> '+
-                            '</td>'+
-                            '<td class="d-flex align-items-center justify-content-between">'+
-                            '<select class="form-control time_picker start_time" id="service_start_time_'+number+'" name="service[' + number + '][start_time]" style="display: none; width: 100%;"></select>'+
-                            '&nbsp;至 &nbsp;'+
-                            '<select class="form-control time_picker end_time" id="service_end_time_'+number+'" name="service[' + number + '][end_time]" style="display: none; width: 100%;">'+
-                            '</td>'+
-                            '<td> '+
-                            '<p style="margin-bottom:2px">' + element.package_code+ '</p>'+
-                            '<p style="margin-bottom:2px">' + element.code + '</p>'+
-                            '</td>'+
-                            '<td>'+
-                            '<p style="margin-bottom:2px">' + element.package_name+ '</p>'+
-                            '<p style="margin-bottom:2px">' + element.name + '</p>'+
-                            '<p style="margin-bottom:2px">套票值：' + parseFloat(element.package_value - element.package_value_used).toFixed(1) + '/' + element.package_value + element.package_unit + '</p>'+
-                            '</td>'+
-                            '<td>'+
-                            '<input type="number" min="1" name="service[' + number + '][quantity]" value="1" class="form-control text-right quantity" style="width: 100%;">'+
-                            '</td>'+
-                            '<td>'+
-                            '<select class="form-control beautician beautician1" id="service_beautician1_'+number+'"  name="service[' + number + '][beautician1]" style="display: none; width: 100%;"></select>'+
-                            '</td>'+
-                            '<td>'+
-                            '<select class="form-control beautician beautician2" name="service[' + number + '][beautician2]" id="service_beautician2_'+number+'" style="display: none; width: 100%;"></select>'+
-                            '</td>'+
-                            '</tr>';
-                            numbers.push(number);
-                            number++;
-                        }
-                    });
-                    parent.$("#bookings").append(nodes);
-                    parent.$(".items_count").val(number);
-                    parent.initBeautician(numbers);
-                    parent.initWorkingHourse();
-
-                    let start_time =  parent.$("#booking_init_time").val();
-                    console.log(start_time);
-                    $.each(rows, function(index, element){
-                        if (parseFloat(element.package_value - element.package_value_used) > 0) {
-                            let end_time = wh_end_time(start_time)
-                            parent.$('#service_start_time_'+idx).val(start_time).trigger('change');
-                            parent.$('#service_end_time_'+idx).val(end_time).trigger('change');
-                            start_time = end_time;
-                            idx++
-                        }
-                    });
-                    parent.$("#booking_init_time").val(start_time);
-
-                }
-
-
-                //注意：parent 是 JS 自带的全局对象，可用于操作父页面
-                // let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
-                // parent.layer.close(index);
-            }
-        });
-
-        $(".btn-default").click(function(){
+        $(".layer-close").click(function(){
             let index = parent.layer.getFrameIndex(window.name); //获取窗口索引
             parent.layer.close(index);
         });
 
     });
 
-    function getAllSelections(row) {
-        let rows = $("#services-grid").bootstrapTable('getAllSelections');
-
-        if (rows.length > 0) {
-            $.each(rows, function(index, element){
-                if (data && selectionIds.indexOf(data.type + '-' + data.parent_id + '-' + element.service_id) == -1) {
-                    element['package_id'] = data.id;
-                    element['parent_id'] = data.parent_id;
-                    element['package_code'] = data.service_code;
-                    element['package_name'] = data.service_name;
-                    element['package_value'] = data.package_value;
-                    element['package_value_used'] = data.package_value_used;
-                    element['package_unit'] = data.package_unit;
-                    element['package_unit'] = data.package_unit;
-                    element['package_type'] = data.type;
-                    selectionIds.push(data.type + '-' + data.parent_id + '-' + element.service_id);
-                    selections.push(element);
-                }
-            })
-        }
-        data = row;
-    }
 </script>
 </html>
